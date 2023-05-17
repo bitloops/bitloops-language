@@ -30,4 +30,18 @@ export class ExecuteNode extends IntermediateASTNode {
     );
     return [returnOkErrorTypeNode];
   }
+
+  // addToSymbolTable(classA: ClassA): void {
+  //   const symbolTable = classA.getSymbolTable();
+  //   const executeScope = symbolTable.createChildScope(SCOPE_NAMES.EXECUTE, this);
+  //   const executeParameter = this.getParameter();
+  //   if (executeParameter) {
+  //     executeParameter.addToSymbolTable(executeScope);
+  //     // const paramName = paramNode.getIdentifier();
+  //     // executeScope.insert(
+  //     //   paramName,
+  //     //   new ParameterSymbolEntry(inferType({ node: paramNode.getType() })),
+  //     // );
+  //   }
+  // }
 }

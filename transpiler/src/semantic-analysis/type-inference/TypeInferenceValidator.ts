@@ -130,10 +130,20 @@ export const inferType = ({
     return node.getInferredType();
   } else if (IntermediateASTNodeTypeGuards.isApplyRules(node)) {
     return node.getInferredType();
+  } else if (IntermediateASTNodeTypeGuards.isAdditiveExpression(node)) {
+    return node.getInferredType();
+  } else if (IntermediateASTNodeTypeGuards.isIdentifierExpression(node)) {
+    return node.getInferredType(symbolTable);
   }
   // return node.getInferredType();
 
-  console.log('Unsupported node type: ', node.getClassNodeName(), node.getValue());
+  console.log(
+    'Unsupported node type:',
+    node.getClassNodeName(),
+    node.getValue(),
+    node.getNodeType(),
+  );
+  console.log('\nMetadata:', node.getMetadata());
   return null;
 };
 

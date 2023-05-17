@@ -36,4 +36,9 @@ export class ParameterNode extends IntermediateASTNode {
     //   throw new MissingIdentifierError(parameterType.getIdentifierName(), this.getMetadata());
     // }
   }
+
+  // addToSymbolTable(classA: ClassA): void {
+  //   const paramName = this.getIdentifier();
+  //   executeScope.insert(paramName, new ParameterSymbolEntry(inferType({ node: this.getType() })));
+  // }
 }

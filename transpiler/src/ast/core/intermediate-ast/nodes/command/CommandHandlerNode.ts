@@ -69,4 +69,29 @@ export class CommandHandlerNode extends ClassTypeNode {
     );
     return parameterListNode.getParameters();
   }
+
+  getParameterList(): ParameterListNode | null {
+    return this.getChildNodeByType<ParameterListNode>(BitloopsTypesMapping.TParameterList);
+  }
+
+  // addToSymbolTable(classA: ClassA): void {
+  //   const symbolTable = classA.getSymbolTable();
+  //   classA.addClassTypeThis(symbolTable);
+  //   // inside addClassTypeThis: symbolTable.insert(SCOPE_NAMES.THIS, new ClassTypeThisSymbolEntry(name));
+  //   classA.addIntegrationEventBus(symbolTable);
+
+  //   const parameterList = this.getParameterList();
+  //   //TODO find a way to distinct paramaters from classTypeParameters
+  //   parameterList.addToSymbolTable(classA);
+  //   //inside: this.createClassTypeParamsScope(params, classTypeScope);
+  //   const execute = this.getExecute();
+  //   execute.addToSymbolTable(classA);
+
+  //   const statements = node.getStatements();
+  //   this.createStatementListScope({
+  //     statements: statements,
+  //     symbolTable: executeScope,
+  //     intermediateASTTree: ASTTree,
+  //   });
+  // }
 }

@@ -15,7 +15,7 @@ Root Entity UserEntity {
         const incrementedCompletedTodos = this.completedTodos.counter + 1;
         const completedTodos = CompletedTodosVO.create({
             counter: incrementedCompletedTodos,
-        });
+        }).ifError();
         this.completedTodos = completedTodos;
         const event = TodoCompletionsIncrementedDomainEvent.create({ 
             completedTodos: this.completedTodos.counter,
@@ -29,7 +29,7 @@ Root Entity UserEntity {
     }
     
     public changeEmail(email: string): (OK(void), Errors(DomainErrors.InvalidEmailDomainError)) {
-        const newEmail = EmailVO.create({ email: email });
+        const newEmail = EmailVO.create({ email: email }).ifError();
         this.email = newEmail;
     }
 }

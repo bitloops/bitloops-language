@@ -7,20 +7,12 @@ CommandHandler IncrementTodosCommandHandler (userRepo: UserWriteRepoPort){
     execute (command: IncrementTodosCommand): (OK(void),Errors(DomainErrors.InvalidTodosCounterError))
     {
         const userId = UUIDv4(command.id);
-        const userFound = this.userRepo.getById(userId);
-        if(userFound is Error){
-            return Error(userFound);
-        }
+        const userFound = this.userRepo.getById(userId).ifError();
         if(NOT userFound) {
             return ApplicationErrors.UserNotFoundError(command.id);
         } 
-        const incrementedCompleted = userFound.incrementCompletedTodos();
-        if(incrementedCompleted is Error){
-            return Error(incrementedCompleted);
-        }
-        const updateResult = this.userRepo.update(userFound);
-        if(updateResult is Error){
-            return Error(updateResult);
-        }
+        const incrementedCompleted = userFound.incrementCompletedTodos().ifError();
+
+        const updateResult = this.userRepo.update(userFound).ifError();
     }
   }

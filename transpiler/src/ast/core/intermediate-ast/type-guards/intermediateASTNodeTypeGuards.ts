@@ -13,6 +13,8 @@ import { ReturnOkErrorTypeNode } from '../nodes/returnOkErrorType/ReturnOkErrorT
 import { AddDomainEventNode } from '../nodes/statements/builtinFunction/AddDomainEventNode.js';
 import { ApplyRulesNode } from '../nodes/statements/builtinFunction/ApplyRulesStatementNode.js';
 import { IfErrorExpressionNode } from '../nodes/Expression/IfErrorExpressionNode.js';
+import { AdditiveExpressionNode } from '../nodes/Expression/AdditiveExpression.js';
+import { IdentifierExpressionNode } from '../nodes/Expression/IdentifierExpression.js';
 
 export class IntermediateASTNodeTypeGuards {
   static isBitloopsPrimaryType(node: IntermediateASTNode): node is BitloopsPrimaryTypeNode {
@@ -53,6 +55,14 @@ export class IntermediateASTNodeTypeGuards {
 
   static isEqualityExpression(node: IntermediateASTNode): node is EqualityExpressionNode {
     return node.getNodeType() === BitloopsTypesMapping.TEqualityExpression;
+  }
+
+  static isAdditiveExpression(node: IntermediateASTNode): node is AdditiveExpressionNode {
+    return node.getNodeType() === BitloopsTypesMapping.TAdditiveExpression;
+  }
+
+  static isIdentifierExpression(node: IntermediateASTNode): node is IdentifierExpressionNode {
+    return node.getNodeType() === BitloopsTypesMapping.TIdentifierExpression;
   }
 
   static isAddDomainEvent(node: IntermediateASTNode): node is AddDomainEventNode {

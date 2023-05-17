@@ -13,9 +13,6 @@ CommandHandler SendEmailCommandHandler (emailService: EmailServicePort){
             destination: command.destination,
             content: command.content,
         });
-        const emailServiceResult = this.emailService.send(email);
-        if(emailServiceResult is Error){
-            return Error(emailServiceResult);
-        }
+        const emailServiceResult = this.emailService.send(email).ifError();
     }
 }

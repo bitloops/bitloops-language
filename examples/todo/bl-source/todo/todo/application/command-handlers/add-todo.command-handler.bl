@@ -6,14 +6,11 @@ Command AddTodoCommand {
 CommandHandler AddTodoCommandHandler (todoRepo: TodoWriteRepoPort){
     execute (command: AddTodoCommand): (OK(string),Errors(DomainErrors.TitleOutOfBoundsError))
     {
-      const title = TitleVO.create({ title: command.title });
+      const title = TitleVO.create({ title: command.title }).ifError();
       const requestUserId = UUIDv4(command.metadata.context.userId);
-      const userId = UserIdVO.create({ id: requestUserId });
-      const todo = TodoEntity.create({ title: title, completed: false, userId: userId });
-      const saveResult = this.todoRepo.save(todo);
-      if(saveResult is Error){
-        return Error(saveResult);
-      }
+      const userId = UserIdVO.create({ id: requestUserId }).ifError();
+      const todo = TodoEntity.create({ title: title, completed: false, userId: userId }).ifError();
+      const saveResult = this.todoRepo.save(todo).ifError();
 
       return todo.id.toString();
     }
