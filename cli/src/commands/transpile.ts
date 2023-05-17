@@ -40,6 +40,7 @@ interface ICollection {
   targetLanguage: string;
   sourceDirPath: string;
   targetDirPath: string;
+  y: boolean;
 }
 const SETUP_FILE_EXTENSION = 'setup.bl';
 
@@ -69,14 +70,17 @@ const transpile = async (source: ICollection): Promise<void> => {
   }
   const [sourceDirPath, targetDirPath] = answers;
   const libTargetDirPath = path.join(targetDirPath, 'lib');
+  // TODO refactor this nested if-else hell
   if (!fs.existsSync(libTargetDirPath)) {
     fs.mkdirSync(libTargetDirPath, { recursive: true });
   } else {
-    const overwriteAccepted = await inquirerSimpleConfirm(
-      'Overwrite',
-      '⚠️  Target directory already exists. Overwrite?',
-      'n',
-    );
+    const overwriteAccepted =
+      source.y ||
+      (await inquirerSimpleConfirm(
+        'Overwrite',
+        '⚠️  Target directory already exists. Overwrite?',
+        'n',
+      ));
     if (!overwriteAccepted) {
       return;
     }
