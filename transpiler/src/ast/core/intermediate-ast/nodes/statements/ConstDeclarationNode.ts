@@ -8,7 +8,6 @@ import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { StatementNode } from './Statement.js';
 import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { VariableSymbolEntry } from '../../../../../semantic-analysis/type-inference/SymbolEntry.js';
-import { inferType } from '../../../../../semantic-analysis/type-inference/TypeInferenceValidator.js';
 
 const NAME = 'constDeclaration';
 export class ConstDeclarationNode extends StatementNode {

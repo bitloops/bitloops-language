@@ -88,13 +88,6 @@ export class ValueObjectDeclarationNode extends ClassTypeNode {
     if (constDeclarationList) {
       constDeclarationList.addToSymbolTable(symbolTableManager);
     }
-    // constants.forEach((constant) => {
-    //   const constantName = constant.getIdentifier().getValue().identifier;
-    //   classTypeScope.insert(
-    //     constantName,
-    //     new VariableSymbolEntry(inferType({ node: constant.getExpressionValues() }), true),
-    //   );
-    // });
 
     const create = this.getCreateNode();
     create.addToSymbolTable(symbolTableManager);

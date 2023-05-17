@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ParameterListNode } from '../ParameterList/ParameterListNode.js';
@@ -34,6 +35,10 @@ export class DomainRuleNode extends ClassTypeNode {
     return parameterList.getParameters();
   }
 
+  public getParameterList(): ParameterListNode {
+    return this.getChildNodeByType<ParameterListNode>(BitloopsTypesMapping.TParameterList);
+  }
+
   public getStatements(): StatementNode[] {
     const statementList = this.getChildNodeByType<StatementListNode>(
       BitloopsTypesMapping.TStatements,
@@ -41,10 +46,25 @@ export class DomainRuleNode extends ClassTypeNode {
     return statementList.statements;
   }
 
+  public getStatementList(): StatementListNode {
+    return this.getChildNodeByType<StatementListNode>(BitloopsTypesMapping.TStatements);
+  }
+
   public getIsBrokenCondition(): IsBrokenConditionNode {
     const isBrokenCondition = this.getChildNodeByType(
       BitloopsTypesMapping.TIsBrokenIfCondition,
     ) as IsBrokenConditionNode;
     return isBrokenCondition;
+  }
+
+  addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const parameterList = this.getParameterList();
+    parameterList.addToSymbolTable(symbolTableManager);
+
+    const statementList = this.getStatementList();
+    statementList.addToSymbolTable(symbolTableManager);
+
+    const condition = this.getIsBrokenCondition();
+    condition.addToSymbolTable(symbolTableManager);
   }
 }

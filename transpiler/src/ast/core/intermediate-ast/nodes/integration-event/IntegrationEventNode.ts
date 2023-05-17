@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { BitloopsPrimaryTypeNode } from '../BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
@@ -59,6 +60,12 @@ export class IntegrationEventNode extends ClassTypeNode {
     return integrationVersionMapperList.getIntegrationVersionMapperNodes();
   }
 
+  public getIntegrationEventMapperListNode(): IntegrationVersionMapperListNode {
+    return this.getChildNodeByType<IntegrationVersionMapperListNode>(
+      BitloopsTypesMapping.TIntegrationVersionMappers,
+    );
+  }
+
   public getIntegrationEventMapperSchemas(): Record<string, StructIdentifierNode> {
     const integrationEventMapperNodes = this.getIntegrationEventMapperNodes();
     const integrationEventMapperSchemas: Record<string, StructIdentifierNode> = {};
@@ -68,5 +75,13 @@ export class IntegrationEventNode extends ClassTypeNode {
       integrationEventMapperSchemas[version] = schema;
     });
     return integrationEventMapperSchemas;
+  }
+
+  addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const parameter = this.getParameter();
+    parameter.addClassTypeParameterToSymbolTable(symbolTableManager);
+
+    const integrationEventMapperListNode = this.getIntegrationEventMapperListNode();
+    integrationEventMapperListNode.addToSymbolTable(symbolTableManager);
   }
 }

@@ -307,71 +307,6 @@ export class TypeInferenceValidator {
             symbolTableManager.setClassTypeSymbolTable(classTypeScope);
             node.addToSymbolTable(symbolTableManager);
 
-            if (ClassTypeNodeTypeGuards.isValueObject(node)) {
-              classTypeScope.insert(SCOPE_NAMES.THIS, new ClassTypeThisSymbolEntry(name));
-              const constants = node.getConstants();
-              constants.forEach((constant) => {
-                const constantName = constant.getIdentifier().getValue().identifier;
-                classTypeScope.insert(
-                  constantName,
-                  new VariableSymbolEntry(
-                    inferType({ node: constant.getExpressionValues() }),
-                    true,
-                  ),
-                );
-              });
-
-              const create = node.getCreateNode();
-              this.appendDomainCreateMethodToSymbolTable({
-                classTypeScope,
-                domainCreate: create,
-                intermediateASTTree: ASTTree,
-              });
-
-              const methods = node.getMethods();
-              this.createPrivateMethodScope({
-                privateMethods: methods,
-                classTypeScope,
-                intermediateASTTree: ASTTree,
-              });
-            } else if (ClassTypeNodeTypeGuards.isDomainRule(node)) {
-              const params = node.getParameters();
-              this.addParametersToSymbolTable(params, classTypeScope);
-
-              const statements = node.getStatements();
-              this.createStatementListScope({
-                statements: statements,
-                symbolTable: classTypeScope,
-                intermediateASTTree: ASTTree,
-              });
-
-              const condition = node.getIsBrokenCondition().getCondition();
-              this.addExpression({
-                expression: condition.expression,
-                symbolTable: classTypeScope,
-                intermediateASTTree: ASTTree,
-                ifErrorCounter: 0,
-              });
-            } else if (ClassTypeNodeTypeGuards.isIntegrationEvent(node)) {
-              const param = node.getParameter();
-              const paramName = param.getIdentifier();
-              classTypeScope.insert(
-                paramName,
-                new ClassTypeParameterSymbolEntry(inferType({ node: param.getType() })),
-              );
-
-              const integrationEventMapperNodes = node.getIntegrationEventMapperNodes();
-              integrationEventMapperNodes.forEach((mapperNode) => {
-                const mapperVersion = mapperNode.getVersionName();
-                const mapperScope = classTypeScope.createChildScope(mapperVersion, mapperNode);
-                const mapperStatements = mapperNode.getStatements();
-                this.createStatementListScope({
-                  statements: mapperStatements,
-                  symbolTable: mapperScope,
-                  intermediateASTTree: ASTTree,
-                });
-              });
-            }
             // eslint-disable-next-line no-empty
           } catch {}
         });
@@ -445,6 +380,7 @@ export class TypeInferenceValidator {
     return symbolTable;
   }
 
+  // TODO is this transferred?
   private addEvaluationFields({
     expression,
     symbolTable,
