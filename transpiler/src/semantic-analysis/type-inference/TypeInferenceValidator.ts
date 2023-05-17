@@ -306,9 +306,12 @@ export class TypeInferenceValidator {
 
             symbolTableManager.setClassTypeSymbolTable(classTypeScope);
             node.addToSymbolTable(symbolTableManager);
-
-            // eslint-disable-next-line no-empty
-          } catch {}
+          } catch (error) {
+            // TODO this will show the errors one by one
+            if (error instanceof ValidationError) {
+              this.addError(error);
+            }
+          }
         });
       }
     }
