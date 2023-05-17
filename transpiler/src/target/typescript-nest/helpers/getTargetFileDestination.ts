@@ -153,6 +153,7 @@ const getTargetFileDestination = (
 export const getTargetFileName = (className: string, classType: TClassTypesValues): string => {
   let classNameWithoutClassType: string;
   let classTypeFileSuffix: string;
+  // console.log({ className, classType });
 
   switch (classType) {
     case ClassTypes.ValueObject:

@@ -20,7 +20,6 @@
 import { TContextData, TDependencyParentTypescript } from '../../../types.js';
 import { modelToTargetLanguage } from './modelToTargetLanguage.js';
 import { formatString } from './codeFormatting.js';
-import { ClassTypeNode } from '../../../ast/core/intermediate-ast/nodes/ClassTypeNode.js';
 import {
   IIntermediateASTToTarget,
   TTargetCoreContent,
@@ -48,7 +47,7 @@ export class IntermediateASTToTarget implements IIntermediateASTToTarget {
             model: intermediateASTTree,
           });
 
-          const classTypeNode = intermediateASTNode as ClassTypeNode;
+          const classTypeNode = intermediateASTNode;
           result.push({
             boundedContext: boundedContextName,
             module: moduleName,
