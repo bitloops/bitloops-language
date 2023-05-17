@@ -70,7 +70,7 @@ const transpile = async (source: ICollection): Promise<void> => {
   const [sourceDirPath, targetDirPath] = answers;
   const libTargetDirPath = path.join(targetDirPath, 'lib');
   if (!fs.existsSync(libTargetDirPath)) {
-    fs.mkdirSync(libTargetDirPath);
+    fs.mkdirSync(libTargetDirPath, { recursive: true });
   } else {
     const overwriteAccepted = await inquirerSimpleConfirm(
       'Overwrite',
