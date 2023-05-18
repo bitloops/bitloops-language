@@ -1,6 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { SymbolTableManager } from '../../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
-import { SCOPE_NAMES } from '../../../../../../semantic-analysis/type-inference/TypeInferenceValidator.js';
 import { ExpressionNode } from '../../Expression/ExpressionNode.js';
 import { TNodeMetadata } from '../../IntermediateASTNode.js';
 import { StatementNode } from '../Statement.js';
@@ -60,12 +59,10 @@ export class IfStatementNode extends StatementNode {
 
   public addToSymbolTable(symbolTableManager: SymbolTableManager): void {
     const conditionExpression = this.getConditionExpression();
-    const symbolTable = symbolTableManager.getSymbolTable();
-    conditionExpression.typeCheck(symbolTable);
     conditionExpression.addToSymbolTable(symbolTableManager);
 
     const ifCounter = symbolTableManager.increaseIfCounter();
-    const scopeName = SCOPE_NAMES.IF + ifCounter;
+    const scopeName = SymbolTableManager.SCOPE_NAMES.IF + ifCounter;
 
     symbolTableManager.createSymbolTableChildScope(scopeName, this);
 
@@ -76,7 +73,7 @@ export class IfStatementNode extends StatementNode {
       const elseStatementList = this.getElseStatementList();
       const elseCounter = symbolTableManager.increaseElseCounter();
 
-      const scopeName = SCOPE_NAMES.ELSE + elseCounter;
+      const scopeName = SymbolTableManager.SCOPE_NAMES.ELSE + elseCounter;
 
       symbolTableManager.createSymbolTableChildScope(scopeName, this);
       elseStatementList.addToSymbolTable(symbolTableManager);

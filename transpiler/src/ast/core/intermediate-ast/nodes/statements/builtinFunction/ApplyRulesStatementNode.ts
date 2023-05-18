@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
+import { SymbolTableManager } from '../../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { bitloopsPrimitivesObj } from '../../../../../../types.js';
 import { ArgumentListNode } from '../../ArgumentList/ArgumentListNode.js';
 import { ArgumentNode } from '../../ArgumentList/ArgumentNode.js';
@@ -31,5 +32,10 @@ export class ApplyRulesNode extends BuiltInFunctionNode {
 
   getInferredType(): string {
     return bitloopsPrimitivesObj.void;
+  }
+
+  public addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const argumentListNode = this.getArgumentList();
+    argumentListNode.addToSymbolTable(symbolTableManager);
   }
 }

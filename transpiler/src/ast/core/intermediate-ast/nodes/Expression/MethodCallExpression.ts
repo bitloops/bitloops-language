@@ -1,9 +1,10 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { SymbolTable } from '../../../../../semantic-analysis/type-inference/SymbolTable.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { ArgumentListNode } from '../ArgumentList/ArgumentListNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ExpressionNode } from './ExpressionNode.js';
-import { MemberDotExpressionNode } from './MemberDot/MemberDotExpression.js';
+import { MemberDotExpressionNode } from './MemberDot/MemberDotExpressionNode.js';
 import { ThisExpressionNode } from './ThisExpressionNode.js';
 
 const NAME = 'methodCallExpression';
@@ -113,5 +114,16 @@ export class MethodCallExpressionNode extends ExpressionNode {
       const expression = argument.getExpression();
       expression.typeCheck(symbolTable);
     }
+  }
+
+  public addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const expression = this.getExpressionValues();
+    expression.addToSymbolTable(symbolTableManager);
+  }
+
+  public getInferredType(symbolTableManager: SymbolTableManager): string {
+    const expression = this.getExpressionValues();
+    const expressionType = expression.getInferredType(symbolTableManager);
+    return expressionType;
   }
 }

@@ -12,6 +12,7 @@ type TStatementListCounters = {
 };
 
 export class SymbolTableManager {
+  public static readonly UNKNOWN_TYPE = 'unknown';
   public static readonly THIS = 'this';
   public static readonly SCOPE_NAMES = {
     EXECUTE: 'execute',
@@ -57,7 +58,7 @@ export class SymbolTableManager {
   }
 
   public addIntegrationEventBus(): void {
-    const integrationEventBusKey = this.appendThis('integrationEventBus');
+    const integrationEventBusKey = this.joinThisWithIdentifier('integrationEventBus');
     this.symbolTable.insert(
       integrationEventBusKey,
       new ClassTypeParameterSymbolEntry('IntegrationEventBusPort'),
@@ -65,8 +66,8 @@ export class SymbolTableManager {
   }
 
   public addCommandQueryBus(): void {
-    const commandBusKey = this.appendThis('commandBus');
-    const queryBusKey = this.appendThis('queryBus');
+    const commandBusKey = this.joinThisWithIdentifier('commandBus');
+    const queryBusKey = this.joinThisWithIdentifier('queryBus');
     this.symbolTable.insert(commandBusKey, new ClassTypeParameterSymbolEntry('CommandBusPort'));
     this.symbolTable.insert(queryBusKey, new ClassTypeParameterSymbolEntry('QueryBusPort'));
   }
@@ -96,7 +97,7 @@ export class SymbolTableManager {
     return this.statementListCounters.ifErrorCounter++;
   }
 
-  private appendThis(identifier: string): string {
+  private joinThisWithIdentifier(identifier: string): string {
     return SymbolTableManager.THIS + '.' + identifier;
   }
 
@@ -104,7 +105,7 @@ export class SymbolTableManager {
     return this.intermediateASTTree;
   }
 
-  public appendMemberDot(memberDotMembers: string[]): string {
+  public joinWithDot(memberDotMembers: string[]): string {
     return memberDotMembers.join('.');
   }
 }

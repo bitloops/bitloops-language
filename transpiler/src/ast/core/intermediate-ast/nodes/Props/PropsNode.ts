@@ -61,6 +61,12 @@ export class PropsNode extends ClassTypeNode {
     return fieldTypes;
   }
 
+  public getFieldNodeType(identifier: string): string {
+    const fieldTypes = this.getFieldTypes();
+    const fieldType = fieldTypes[identifier];
+    return fieldType.getInferredType();
+  }
+
   public getFieldsPrimitives(tree: IntermediateASTTree): TGetFieldPrimitives {
     const fieldNodes = this.getFieldListNode().getFieldNodes();
     const primitivesValues = {};

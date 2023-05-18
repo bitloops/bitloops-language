@@ -1,4 +1,4 @@
-import { MemberDotExpressionNode } from '../../../nodes/Expression/MemberDot/MemberDotExpression.js';
+import { MemberDotExpressionNode } from '../../../nodes/Expression/MemberDot/MemberDotExpressionNode.js';
 import { IdentifierExpressionNode } from '../../../nodes/Expression/IdentifierExpression.js';
 import { IBuilder } from '../../IBuilder.js';
 import { ExpressionNode } from '../../../nodes/Expression/ExpressionNode.js';

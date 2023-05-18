@@ -175,7 +175,9 @@ export abstract class IntermediateASTNode {
     return;
   }
 
-  abstract addToSymbolTable(symbolTableManager: SymbolTableManager): void;
+  addToSymbolTable(_symbolTableManager: SymbolTableManager): void {
+    throw new Error('Method not implemented.');
+  }
 
   static isIntermediateASTNodeValidationError(
     value: void | IntermediateASTNodeValidationError,

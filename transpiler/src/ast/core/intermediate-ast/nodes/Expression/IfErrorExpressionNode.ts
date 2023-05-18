@@ -1,5 +1,7 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { MethodCallSymbolEntry } from '../../../../../semantic-analysis/type-inference/SymbolEntry.js';
 import { SymbolTable } from '../../../../../semantic-analysis/type-inference/SymbolTable.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { StringUtils } from '../../../../../utils/StringUtils.js';
 import { StatementListNodeBuilder } from '../../builders/statements/StatementListNodeBuilder.js';
 import { AnonymousFunctionNode } from '../AnonymousFunctionNode.js';
@@ -10,7 +12,7 @@ import { ReturnErrorStatementNode } from '../statements/ReturnErrorStatementNode
 import { ReturnStatementNode } from '../statements/ReturnStatementNode.js';
 import { StatementListNode } from '../statements/StatementList.js';
 import { ExpressionNode } from './ExpressionNode.js';
-import { MemberDotExpressionNode } from './MemberDot/MemberDotExpression.js';
+import { MemberDotExpressionNode } from './MemberDot/MemberDotExpressionNode.js';
 
 export class IfErrorExpressionNode extends ExpressionNode {
   private static NAME = 'ifErrorExpression';
@@ -110,11 +112,38 @@ export class IfErrorExpressionNode extends ExpressionNode {
     return StringUtils.getSubstringsBetweenStrings(leftType, 'Errors(', ')')[0];
   }
 
-  public getInferredType(symbolTable?: SymbolTable): string {
+  public getInferredType(symbolTableManager: SymbolTableManager): string {
+    const symbolTable = symbolTableManager.getSymbolTable();
     const leftExpression = this.getExpressionValues();
     const leftExpressionString = leftExpression.getStringValue();
     const leftExpressionType = symbolTable.lookup(leftExpressionString);
     const { type: leftType } = leftExpressionType;
     return StringUtils.getSubstringsBetweenStrings(leftType, 'OK(', ')')[0];
+  }
+
+  private joinIfErrorToKey(key: string): string {
+    return key + '.ifError()';
+  }
+
+  public addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const leftIfErrorExpression = this.getExpression();
+    leftIfErrorExpression.addToSymbolTable(symbolTableManager);
+
+    const key = this.joinIfErrorToKey(this.getStringValue());
+    const symbolTable = symbolTableManager.getSymbolTable();
+    symbolTable.insert(key, new MethodCallSymbolEntry(this.getInferredType(symbolTableManager)));
+    const ifErrorCounter = symbolTableManager.increaseIfErrorCounter();
+    const ifErrorScopeName = SymbolTableManager.SCOPE_NAMES.IF_ERROR + ifErrorCounter;
+    //set new scope
+    symbolTableManager.createSymbolTableChildScope(ifErrorScopeName, this);
+
+    const parameter = this.getParameter();
+    if (parameter) {
+      parameter.addToSymbolTable(symbolTableManager);
+    }
+    const statementList = this.getStatementListNode();
+    if (statementList) {
+      statementList.addToSymbolTable(symbolTableManager);
+    }
   }
 }

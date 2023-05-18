@@ -2,7 +2,6 @@ import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { VariableSymbolEntry } from '../../../../../semantic-analysis/type-inference/SymbolEntry.js';
 import { SymbolTable } from '../../../../../semantic-analysis/type-inference/SymbolTable.js';
 import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
-import { inferType } from '../../../../../semantic-analysis/type-inference/TypeInferenceValidator.js';
 import { AlreadyDefinedIdentifierError } from '../../../types.js';
 import { BitloopsPrimaryTypeNode } from '../BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 import { ExpressionNode } from '../Expression/ExpressionNode.js';
@@ -52,7 +51,6 @@ export class VariableDeclarationNode extends StatementNode {
     if (identifierType) {
       throw new AlreadyDefinedIdentifierError(identifierName, this.getMetadata());
     }
-    // this.setType(identifierType.type);
   }
 
   addToSymbolTable(symbolTableManager: SymbolTableManager): void {
@@ -62,7 +60,6 @@ export class VariableDeclarationNode extends StatementNode {
     const typeAnnotation = this.getTypeAnnotation();
 
     const expression = this.getExpression();
-    // const intermediateASTTree = symbolTableManager.getIntermediateASTTree();
     if (expression) {
       expression.addToSymbolTable(symbolTableManager);
     }

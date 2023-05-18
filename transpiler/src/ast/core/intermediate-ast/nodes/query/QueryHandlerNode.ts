@@ -76,6 +76,13 @@ export class QueryHandlerNode extends ClassTypeNode {
     return this.getChildNodeByType<ParameterListNode>(BitloopsTypesMapping.TParameterList);
   }
 
+  getFieldNodeType(identifier: string): string {
+    const parameterListNode = this.getChildNodeByType<ParameterListNode>(
+      BitloopsTypesMapping.TParameterList,
+    );
+    return parameterListNode.getParameterNodeType(identifier);
+  }
+
   addToSymbolTable(symbolTableManager: SymbolTableManager): void {
     symbolTableManager.addClassTypeThis(this.getIdentifier().getIdentifierName());
     symbolTableManager.addIntegrationEventBus();

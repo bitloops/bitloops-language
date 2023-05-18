@@ -5,7 +5,7 @@ import { StatementNode } from './nodes/statements/Statement.js';
 import { ReturnStatementNode } from './nodes/statements/ReturnStatementNode.js';
 import { isArray, isObject } from '../../../helpers/typeGuards/typeGuards.js';
 import { IdentifierExpressionNode } from './nodes/Expression/IdentifierExpression.js';
-import { MemberDotExpressionNode } from './nodes/Expression/MemberDot/MemberDotExpression.js';
+import { MemberDotExpressionNode } from './nodes/Expression/MemberDot/MemberDotExpressionNode.js';
 import { TVariableDeclarationStatement } from '../types.js';
 import { MethodCallExpressionNode } from './nodes/Expression/MethodCallExpression.js';
 import { ConstDeclarationNode } from './nodes/statements/ConstDeclarationNode.js';

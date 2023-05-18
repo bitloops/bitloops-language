@@ -9,14 +9,15 @@ import { EvaluationNode } from './Evaluation/EvaluationNode.js';
 import { IdentifierExpressionNode } from './IdentifierExpression.js';
 import { LogicalExpressionNode } from './Logical/LogicalExpressionNode.js';
 import { LogicalNotExpressionNode } from './Logical/LogicalNotExpression.js';
-import { MemberDotExpressionNode } from './MemberDot/MemberDotExpression.js';
+import { MemberDotExpressionNode } from './MemberDot/MemberDotExpressionNode.js';
 import { MethodCallExpressionNode } from './MethodCallExpression.js';
 import { ThisExpressionNode } from './ThisExpressionNode.js';
-import { ToStringNode } from './ToString.js';
+import { ToStringNode } from './ToStringNode.js';
 import { EqualityExpressionNode } from './equalityExpressionNode.js';
 import { LiteralNode } from './Literal/LiteralNode.js';
 import { IfErrorExpressionNode } from './IfErrorExpressionNode.js';
 import { RelationalExpressionNode } from './relationalExpressionNode.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 
 // export abstract class ExpressionNode extends IntermediateASTNode {
 //   isMethodCallExpression(): this is MethodCallExpressionNode {
@@ -204,18 +205,10 @@ export class ExpressionNode extends StatementNode {
     return this.getChildren()[0] as LiteralNode;
   }
 
-  typeCheck(symbolTable: SymbolTable): void {
+  public getInferredType(symbolTableManager: SymbolTableManager): TInferredTypes {
     for (const child of this.getChildren()) {
       if (child instanceof ExpressionNode) {
-        child.typeCheck(symbolTable);
-      }
-    }
-  }
-
-  public getInferredType(): TInferredTypes {
-    for (const child of this.getChildren()) {
-      if (child instanceof ExpressionNode) {
-        return child.getInferredType();
+        return child.getInferredType(symbolTableManager);
       }
     }
     throw new Error('No expression found to infer type');
@@ -228,5 +221,23 @@ export class ExpressionNode extends StatementNode {
       }
     }
     throw new Error('No expression found to get string value');
+  }
+
+  public typeCheck(symbolTable: SymbolTable): void {
+    for (const child of this.getChildren()) {
+      if (child instanceof ExpressionNode) {
+        child.typeCheck(symbolTable);
+      }
+    }
+  }
+
+  public addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    for (const child of this.getChildren()) {
+      if (child instanceof ExpressionNode) {
+        const symbolTable = symbolTableManager.getSymbolTable();
+        child.typeCheck(symbolTable);
+        return child.addToSymbolTable(symbolTableManager);
+      }
+    }
   }
 }

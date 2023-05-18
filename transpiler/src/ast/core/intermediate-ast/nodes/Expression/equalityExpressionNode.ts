@@ -1,7 +1,9 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { bitloopsPrimitivesObj } from '../../../../../types.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ExpressionNode } from './ExpressionNode.js';
+
 export class EqualityExpressionNode extends ExpressionNode {
   private static NAME = 'equalityExpression';
   constructor(metadata?: TNodeMetadata) {
@@ -29,5 +31,13 @@ export class EqualityExpressionNode extends ExpressionNode {
 
   getInferredType(): string {
     return bitloopsPrimitivesObj.bool;
+  }
+
+  public addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const leftExpression = this.getLeftExpression();
+    leftExpression.addToSymbolTable(symbolTableManager);
+
+    const rightExpression = this.getRightExpression();
+    rightExpression.addToSymbolTable(symbolTableManager);
   }
 }

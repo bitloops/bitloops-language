@@ -25,6 +25,18 @@ export class ParameterListNode extends IntermediateASTNode {
     });
   }
 
+  getParameterNodeType(identifier: string): string {
+    const parameterNodes = this.getParameters();
+    for (const parameterNode of parameterNodes) {
+      const parameterIdentifier = parameterNode.getIdentifier();
+      if (parameterIdentifier === identifier) {
+        const typeNode = parameterNode.getType();
+        return typeNode.getInferredType();
+      }
+    }
+    return SymbolTableManager.UNKNOWN_TYPE;
+  }
+
   addClassTypeParametersToSymbolTable(symbolTableManager: SymbolTableManager): void {
     const params = this.getParameters();
     params.forEach((paramNode) => {

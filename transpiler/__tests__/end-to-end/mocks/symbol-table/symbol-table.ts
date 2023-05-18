@@ -27,7 +27,7 @@ import {
   VariableSymbolEntry,
 } from '../../../../src/semantic-analysis/type-inference/SymbolEntry.js';
 import { PrimitiveSymbolTable } from '../../../../src/semantic-analysis/type-inference/SymbolTable.js';
-import { SCOPE_NAMES } from '../../../../src/semantic-analysis/type-inference/TypeInferenceValidator.js';
+import { SymbolTableManager } from '../../../../src/semantic-analysis/type-inference/SymbolTableManager.js';
 import { bitloopsPrimitivesObj } from '../../../../src/types.js';
 import { FileUtil } from '../../../../src/utils/file.js';
 import { SymbolTableBuilder } from '../../builder/SymbolTableBuilder.js';
@@ -38,6 +38,7 @@ type SymbolTableTestCase = {
   inputSetup: string;
   expectedSymbolTable: PrimitiveSymbolTable;
 };
+const SCOPE_NAMES = SymbolTableManager.SCOPE_NAMES;
 
 export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
   {

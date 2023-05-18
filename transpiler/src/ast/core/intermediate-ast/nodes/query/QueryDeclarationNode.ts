@@ -46,4 +46,13 @@ export class QueryDeclarationNode extends ClassTypeNode {
     const fieldListNode = this.getChildNodeByType(BitloopsTypesMapping.TVariables) as FieldListNode;
     return fieldListNode.getFieldNodes();
   }
+
+  public getFieldListNode(): FieldListNode {
+    return this.getChildNodeByType(BitloopsTypesMapping.TVariables) as FieldListNode;
+  }
+
+  public getFieldNodeType(fieldIdentifier: string): string {
+    const fieldNodeList = this.getFieldListNode();
+    return fieldNodeList.getFieldNodeType(fieldIdentifier);
+  }
 }

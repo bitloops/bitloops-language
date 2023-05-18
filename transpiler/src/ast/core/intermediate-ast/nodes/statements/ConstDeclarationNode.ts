@@ -52,10 +52,6 @@ export class ConstDeclarationNode extends StatementNode {
     if (identifierType) {
       throw new AlreadyDefinedIdentifierError(identifierName, this.getMetadata());
     }
-
-    //TODO here get the identifierExpression/thisExpression
-    const expression = this.getExpressionValues();
-    expression.typeCheck(symbolTable);
   }
 
   public addToSymbolTable(symbolTableManager: SymbolTableManager): void {
@@ -64,15 +60,7 @@ export class ConstDeclarationNode extends StatementNode {
     this.typeCheck(symbolTable);
     const identifier = this.getIdentifier().getIdentifierName();
     const typeAnnotation = this.getTypeAnnotation();
-    //TODO check if addEvaluationFields is needed
-    // symbolTableManager.addEvaluationFields({
-    //   expression,
-    //   symbolTable,
-    //   intermediateASTTree,
-    //   ifErrorCounter,
-    // });
 
-    // const intermediateASTTree = symbolTableManager.getIntermediateASTTree();
     expression.addToSymbolTable(symbolTableManager);
 
     if (typeAnnotation) {
@@ -81,8 +69,10 @@ export class ConstDeclarationNode extends StatementNode {
         new VariableSymbolEntry(typeAnnotation.getInferredType(), false),
       );
     } else {
-      // const boundedContexts = symbolTableManager.getBoundedContexts();
-      symbolTable.insert(identifier, new VariableSymbolEntry(expression.getInferredType(), true));
+      symbolTable.insert(
+        identifier,
+        new VariableSymbolEntry(expression.getInferredType(symbolTableManager), true),
+      );
     }
   }
 }

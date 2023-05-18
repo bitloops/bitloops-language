@@ -3,10 +3,10 @@ import { BitloopsPrimaryTypeNode } from '../nodes/BitloopsPrimaryType/BitloopsPr
 import { EvaluationNode } from '../nodes/Expression/Evaluation/EvaluationNode.js';
 import { ExpressionNode } from '../nodes/Expression/ExpressionNode.js';
 import { LiteralNode } from '../nodes/Expression/Literal/LiteralNode.js';
-import { MemberDotExpressionNode } from '../nodes/Expression/MemberDot/MemberDotExpression.js';
+import { MemberDotExpressionNode } from '../nodes/Expression/MemberDot/MemberDotExpressionNode.js';
 import { MethodCallExpressionNode } from '../nodes/Expression/MethodCallExpression.js';
 import { ThisExpressionNode } from '../nodes/Expression/ThisExpressionNode.js';
-import { ToStringNode } from '../nodes/Expression/ToString.js';
+import { ToStringNode } from '../nodes/Expression/ToStringNode.js';
 import { EqualityExpressionNode } from '../nodes/Expression/equalityExpressionNode.js';
 import { IntermediateASTNode } from '../nodes/IntermediateASTNode.js';
 import { ReturnOkErrorTypeNode } from '../nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';

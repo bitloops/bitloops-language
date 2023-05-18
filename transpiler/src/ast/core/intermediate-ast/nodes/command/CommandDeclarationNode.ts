@@ -47,4 +47,10 @@ export class CommandDeclarationNode extends ClassTypeNode {
     const fieldListNode = this.getChildNodeByType(BitloopsTypesMapping.TVariables) as FieldListNode;
     return fieldListNode.getFieldNodes();
   }
+
+  public getFieldNodeType(identifier: string): string {
+    const fieldListNode = this.getChildNodeByType<FieldListNode>(BitloopsTypesMapping.TVariables);
+    const fieldIdentifierType = fieldListNode.getFieldNodeType(identifier);
+    return fieldIdentifierType;
+  }
 }

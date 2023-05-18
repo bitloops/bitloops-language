@@ -8,6 +8,7 @@ import { EvaluationFieldNode } from './EvaluationFieldList/EvaluationFieldNode.j
 import { EvaluationFieldListNode } from './EvaluationFieldList/EvaluationFieldListNode.js';
 import { ArgumentNode } from '../../ArgumentList/ArgumentNode.js';
 import { ArgumentListNode } from '../../ArgumentList/ArgumentListNode.js';
+import { SymbolTableManager } from '../../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 
 export class EvaluationNode extends ExpressionNode {
   private static evaluationNodeName = 'evaluation';
@@ -37,14 +38,19 @@ export class EvaluationNode extends ExpressionNode {
   }
 
   getEvaluationFields(): EvaluationFieldNode[] {
+    const evaluationFieldList = this.getEvaluationFieldList();
+    if (!evaluationFieldList) return [];
+
+    return evaluationFieldList.getFields();
+  }
+
+  getEvaluationFieldList(): EvaluationFieldListNode {
     const evaluationChild = this.getFirstChild() as EvaluationNode;
     const evaluationFieldList = evaluationChild.getChildNodeByType<EvaluationFieldListNode>(
       BitloopsTypesMapping.TEvaluationFields,
     );
 
-    if (!evaluationFieldList) return [];
-
-    return evaluationFieldList.getFields();
+    return evaluationFieldList;
   }
 
   getArguments(): ArgumentNode[] {
@@ -56,6 +62,14 @@ export class EvaluationNode extends ExpressionNode {
     return argumentList.arguments;
   }
 
+  getArgumentList(): ArgumentListNode {
+    const evaluationChild = this.getFirstChild() as EvaluationNode;
+    const argumentList = evaluationChild.getChildNodeByType<ArgumentListNode>(
+      BitloopsTypesMapping.TArgumentList,
+    );
+    return argumentList;
+  }
+
   public getInferredType(): TInferredTypes {
     for (const child of this.getChildren()) {
       if (child instanceof EvaluationNode) {
@@ -63,5 +77,16 @@ export class EvaluationNode extends ExpressionNode {
       }
     }
     throw new Error('No evaluation found to infer type');
+  }
+
+  public addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const evaluationFieldList = this.getEvaluationFieldList();
+    if (evaluationFieldList) {
+      evaluationFieldList.addToSymbolTable(symbolTableManager);
+    }
+    const argumentList = this.getArgumentList();
+    if (argumentList) {
+      argumentList.addToSymbolTable(symbolTableManager);
+    }
   }
 }

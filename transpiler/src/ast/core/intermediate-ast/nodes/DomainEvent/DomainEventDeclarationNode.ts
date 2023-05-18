@@ -47,4 +47,10 @@ export class DomainEventDeclarationNode extends ClassTypeNode {
     });
     return fieldTypes;
   }
+
+  public getFieldNodeType(fieldIdentifier: string): string {
+    const fieldTypes = this.getFieldTypes();
+    const fieldType = fieldTypes[fieldIdentifier];
+    return fieldType.getInferredType();
+  }
 }
