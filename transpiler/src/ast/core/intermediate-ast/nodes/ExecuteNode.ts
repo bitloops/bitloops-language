@@ -37,6 +37,7 @@ export class ExecuteNode extends IntermediateASTNode {
   }
 
   addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const initialSymbolTable = symbolTableManager.getSymbolTable();
     symbolTableManager.createSymbolTableChildScope(SymbolTableManager.SCOPE_NAMES.EXECUTE, this);
     const executeParameter = this.getParameter();
     if (executeParameter) {
@@ -45,5 +46,6 @@ export class ExecuteNode extends IntermediateASTNode {
 
     const statementList = this.getStatementList();
     statementList.addToSymbolTable(symbolTableManager);
+    symbolTableManager.setCurrentSymbolTable(initialSymbolTable);
   }
 }

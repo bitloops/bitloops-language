@@ -19,10 +19,12 @@ export class SwitchStatementNode extends StatementNode {
   }
 
   public getCases(): SwitchRegularCaseNode[] {
-    const casesListNode: SwitchCaseListNode = this.getChildNodeByType<SwitchCaseListNode>(
-      BitloopsTypesMapping.TSwitchCases,
-    );
+    const casesListNode: SwitchCaseListNode = this.getCaseList();
     return casesListNode.getCases();
+  }
+
+  public getCaseList(): SwitchCaseListNode {
+    return this.getChildNodeByType<SwitchCaseListNode>(BitloopsTypesMapping.TSwitchCases);
   }
 
   public getDefaultCase(): DefaultSwitchCaseNode {
@@ -33,28 +35,15 @@ export class SwitchStatementNode extends StatementNode {
   }
 
   public addToSymbolTable(symbolTableManager: SymbolTableManager): void {
-    const switchExpression = this.getExpression();
     const symbolTable = symbolTableManager.getSymbolTable();
+    const switchExpression = this.getExpression();
     switchExpression.typeCheck(symbolTable);
     switchExpression.addToSymbolTable(symbolTableManager);
 
-    const switchCounter = symbolTableManager.increaseSwitchCounter();
-    const scopeName = SymbolTableManager.SCOPE_NAMES.SWITCH + switchCounter;
+    const switchCaseList = this.getCaseList();
+    switchCaseList.addToSymbolTable(symbolTableManager);
 
-    const switchScope = symbolTable.createChildScope(scopeName, this);
-    const switchCases = this.getCases();
-    switchCases.forEach((switchCase) => {
-      const switchCaseExpression = switchCase.getExpression();
-      switchCaseExpression.typeCheck(switchScope);
-
-      symbolTableManager.createSymbolTableChildScope(scopeName, this);
-      const caseStatements = switchCase.getStatementListNode();
-      caseStatements.addToSymbolTable(symbolTableManager);
-    });
     const defaultCase = this.getDefaultCase();
-    const defaultScopeName = SymbolTableManager.SCOPE_NAMES.DEFAULT + switchCounter;
-    symbolTableManager.createSymbolTableChildScope(defaultScopeName, this);
-    const defaultStatements = defaultCase.getStatementListNode();
-    defaultStatements.addToSymbolTable(symbolTableManager);
+    defaultCase.addToSymbolTable(symbolTableManager);
   }
 }

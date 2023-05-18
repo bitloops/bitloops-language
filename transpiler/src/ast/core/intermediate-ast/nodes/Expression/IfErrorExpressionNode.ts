@@ -126,12 +126,15 @@ export class IfErrorExpressionNode extends ExpressionNode {
   }
 
   public addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const initialSymbolTable = symbolTableManager.getSymbolTable();
     const leftIfErrorExpression = this.getExpression();
     leftIfErrorExpression.addToSymbolTable(symbolTableManager);
 
     const key = this.joinIfErrorToKey(this.getStringValue());
-    const symbolTable = symbolTableManager.getSymbolTable();
-    symbolTable.insert(key, new MethodCallSymbolEntry(this.getInferredType(symbolTableManager)));
+    initialSymbolTable.insert(
+      key,
+      new MethodCallSymbolEntry(this.getInferredType(symbolTableManager)),
+    );
     const ifErrorCounter = symbolTableManager.increaseIfErrorCounter();
     const ifErrorScopeName = SymbolTableManager.SCOPE_NAMES.IF_ERROR + ifErrorCounter;
     //set new scope
@@ -145,5 +148,6 @@ export class IfErrorExpressionNode extends ExpressionNode {
     if (statementList) {
       statementList.addToSymbolTable(symbolTableManager);
     }
+    symbolTableManager.setCurrentSymbolTable(initialSymbolTable);
   }
 }

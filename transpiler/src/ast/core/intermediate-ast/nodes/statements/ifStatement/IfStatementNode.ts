@@ -58,6 +58,7 @@ export class IfStatementNode extends StatementNode {
   }
 
   public addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const initialSymbolTable = symbolTableManager.getSymbolTable();
     const conditionExpression = this.getConditionExpression();
     conditionExpression.addToSymbolTable(symbolTableManager);
 
@@ -70,13 +71,9 @@ export class IfStatementNode extends StatementNode {
     thenStatementList.addToSymbolTable(symbolTableManager);
 
     if (this.hasElseBlock()) {
-      const elseStatementList = this.getElseStatementList();
-      const elseCounter = symbolTableManager.increaseElseCounter();
-
-      const scopeName = SymbolTableManager.SCOPE_NAMES.ELSE + elseCounter;
-
-      symbolTableManager.createSymbolTableChildScope(scopeName, this);
-      elseStatementList.addToSymbolTable(symbolTableManager);
+      const elseNode = this.getElseNode();
+      elseNode.addToSymbolTable(symbolTableManager);
     }
+    symbolTableManager.setCurrentSymbolTable(initialSymbolTable);
   }
 }

@@ -51,6 +51,7 @@ export class PrivateMethodDeclarationNode extends IntermediateASTNode {
   }
 
   addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const initialSymbolTable = symbolTableManager.getSymbolTable();
     const methodName = this.getIdentifier();
     symbolTableManager.createSymbolTableChildScope(methodName, this);
 
@@ -59,5 +60,6 @@ export class PrivateMethodDeclarationNode extends IntermediateASTNode {
 
     const methodStatementList = this.getStatementList();
     methodStatementList.addToSymbolTable(symbolTableManager);
+    symbolTableManager.setCurrentSymbolTable(initialSymbolTable);
   }
 }

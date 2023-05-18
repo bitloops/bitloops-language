@@ -29,11 +29,12 @@ import {
   SYMBOL_TABLE_TEST_CASES,
 } from './mocks/symbol-table/symbol-table.js';
 
-describe.skip('Symbol table cases', () => {
+describe('Symbol table cases', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
 
   SYMBOL_TABLE_TEST_CASES.forEach((testCase) => {
+    // if (index !== 0) return;
     const parser = new BitloopsParser();
     const validator = new SemanticAnalyzer();
     const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
@@ -81,7 +82,7 @@ describe.skip('Symbol table cases', () => {
   });
 });
 
-describe('Validation checks table cases', () => {
+describe.skip('Validation checks table cases', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
 

@@ -9,6 +9,7 @@ type TStatementListCounters = {
   elseCounter: number;
   switchCounter: number;
   ifErrorCounter: number;
+  caseCounter: number;
 };
 
 export class SymbolTableManager {
@@ -35,7 +36,7 @@ export class SymbolTableManager {
     this.boundedContexts = boundedContexts;
   }
 
-  public setClassTypeSymbolTable(symbolTable: SymbolTable): void {
+  public setCurrentSymbolTable(symbolTable: SymbolTable): void {
     this.symbolTable = symbolTable;
   }
 
@@ -78,23 +79,33 @@ export class SymbolTableManager {
       elseCounter: 0,
       switchCounter: 0,
       ifErrorCounter: 0,
+      caseCounter: 0,
     };
   }
 
-  public increaseElseCounter(): number {
-    return this.statementListCounters.elseCounter++;
+  public increaseElseCounter(): string {
+    return `${this.statementListCounters.elseCounter++}`;
   }
 
-  public increaseIfCounter(): number {
-    return this.statementListCounters.ifCounter++;
+  public increaseIfCounter(): string {
+    return `${this.statementListCounters.ifCounter++}`;
   }
 
-  public increaseSwitchCounter(): number {
-    return this.statementListCounters.switchCounter++;
+  public increaseSwitchCounter(): string {
+    this.statementListCounters.caseCounter = 0;
+    return `${this.statementListCounters.switchCounter++}`;
   }
 
-  public increaseIfErrorCounter(): number {
-    return this.statementListCounters.ifErrorCounter++;
+  public increaseCaseCounter(): string {
+    return `${this.statementListCounters.switchCounter}${this.statementListCounters.caseCounter++}`;
+  }
+
+  public getSwitchCounter(): string {
+    return `${this.statementListCounters.switchCounter}`;
+  }
+
+  public increaseIfErrorCounter(): string {
+    return `${this.statementListCounters.ifErrorCounter++}`;
   }
 
   private joinThisWithIdentifier(identifier: string): string {

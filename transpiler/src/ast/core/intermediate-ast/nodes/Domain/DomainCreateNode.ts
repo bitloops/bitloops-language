@@ -34,6 +34,7 @@ export class DomainCreateNode extends IntermediateASTNode {
   }
 
   addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const initialSymbolTable = symbolTableManager.getSymbolTable();
     symbolTableManager.createSymbolTableChildScope(
       SymbolTableManager.SCOPE_NAMES.DOMAIN_CREATE,
       this,
@@ -43,5 +44,7 @@ export class DomainCreateNode extends IntermediateASTNode {
 
     const domainCreateStatementList = this.getStatementList();
     domainCreateStatementList.addToSymbolTable(symbolTableManager);
+
+    symbolTableManager.setCurrentSymbolTable(initialSymbolTable);
   }
 }

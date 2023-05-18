@@ -57,7 +57,7 @@ export class TypeInferenceValidator {
             const name = identifierNode.getIdentifierName();
             const classTypeScope = globalScope.createChildScope(name, node);
 
-            symbolTableManager.setClassTypeSymbolTable(classTypeScope);
+            symbolTableManager.setCurrentSymbolTable(classTypeScope);
             node.addToSymbolTable(symbolTableManager);
           } catch (error) {
             // TODO this will show the errors one by one

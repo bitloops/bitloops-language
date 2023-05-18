@@ -35,11 +35,13 @@ export class IntegrationEventHandlerHandleMethodNode extends IntermediateASTNode
   }
 
   addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const initialSymbolTable = symbolTableManager.getSymbolTable();
     symbolTableManager.createSymbolTableChildScope(SymbolTableManager.SCOPE_NAMES.HANDLE, this);
     const handleParam = this.getParameter();
     handleParam.addToSymbolTable(symbolTableManager);
 
     const statements = this.getStatementList();
     statements.addToSymbolTable(symbolTableManager);
+    symbolTableManager.setCurrentSymbolTable(initialSymbolTable);
   }
 }

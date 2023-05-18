@@ -40,10 +40,12 @@ export class IntegrationVersionMapperNode extends IntermediateASTNode {
   }
 
   addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const initialSymbolTable = symbolTableManager.getSymbolTable();
     const mapperVersion = this.getVersionName();
     symbolTableManager.createSymbolTableChildScope(mapperVersion, this);
 
     const mapperStatementList = this.getStatementList();
     mapperStatementList.addToSymbolTable(symbolTableManager);
+    symbolTableManager.setCurrentSymbolTable(initialSymbolTable);
   }
 }
