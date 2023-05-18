@@ -60,12 +60,15 @@ const applicationErrorToTargetLanguage = (
     },
   ];
 
-  let result = `export class ${applicationErrorName} extends Application.Error { constructor`;
+  let result = `export class ${applicationErrorName} extends Application.Error { 
+    static readonly errorId = ${errorIdText.output};
+    constructor`;
   result += parametersResult.output;
   result += '{ super(';
   result += messageResult.output;
   result += ', ';
-  result += errorIdText.output;
+  result += `${applicationErrorName}.errorId`;
+  // result += errorIdText.output;
   result += '); }}';
 
   const parentDependencies = getParentDependencies(dependencies, {
