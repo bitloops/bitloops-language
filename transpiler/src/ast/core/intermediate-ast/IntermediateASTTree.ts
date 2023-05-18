@@ -421,6 +421,25 @@ export class IntermediateASTTree {
     return this.getIdentifierOfVariableConstDeclaration(statements, policy);
   }
 
+  getIdentifiersOfPackageEvaluations(statements: StatementNode[]): string[] {
+    const policy = (node: IntermediateASTNode): boolean => {
+      const statementIsVariableDeclaration =
+        node instanceof ConstDeclarationNode || node instanceof VariableDeclarationNode;
+      if (!statementIsVariableDeclaration) {
+        return false;
+      }
+      const expression = node.getExpressionValues();
+      if (!expression) {
+        return false;
+      }
+      if (expression.isPackageEvaluationExpression()) {
+        return true;
+      }
+      return false;
+    };
+    return this.getIdentifierOfVariableConstDeclaration(statements, policy);
+  }
+
   getIdentifiersOfAggregates(
     statements: StatementNode[],
     parameters: ParameterNode[],

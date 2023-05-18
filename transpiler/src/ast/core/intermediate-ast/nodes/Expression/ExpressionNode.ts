@@ -116,6 +116,16 @@ export class ExpressionNode extends StatementNode {
     return true;
   }
 
+  isPackageEvaluationExpression(): boolean {
+    if (!this.isEvaluation()) {
+      return false;
+    }
+    if (!this.getEvaluation().isPackageEvaluation()) {
+      return false;
+    }
+    return true;
+  }
+
   isMemberDotExpression(): this is MemberDotExpressionNode {
     return this.getNodeType() === BitloopsTypesMapping.TMemberDotExpression;
   }

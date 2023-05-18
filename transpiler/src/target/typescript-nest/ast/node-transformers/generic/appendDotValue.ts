@@ -29,6 +29,17 @@ export class AppendDotValueNodeTSTransformer {
     this.updateIdentifierNodes(identifierExpressionNodes);
   }
 
+  public transformDotValueOfPackageEvaluations(): void {
+    const statements = this.node.getStatements();
+    const identifiersToBeUpdated = this.tree.getIdentifiersOfPackageEvaluations(statements);
+    const identifierExpressionNodes = this.tree.getIdentifierExpressionNodesInStatements(
+      statements,
+      identifiersToBeUpdated,
+    );
+
+    this.updateIdentifierNodes(identifierExpressionNodes);
+  }
+
   /*
    * Search for all this method call expressions with two member dot expressions nested, gather their identifiers
    * either from const declaration or var declaration

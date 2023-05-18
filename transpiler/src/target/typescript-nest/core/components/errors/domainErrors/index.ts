@@ -57,7 +57,7 @@ const domainErrorToTargetLanguage = (
   ];
 
   let result = `export class ${domainErrorName} extends Domain.Error {
-    static readonly errorId = ${errorIdText.output};
+    static readonly errorId:string = ${errorIdText.output};
      constructor`;
   result += parametersResult.output;
   result += '{ super(';
