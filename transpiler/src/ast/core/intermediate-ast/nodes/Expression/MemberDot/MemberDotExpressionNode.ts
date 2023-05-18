@@ -130,10 +130,11 @@ export class MemberDotExpressionNode extends ExpressionNode {
     }
   }
 
-  public addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+  public addToSymbolTable(symbolTableManager: SymbolTableManager, isMethodCall = false): void {
     this.addMemberDotExpression({
       memberDotExpression: this,
       symbolTableManager,
+      isMethodCall,
     });
   }
 

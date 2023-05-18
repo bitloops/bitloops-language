@@ -117,8 +117,8 @@ export class MethodCallExpressionNode extends ExpressionNode {
   }
 
   public addToSymbolTable(symbolTableManager: SymbolTableManager): void {
-    const expression = this.getExpressionValues();
-    expression.addToSymbolTable(symbolTableManager);
+    const expression = this.getExpression();
+    expression.addToSymbolTable(symbolTableManager, true);
   }
 
   public getInferredType(symbolTableManager: SymbolTableManager): string {

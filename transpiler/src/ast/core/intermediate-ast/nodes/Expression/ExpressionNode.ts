@@ -231,12 +231,12 @@ export class ExpressionNode extends StatementNode {
     }
   }
 
-  public addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+  public addToSymbolTable(symbolTableManager: SymbolTableManager, isMethodCall = false): void {
     for (const child of this.getChildren()) {
       if (child instanceof ExpressionNode) {
         const symbolTable = symbolTableManager.getSymbolTable();
         child.typeCheck(symbolTable);
-        return child.addToSymbolTable(symbolTableManager);
+        return child.addToSymbolTable(symbolTableManager, isMethodCall);
       }
     }
   }

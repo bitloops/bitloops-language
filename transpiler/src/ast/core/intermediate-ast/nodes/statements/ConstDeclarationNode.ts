@@ -55,7 +55,7 @@ export class ConstDeclarationNode extends StatementNode {
   }
 
   public addToSymbolTable(symbolTableManager: SymbolTableManager): void {
-    const expression = this.getExpressionValues();
+    const expression = this.getExpression();
     const symbolTable = symbolTableManager.getSymbolTable();
     this.typeCheck(symbolTable);
     const identifier = this.getIdentifier().getIdentifierName();
