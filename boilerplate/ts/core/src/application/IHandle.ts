@@ -1,9 +1,9 @@
-import { IEvent } from '../domain/events/IEvent';
 import { Either } from '../Either';
 import { ICoreError } from '../ICoreError';
+import { IEvent } from '../domain/events/Event.js';
 
 export interface IHandle {
   get event(): any;
   get boundedContext(): string;
-  handle(event: IEvent<any>): Promise<Either<any, ICoreError>>;
+  handle(event: IEvent): Promise<Either<any, ICoreError>>;
 }

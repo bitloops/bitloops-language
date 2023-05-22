@@ -18,30 +18,23 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
-import { Message } from '../messages/IMessage.js';
-import { IEvent, TEventMetadata } from './IEvent';
+import { Message } from '../messages/Message.js';
+import { TEventMetadata } from './Event.js';
 
 export interface IIntegrationEventInputMetadata extends TEventMetadata {
   version: string;
 }
 
-export interface IIntegrationEvent<T> extends IEvent<T> {
-  metadata: IIntegrationEventInputMetadata;
-}
-
-export abstract class IntegrationEvent<T> extends Message implements IIntegrationEvent<T> {
+export abstract class IntegrationEvent extends Message {
   public aggregateId: any;
-  public readonly payload: T;
   public declare readonly metadata: IIntegrationEventInputMetadata;
   constructor(
     boundedContextId: string,
-    payload: T,
     version: string,
     metadata?: Partial<IIntegrationEventInputMetadata>,
   ) {
     super(metadata);
     this.metadata.boundedContextId = boundedContextId;
     this.metadata.version = version;
-    this.payload = payload;
   }
 }

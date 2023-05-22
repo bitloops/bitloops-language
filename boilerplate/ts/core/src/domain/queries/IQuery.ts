@@ -17,17 +17,14 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { IMessage, Message, TMessageMetadata } from '../messages/IMessage';
+
+import { Message, TMessageMetadata } from '../messages/Message.js';
 
 export type QueryMetadata = TMessageMetadata & {
   boundedContextId: string;
 };
 
-export interface IQuery extends IMessage {
-  metadata: QueryMetadata;
-}
-
-export abstract class Query extends Message implements IQuery {
+export abstract class Query extends Message {
   [x: string]: any;
   public declare readonly metadata: QueryMetadata;
   constructor(boundedContextId: string, metadata?: Partial<QueryMetadata>) {

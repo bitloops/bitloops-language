@@ -15,17 +15,17 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 import { Entity } from './Entity';
-import { IDomainEvent } from './events/IDomainEvent';
 import { UniqueEntityID } from './UniqueEntityID';
+import { DomainEvent } from './events/DomainEvent.js';
 
 export abstract class AggregateRoot<T> extends Entity<T> {
-  private _domainEvents: IDomainEvent<any>[] = [];
+  private _domainEvents: DomainEvent[] = [];
 
   get id(): UniqueEntityID {
     return this._id;
   }
 
-  get domainEvents(): IDomainEvent<any>[] {
+  get domainEvents(): DomainEvent[] {
     return this._domainEvents;
   }
 
@@ -34,7 +34,7 @@ export abstract class AggregateRoot<T> extends Entity<T> {
     this.addDomainEvent(domainEvent);
   }
 
-  protected addDomainEvent(domainEvent: IDomainEvent<any>): void {
+  protected addDomainEvent(domainEvent: DomainEvent): void {
     // Add the domain event to this aggregate's list of domain events
     this._domainEvents.push(domainEvent);
     // Log the domain event
@@ -45,7 +45,7 @@ export abstract class AggregateRoot<T> extends Entity<T> {
     this._domainEvents.splice(0, this._domainEvents.length);
   }
 
-  private logDomainEventAdded(domainEvent: IDomainEvent<any>): void {
+  private logDomainEventAdded(domainEvent: DomainEvent): void {
     const thisClass = Reflect.getPrototypeOf(this);
     const domainEventClass = Reflect.getPrototypeOf(domainEvent);
     console.info(

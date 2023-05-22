@@ -17,11 +17,10 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { IEvent } from './IEvent';
 import { IHandle } from '../../application/IHandle';
 
 export interface IEventBus {
   subscribe(topic: string, eventHandler: IHandle): Promise<void>;
   unsubscribe(topic: string, eventHandler: IHandle): Promise<void>;
-  publish(event: IEvent<any> | IEvent<any>[]): Promise<void>;
+  publish(event: Event | Event[]): Promise<void>;
 }

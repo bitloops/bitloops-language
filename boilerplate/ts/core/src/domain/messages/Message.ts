@@ -21,9 +21,6 @@
 import { UUIDv4 } from '../UUIDv4.js';
 import { TContext } from '../context.js';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface IMessage {}
-
 export type TMessageMetadata = {
   createdTimestamp: number;
   messageId: string;
@@ -31,7 +28,7 @@ export type TMessageMetadata = {
   context: TContext | Record<string, never>; // type of empty object
 };
 
-export abstract class Message implements IMessage {
+export abstract class Message {
   metadata: TMessageMetadata;
   constructor(metadata?: Partial<TMessageMetadata>) {
     this.metadata = {
