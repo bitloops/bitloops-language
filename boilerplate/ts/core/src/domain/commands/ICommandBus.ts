@@ -18,15 +18,15 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { CommandHandler } from '../../application/UseCase';
-import { Command } from './Command.js';
+import { ICommand } from './Command';
 
 export interface IPubSubCommandBus {
-  publish(command: Command): Promise<void>;
-  request(command: Command): Promise<any>;
+  publish(command: ICommand): Promise<void>;
+  request(command: ICommand): Promise<any>;
   pubSubSubscribe(subject: string, handler: CommandHandler<any, any>): Promise<void>;
 }
 
 export interface IStreamCommandBus {
-  publish(command: Command): Promise<void>;
+  publish(command: ICommand): Promise<void>;
   subscribe(subject: string, handler: CommandHandler<any, any>): Promise<void>;
 }

@@ -17,20 +17,19 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { IMessage } from './IMessage';
 
-import { Message } from './Message.js';
-
-export type SubscriberHandler<T extends Message> = (message: T) => void;
+export type SubscriberHandler<T extends IMessage> = (message: T) => void;
 
 export interface ISystemMessageBus {
-  subscribe<T extends Message>(
+  subscribe<T extends IMessage>(
     topic: string,
     subscriberHandler: SubscriberHandler<T>,
   ): Promise<void>;
-  unsubscribe<T extends Message>(
+  unsubscribe<T extends IMessage>(
     topic: string,
     subscriberHandler: SubscriberHandler<T>,
   ): Promise<void>;
-  publish(topic: string, message: Message): Promise<void>;
-  getSubscriberHandlers<T extends Message>(topic: string): SubscriberHandler<T>[];
+  publish(topic: string, message: IMessage): Promise<void>;
+  getSubscriberHandlers<T extends IMessage>(topic: string): SubscriberHandler<T>[];
 }

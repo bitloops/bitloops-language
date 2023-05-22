@@ -17,13 +17,17 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { Message, TMessageMetadata } from '../messages/Message.js';
+import { Message, TMessageMetadata } from '../messages/IMessage.js';
 
 export type CommandMetadata = TMessageMetadata & {
   boundedContextId: string;
 };
 
-export abstract class Command extends Message {
+export interface ICommand {
+  metadata: CommandMetadata;
+}
+
+export abstract class Command extends Message implements ICommand {
   [x: string]: any;
   public declare readonly metadata: CommandMetadata;
   constructor(boundedContextId: string, metadata?: Partial<CommandMetadata>) {

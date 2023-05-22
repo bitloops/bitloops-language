@@ -8,11 +8,12 @@ type UserRegisteredIntegrationSchemaV1 = {
 export class UserRegisteredIntegrationEvent
   implements Infra.EventBus.IntegrationEvent<UserRegisteredIntegrationSchemaV1>
 {
+  [x: string]: any;
   public metadata: Infra.EventBus.TIntegrationEventMetadata;
   static boundedContextId = 'Bitloops_IAM';
   static versions = ['v1'];
 
-  constructor(public payload: UserRegisteredIntegrationSchemaV1) {
+  constructor(payload: UserRegisteredIntegrationSchemaV1) {
     this.metadata = {
       boundedContextId: UserRegisteredIntegrationEvent.boundedContextId,
       version: UserRegisteredIntegrationEvent.versions[0],
@@ -21,5 +22,6 @@ export class UserRegisteredIntegrationEvent
       context: {},
       correlationId: asyncLocalStorage.getStore()?.get('correlationId'),
     };
+    Object.assign(this, payload);
   }
 }

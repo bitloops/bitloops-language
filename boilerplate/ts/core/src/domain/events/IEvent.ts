@@ -17,12 +17,13 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { TMessageMetadata } from '../messages/Message';
-
-export interface IEvent {
-  metadata: TEventMetadata;
-}
+import { IMessage, TMessageMetadata } from '../messages/IMessage';
 
 export type TEventMetadata = TMessageMetadata & {
   boundedContextId: string;
 };
+
+export interface IEvent<T> extends IMessage {
+  payload: T;
+  metadata: TEventMetadata;
+}

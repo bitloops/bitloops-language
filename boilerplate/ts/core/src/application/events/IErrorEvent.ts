@@ -1,6 +1,6 @@
-import { IEvent } from '../../domain/events/Event.js';
+import { IEvent } from '../../domain/events/IEvent';
 
-export interface IErrorEvent extends IEvent {
+export interface IErrorEvent<T> extends IEvent<T> {
   message: string;
   errorCode: string;
 }

@@ -13,12 +13,14 @@ import { DomainError } from './domain/DomainError';
 import { Entity as EntityImport } from './domain/Entity';
 import { IEventBus as IEventBusImport } from './domain/events/IEventBus';
 import {
+  IIntegrationEvent as IIntegrationEventImport,
   IIntegrationEventInputMetadata,
   IntegrationEvent as IntegrationEventImport,
 } from './domain/events/IIntegrationEvent';
 import { IRule as IRuleImport } from './domain/IRule';
 import { ISystemMessageBus as ISystemMessageBusImport } from './domain/messages/ISystemMessageBus';
 import { SubscriberHandler as SubscribeHandlerImport } from './domain/messages/ISystemMessageBus';
+import { IMessage as IMessageImport } from './domain/messages/IMessage';
 import { ReadModel as ReadModelImport } from './domain/ReadModel';
 import { UUIDv4 as UUIDv4Import } from './domain/UUIDv4';
 import { ValueObject as ValueObjectImport, ValueObjectProps } from './domain/ValueObject';
@@ -28,7 +30,12 @@ import {
   CommandMetadata as CommandMetadataImport,
 } from './domain/commands/Command';
 import { TContext as TContextImport } from './domain/context';
-
+import {
+  IDomainEvent as IDomainEventImport,
+  DomainEvent as DomainEventImport,
+  TDomainEventProps as DomainEventPropsImport,
+} from './domain/events/IDomainEvent';
+import { IEvent as IEventImport } from './domain/events/IEvent';
 import {
   Query as QueryImport,
   QueryMetadata as TQueryMetadataImport,
@@ -47,11 +54,8 @@ import { IErrorEvent as IErrorEventImport } from './application/events/IErrorEve
 import { ConflictError } from './errors/repository/ConflictError';
 import { UnexpectedError } from './errors/repository/UnexpectedError';
 import { ReturnUnexpectedError as ReturnUnexpectedErrorImport } from './errors/repository/unexpected-error.decorator';
+import { TEventMetadata } from './domain/events/IEvent';
 import { asyncLocalStorage, AsyncLocalStorageStore } from './helpers/asyncLocalStorage';
-import { TEventMetadata } from './domain/events/Event.js';
-import { DomainEvent as DomainEventImport } from './domain/events/DomainEvent.js';
-import { TDomainEventProps as DomainEventPropsImport } from './domain/events/DomainEvent.js';
-import { Message as MessageImport } from './domain/messages/Message.js';
 
 namespace Domain {
   export class Error extends DomainError {}
@@ -62,8 +66,9 @@ namespace Domain {
   export class UUIDv4 extends UUIDv4Import {}
   export type IRule = IRuleImport;
   export const applyRules = applyRulesImport;
+  export type IDomainEvent<T> = IDomainEventImport<T>;
   export type TDomainEventMetadata = TEventMetadata;
-  export abstract class DomainEvent<T> extends DomainEventImport {}
+  export abstract class DomainEvent<T> extends DomainEventImport<T> {}
   export type TDomainEventProps<T> = DomainEventPropsImport<T>;
   export namespace StandardVO {
     export namespace Currency {
@@ -75,7 +80,7 @@ namespace Domain {
 
 namespace Application {
   export class Error extends AppError {}
-  export type IErrorEvent = IErrorEventImport;
+  export type IErrorEvent = IErrorEventImport<any>;
   export type IUseCase<IRequest, IResponse> = UseCase<IRequest, IResponse>;
   export type ICommandHandler<IRequest, IResponse> = CommandHandler<IRequest, IResponse>;
   export type IQueryHandler<IRequest, IResponse> = QueryHandler<IRequest, IResponse>;
@@ -109,10 +114,11 @@ namespace Application {
 
 namespace Infra {
   export namespace EventBus {
-    export type IIntegrationEvent = IntegrationEventImport;
+    export type IIntegrationEvent<T> = IIntegrationEventImport<T>;
     export type TIntegrationEventMetadata = IIntegrationEventInputMetadata;
-    export abstract class IntegrationEvent extends IntegrationEventImport {}
+    export abstract class IntegrationEvent<T> extends IntegrationEventImport<T> {}
     export type IEventBus = IEventBusImport;
+    export type IEvent<T> = IEventImport<T>;
   }
   export namespace CommandBus {
     export type IPubSubCommandBus = IPubSubCommandBusImport;
@@ -125,8 +131,8 @@ namespace Infra {
 
   export namespace MessageBus {
     export type ISystemMessageBus = ISystemMessageBusImport;
-    export type Message = MessageImport;
-    export type SubscriberHandler<T extends Message> = SubscribeHandlerImport<T>;
+    export type IMessage = IMessageImport;
+    export type SubscriberHandler<T extends IMessage> = SubscribeHandlerImport<T>;
   }
 }
 

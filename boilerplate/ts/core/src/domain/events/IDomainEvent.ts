@@ -14,20 +14,24 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-import { Message } from '../messages/Message.js';
-import { IEvent, TEventMetadata } from './Event.js';
+import { Message } from '../messages/IMessage.js';
+import { IEvent, TEventMetadata } from './IEvent';
 
-export type TDomainEventProps<T> = T & { aggregateId: string };
-
-export interface IDomainEvent extends IEvent {
+export interface IDomainEvent<T> extends IEvent<T> {
   aggregateId: any;
 }
 
-export abstract class DomainEvent extends Message implements IDomainEvent {
+export type TDomainEventProps<T> = T & { aggregateId: string };
+
+export abstract class DomainEvent<T> extends Message implements IDomainEvent<T> {
+  [x: string]: any;
   public aggregateId: any;
+  public readonly payload: T;
   declare metadata: TEventMetadata;
-  constructor(boundedContextId: string, metadata?: Partial<TEventMetadata>) {
+  constructor(boundedContextId: string, payload: T, metadata?: Partial<TEventMetadata>) {
     super(metadata);
     this.metadata.boundedContextId = boundedContextId;
+    this.payload = payload;
+    Object.assign(this, payload);
   }
 }
