@@ -4,8 +4,6 @@ Props TitleProps {
 
 ValueObject TitleVO {
     static create(props: TitleProps): (OK(TitleVO), Errors()) {
-        title: TitleVO = TitleVO(props);
-        return title;
     }
 }
 

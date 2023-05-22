@@ -363,9 +363,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
           .insert('this', new ClassTypeThisSymbolEntry('TitleVO'))
           .insertChildScope(
             SCOPE_NAMES.DOMAIN_CREATE,
-            new SymbolTableBuilder()
-              .insert('props', new ParameterSymbolEntry('TitleProps'))
-              .insert('title', new VariableSymbolEntry('TitleVO', false)),
+            new SymbolTableBuilder().insert('props', new ParameterSymbolEntry('TitleProps')),
           ),
       )
       .build(),
