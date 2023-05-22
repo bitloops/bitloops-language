@@ -1,5 +1,8 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
-import { MethodCallSymbolEntry } from '../../../../../semantic-analysis/type-inference/SymbolEntry.js';
+import {
+  MethodCallSymbolEntry,
+  ParameterSymbolEntry,
+} from '../../../../../semantic-analysis/type-inference/SymbolEntry.js';
 import { SymbolTable } from '../../../../../semantic-analysis/type-inference/SymbolTable.js';
 import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { StringUtils } from '../../../../../utils/StringUtils.js';
@@ -112,6 +115,18 @@ export class IfErrorExpressionNode extends ExpressionNode {
     return StringUtils.getSubstringsBetweenStrings(leftType, 'Errors(', ')')[0];
   }
 
+  public addParameterToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const parameter = this.getParameter();
+    if (parameter) {
+      const symbolTable = symbolTableManager.getSymbolTable();
+      const paramName = parameter.getIdentifier();
+      symbolTable.insert(
+        paramName,
+        new ParameterSymbolEntry(this.getInferredTypeOfParameter(symbolTable)),
+      );
+    }
+  }
+
   public getInferredType(symbolTableManager: SymbolTableManager): string {
     const symbolTable = symbolTableManager.getSymbolTable();
     const leftExpression = this.getExpressionValues();
@@ -140,10 +155,8 @@ export class IfErrorExpressionNode extends ExpressionNode {
     //set new scope
     symbolTableManager.createSymbolTableChildScope(ifErrorScopeName, this);
 
-    const parameter = this.getParameter();
-    if (parameter) {
-      parameter.addToSymbolTable(symbolTableManager);
-    }
+    this.addParameterToSymbolTable(symbolTableManager);
+
     const statementList = this.getStatementListNode();
     if (statementList) {
       statementList.addToSymbolTable(symbolTableManager);
