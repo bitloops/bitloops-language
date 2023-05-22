@@ -1,6 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { SymbolTable } from '../../../../../semantic-analysis/type-inference/SymbolTable.js';
-import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { TInferredTypes } from '../../../../../semantic-analysis/type-inference/types.js';
 import { MissingIdentifierError } from '../../../types.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
@@ -40,10 +39,5 @@ export class ThisExpressionNode extends ExpressionNode {
     const identifier = this.getIdentifierName();
     const expressionType = identifier;
     return expressionType;
-  }
-
-  public addToSymbolTable(symbolTableManager: SymbolTableManager): void {
-    const symbolTable = symbolTableManager.getSymbolTable();
-    this.typeCheck(symbolTable);
   }
 }

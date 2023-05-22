@@ -3,7 +3,6 @@ import { MethodCallSymbolEntry } from '../../../../../../semantic-analysis/type-
 import { SymbolTableManager } from '../../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { bitloopsPrimitivesObj } from '../../../../../../types.js';
 import { ExpressionNode } from '../../Expression/ExpressionNode.js';
-import { ThisExpressionNode } from '../../Expression/ThisExpressionNode.js';
 import { TNodeMetadata } from '../../IntermediateASTNode.js';
 import { ThisIdentifierNode } from '../../ThisIdentifier/ThisIdentifierNode.js';
 import { IdentifierNode } from '../../identifier/IdentifierNode.js';
@@ -25,7 +24,7 @@ export class AddDomainEventNode extends BuiltInFunctionNode {
     return expressionNode;
   }
 
-  getLeftExpression(): IdentifierNode | ThisExpressionNode {
+  getLeftExpression(): IdentifierNode | ThisIdentifierNode {
     const identifierNode = this.getChildren().find(
       (child) => child.getNodeType() === BitloopsTypesMapping.TIdentifier,
     ) as IdentifierNode;
