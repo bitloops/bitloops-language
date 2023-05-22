@@ -7,12 +7,11 @@ import { ClassTypeNode } from '../../ClassTypeNode.js';
 export class PackagePortNode extends ClassTypeNode {
   private static classNodeName = 'PackagePort';
   private static classType = ClassTypes.PackagePort;
-  private static nodeType = BitloopsTypesMapping.TPackagePort;
 
   constructor(metadata?: TNodeMetadata) {
     super({
       classType: PackagePortNode.classType,
-      nodeType: PackagePortNode.nodeType,
+      nodeType: BitloopsTypesMapping.TPackagePort,
       metadata,
       classNodeName: PackagePortNode.classNodeName,
     });

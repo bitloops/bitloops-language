@@ -8,7 +8,6 @@ import {
   type ParserSyntacticErrors,
   type TParserInputData,
 } from './parser/index.js';
-import { SemanticAnalyzer } from './semantic-analysis/IntermediateASTValidator.js';
 import { TargetGenerator } from './target/index.js';
 import { getTargetFileDestination } from './target/typescript-nest/helpers/getTargetFileDestination.js';
 import Transpiler from './Transpiler.js';
@@ -16,12 +15,10 @@ import type { TranspilerErrors, TTranspileOptions, TTranspileOutput } from './tr
 
 const parser = new BitloopsParser();
 const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
-const validator = new SemanticAnalyzer();
 const intermediateASTModelToTargetLanguageGenerator = new TargetGenerator();
 
 const transpiler = new Transpiler(
   parser,
-  validator,
   originalLanguageASTToIntermediateModelTransformer,
   intermediateASTModelToTargetLanguageGenerator,
 );

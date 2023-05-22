@@ -56,12 +56,14 @@ const domainErrorToTargetLanguage = (
     },
   ];
 
-  let result = `export class ${domainErrorName} extends Domain.Error { constructor`;
+  let result = `export class ${domainErrorName} extends Domain.Error {
+    static readonly errorId:string = ${errorIdText.output};
+     constructor`;
   result += parametersResult.output;
   result += '{ super(';
   result += messageResult.output;
   result += ', ';
-  result += errorIdText.output;
+  result += `${domainErrorName}.errorId`;
   result += '); }}';
 
   const parentDependencies = getParentDependencies(dependencies as TDependencyChildTypescript[], {

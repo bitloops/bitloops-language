@@ -63,6 +63,7 @@ class BaseDomainMethodNodeTSTransformer<
 
   private transformDotValueOfDomainEvaluations(): void {
     this.appendDotValueTransformer.transformDotValueOfDomainEvaluations();
+    this.appendDotValueTransformer.transformDotValueOfPackageEvaluations();
   }
 }
 

@@ -77,6 +77,7 @@ const checkVersion = async (): Promise<void> => {
       .option('-l, --targetLanguage <string>')
       .option('-s, --sourceDirPath <string>')
       .option('-t, --targetDirPath <string>')
+      .option('-y', 'Skip confirmation')
       .action(transpile);
 
     program

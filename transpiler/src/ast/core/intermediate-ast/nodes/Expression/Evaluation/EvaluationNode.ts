@@ -26,6 +26,10 @@ export class EvaluationNode extends ExpressionNode {
   isDomainServiceEvaluation(): boolean {
     return this.getNodeType() === BitloopsTypesMapping.TDomainServiceEvaluation;
   }
+  isPackageEvaluation(): boolean {
+    return this.getNodeType() === BitloopsTypesMapping.TPackageEvaluation;
+  }
+
   isEntityEvaluation(): boolean {
     return this.getNodeType() === BitloopsTypesMapping.TEntityEvaluation;
   }

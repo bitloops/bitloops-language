@@ -16,8 +16,12 @@ export class PackagePortNodeBuilder implements IBuilder<PackagePortNode> {
     this.packagePort = new PackagePortNode(metadata);
   }
 
-  public withIdentifier(readModelIdentifier: PackagePortIdentifierNode): PackagePortNodeBuilder {
-    this.packagePortIdentifier = readModelIdentifier;
+  public withIdentifier(packagePortIdentifier: PackagePortIdentifierNode): PackagePortNodeBuilder {
+    this.packagePortIdentifier = packagePortIdentifier;
+
+    const packagePortName = packagePortIdentifier.getIdentifierName();
+    this.packagePort.setClassName(packagePortName);
+
     return this;
   }
 
