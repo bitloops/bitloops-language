@@ -6,7 +6,7 @@ type UserRegisteredIntegrationSchemaV1 = {
 };
 
 export class UserRegisteredIntegrationEvent
-  implements Infra.EventBus.IntegrationEvent<UserRegisteredIntegrationSchemaV1>
+  implements Infra.EventBus.IIntegrationEvent<UserRegisteredIntegrationSchemaV1>
 {
   [x: string]: any;
   public metadata: Infra.EventBus.TIntegrationEventMetadata;

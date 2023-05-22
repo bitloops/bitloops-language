@@ -32,7 +32,6 @@ export interface IIntegrationEvent<T> extends IEvent<T> {
 export abstract class IntegrationEvent<T> extends Message implements IIntegrationEvent<T> {
   [x: string]: any;
   public aggregateId: any;
-  public readonly payload: T;
   public declare readonly metadata: IIntegrationEventInputMetadata;
   constructor(
     boundedContextId: string,
@@ -43,7 +42,6 @@ export abstract class IntegrationEvent<T> extends Message implements IIntegratio
     super(metadata);
     this.metadata.boundedContextId = boundedContextId;
     this.metadata.version = version;
-    this.payload = payload;
     Object.assign(this, payload);
   }
 }
