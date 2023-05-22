@@ -6,11 +6,22 @@ export type PrimitiveSymbolTable = {
   children?: { [name: string]: PrimitiveSymbolTable };
 };
 
+type TStatementListCounters = {
+  ifCounter: number;
+  elseCounter: number;
+  switchCounter: number;
+  ifErrorCounter: number;
+  caseCounter: number;
+};
+
 export class SymbolTable {
   private localSymbols: { [name: string]: SymbolEntry } = {};
   private childrenScopes: { [name: string]: SymbolTable } = {};
+  private statementListCounters: TStatementListCounters;
 
-  constructor(private readonly parent?: SymbolTable, public node?: IntermediateASTNode) {}
+  constructor(private readonly parent?: SymbolTable, public node?: IntermediateASTNode) {
+    this.initializeStatementListCounters();
+  }
 
   public insert(name: string, symbolEntry: SymbolEntry): void {
     this.localSymbols[name] = symbolEntry;
@@ -58,5 +69,40 @@ export class SymbolTable {
       {},
     );
     return { locals: this.localSymbols, children: childrenValues };
+  }
+
+  private initializeStatementListCounters(): void {
+    this.statementListCounters = {
+      ifCounter: 0,
+      elseCounter: 0,
+      switchCounter: 0,
+      ifErrorCounter: 0,
+      caseCounter: 0,
+    };
+  }
+
+  public increaseElseCounter(): string {
+    return `${this.statementListCounters.elseCounter++}`;
+  }
+
+  public increaseIfCounter(): string {
+    return `${this.statementListCounters.ifCounter++}`;
+  }
+
+  public increaseSwitchCounter(): string {
+    this.statementListCounters.caseCounter = 0;
+    return `${this.statementListCounters.switchCounter++}`;
+  }
+
+  public increaseCaseCounter(): string {
+    return `${this.statementListCounters.switchCounter}${this.statementListCounters.caseCounter++}`;
+  }
+
+  public getSwitchCounter(): string {
+    return `${this.statementListCounters.switchCounter}`;
+  }
+
+  public increaseIfErrorCounter(): string {
+    return `${this.statementListCounters.ifErrorCounter++}`;
   }
 }

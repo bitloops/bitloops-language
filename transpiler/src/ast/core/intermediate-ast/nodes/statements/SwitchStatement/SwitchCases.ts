@@ -18,14 +18,8 @@ export class SwitchCaseListNode extends IntermediateASTNode {
   }
 
   public addToSymbolTable(symbolTableManager: SymbolTableManager): void {
-    const initialSymbolTable = symbolTableManager.getSymbolTable();
-    const switchCounter = symbolTableManager.increaseSwitchCounter();
-    const scopeName = SymbolTableManager.SCOPE_NAMES.SWITCH + switchCounter;
-    symbolTableManager.createSymbolTableChildScope(scopeName, this);
-
     this.getCases().forEach((switchCase) => {
       switchCase.addToSymbolTable(symbolTableManager);
     });
-    symbolTableManager.setCurrentSymbolTable(initialSymbolTable);
   }
 }

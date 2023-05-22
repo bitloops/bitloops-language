@@ -25,7 +25,7 @@ export class ElseStatementsNode extends IntermediateASTNode {
   addToSymbolTable(symbolTableManager: SymbolTableManager): void {
     const initialSymbolTable = symbolTableManager.getSymbolTable();
     const elseStatementList = this.getStatementListNode();
-    const elseCounter = symbolTableManager.increaseElseCounter();
+    const elseCounter = initialSymbolTable.increaseElseCounter();
 
     const scopeName = SymbolTableManager.SCOPE_NAMES.ELSE + elseCounter;
 

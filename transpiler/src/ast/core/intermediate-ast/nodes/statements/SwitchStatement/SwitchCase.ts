@@ -27,7 +27,7 @@ export class SwitchRegularCaseNode extends IntermediateASTNode {
     const switchCaseExpression = this.getExpression();
     switchCaseExpression.typeCheck(initialSymbolTable);
 
-    const caseCounter = symbolTableManager.increaseCaseCounter();
+    const caseCounter = initialSymbolTable.increaseCaseCounter();
     const scopeName = SymbolTableManager.SCOPE_NAMES.CASE + caseCounter;
     symbolTableManager.createSymbolTableChildScope(scopeName, this);
     const caseStatements = this.getStatementListNode();

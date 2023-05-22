@@ -135,7 +135,7 @@ export class IfErrorExpressionNode extends ExpressionNode {
       key,
       new MethodCallSymbolEntry(this.getInferredType(symbolTableManager)),
     );
-    const ifErrorCounter = symbolTableManager.increaseIfErrorCounter();
+    const ifErrorCounter = initialSymbolTable.increaseIfErrorCounter();
     const ifErrorScopeName = SymbolTableManager.SCOPE_NAMES.IF_ERROR + ifErrorCounter;
     //set new scope
     symbolTableManager.createSymbolTableChildScope(ifErrorScopeName, this);

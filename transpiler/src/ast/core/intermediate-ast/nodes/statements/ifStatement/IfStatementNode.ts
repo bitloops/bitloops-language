@@ -62,7 +62,7 @@ export class IfStatementNode extends StatementNode {
     const conditionExpression = this.getConditionExpression();
     conditionExpression.addToSymbolTable(symbolTableManager);
 
-    const ifCounter = symbolTableManager.increaseIfCounter();
+    const ifCounter = initialSymbolTable.increaseIfCounter();
     const scopeName = SymbolTableManager.SCOPE_NAMES.IF + ifCounter;
 
     symbolTableManager.createSymbolTableChildScope(scopeName, this);

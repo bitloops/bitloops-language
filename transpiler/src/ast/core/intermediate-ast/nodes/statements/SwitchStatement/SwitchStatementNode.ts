@@ -35,9 +35,13 @@ export class SwitchStatementNode extends StatementNode {
   }
 
   public addToSymbolTable(symbolTableManager: SymbolTableManager): void {
-    const symbolTable = symbolTableManager.getSymbolTable();
+    const initialSymbolTable = symbolTableManager.getSymbolTable();
+    const switchCounter = initialSymbolTable.increaseSwitchCounter();
+    const scopeName = SymbolTableManager.SCOPE_NAMES.SWITCH + switchCounter;
+    symbolTableManager.createSymbolTableChildScope(scopeName, this);
+
     const switchExpression = this.getExpression();
-    switchExpression.typeCheck(symbolTable);
+    switchExpression.typeCheck(initialSymbolTable);
     switchExpression.addToSymbolTable(symbolTableManager);
 
     const switchCaseList = this.getCaseList();
@@ -45,5 +49,6 @@ export class SwitchStatementNode extends StatementNode {
 
     const defaultCase = this.getDefaultCase();
     defaultCase.addToSymbolTable(symbolTableManager);
+    symbolTableManager.setCurrentSymbolTable(initialSymbolTable);
   }
 }

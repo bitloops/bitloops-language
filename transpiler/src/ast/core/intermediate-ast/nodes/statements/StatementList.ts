@@ -47,7 +47,6 @@ export class StatementListNode extends IntermediateASTNode {
   }
 
   addToSymbolTable(symbolTableManager: SymbolTableManager): void {
-    symbolTableManager.initializeStatementListCounters();
     for (const statement of this.statements) {
       statement.addToSymbolTable(symbolTableManager);
     }

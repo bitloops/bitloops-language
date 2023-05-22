@@ -29,12 +29,12 @@ import {
   SYMBOL_TABLE_TEST_CASES,
 } from './mocks/symbol-table/symbol-table.js';
 
-describe.skip('Symbol table cases', () => {
+describe('Symbol table cases', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
 
-  SYMBOL_TABLE_TEST_CASES.forEach((testCase) => {
-    // if (index !== 0) return;
+  SYMBOL_TABLE_TEST_CASES.forEach((testCase, _index) => {
+    // if (index !== 2) return;
     const parser = new BitloopsParser();
     const validator = new SemanticAnalyzer();
     const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
@@ -82,13 +82,12 @@ describe.skip('Symbol table cases', () => {
   });
 });
 
-describe('Validation checks table cases', () => {
+describe.skip('Validation checks table cases', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
 
   describe('Missing identifiers test cases', () => {
-    SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES.forEach((testCase, index) => {
-      if (index !== 2) return;
+    SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES.forEach((testCase) => {
       const parser = new BitloopsParser();
       const validator = new SemanticAnalyzer();
       const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
@@ -132,7 +131,7 @@ describe('Validation checks table cases', () => {
     });
   });
 
-  describe.skip('constant reassingment identifiers test cases', () => {
+  describe('constant reassingment identifiers test cases', () => {
     SYMBOL_TABLE_CONSTANT_REASSIGNMENT_TEST_CASES.forEach((testCase) => {
       const parser = new BitloopsParser();
       const validator = new SemanticAnalyzer();
@@ -177,7 +176,7 @@ describe('Validation checks table cases', () => {
     });
   });
 
-  describe.skip('Already declared variables test cases', () => {
+  describe('Already declared variables test cases', () => {
     SYMBOL_TABLE_ALREADY_DECLARED_TEST_CASES.forEach((testCase) => {
       const parser = new BitloopsParser();
       const validator = new SemanticAnalyzer();

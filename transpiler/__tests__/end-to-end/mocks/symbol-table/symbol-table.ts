@@ -235,8 +235,8 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
               .insertChildScope(
                 'switch0',
                 new SymbolTableBuilder()
-                  .insertChildScope('case0', new SymbolTableBuilder())
-                  .insertChildScope('default', new SymbolTableBuilder()),
+                  .insertChildScope('case00', new SymbolTableBuilder())
+                  .insertChildScope('default0', new SymbolTableBuilder()),
               )
               .insert(
                 'accountEntity.withdrawAmount()',

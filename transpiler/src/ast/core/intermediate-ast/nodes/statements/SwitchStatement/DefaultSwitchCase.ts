@@ -17,7 +17,7 @@ export class DefaultSwitchCaseNode extends IntermediateASTNode {
   public addToSymbolTable(symbolTableManager: SymbolTableManager): void {
     const initialSymbolTable = symbolTableManager.getSymbolTable();
     const defaultScopeName =
-      SymbolTableManager.SCOPE_NAMES.DEFAULT + symbolTableManager.getSwitchCounter();
+      SymbolTableManager.SCOPE_NAMES.DEFAULT + initialSymbolTable.getSwitchCounter();
     symbolTableManager.createSymbolTableChildScope(defaultScopeName, this);
 
     const defaultStatements = this.getStatementListNode();

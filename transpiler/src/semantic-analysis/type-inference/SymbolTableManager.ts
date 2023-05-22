@@ -4,14 +4,6 @@ import { TBoundedContexts } from '../../ast/core/types.js';
 import { ClassTypeParameterSymbolEntry, ClassTypeThisSymbolEntry } from './SymbolEntry.js';
 import { SymbolTable } from './SymbolTable.js';
 
-type TStatementListCounters = {
-  ifCounter: number;
-  elseCounter: number;
-  switchCounter: number;
-  ifErrorCounter: number;
-  caseCounter: number;
-};
-
 export class SymbolTableManager {
   public static readonly UNKNOWN_TYPE = 'unknown';
   public static readonly THIS = 'this';
@@ -29,7 +21,6 @@ export class SymbolTableManager {
   private symbolTable: SymbolTable;
   private intermediateASTTree: IntermediateASTTree;
   private boundedContexts: TBoundedContexts;
-  private statementListCounters: TStatementListCounters;
 
   constructor(intermediateASTTree: IntermediateASTTree, boundedContexts: TBoundedContexts) {
     this.intermediateASTTree = intermediateASTTree;
@@ -71,41 +62,6 @@ export class SymbolTableManager {
     const queryBusKey = this.joinThisWithIdentifier('queryBus');
     this.symbolTable.insert(commandBusKey, new ClassTypeParameterSymbolEntry('CommandBusPort'));
     this.symbolTable.insert(queryBusKey, new ClassTypeParameterSymbolEntry('QueryBusPort'));
-  }
-
-  public initializeStatementListCounters(): void {
-    this.statementListCounters = {
-      ifCounter: 0,
-      elseCounter: 0,
-      switchCounter: 0,
-      ifErrorCounter: 0,
-      caseCounter: 0,
-    };
-  }
-
-  public increaseElseCounter(): string {
-    return `${this.statementListCounters.elseCounter++}`;
-  }
-
-  public increaseIfCounter(): string {
-    return `${this.statementListCounters.ifCounter++}`;
-  }
-
-  public increaseSwitchCounter(): string {
-    this.statementListCounters.caseCounter = 0;
-    return `${this.statementListCounters.switchCounter++}`;
-  }
-
-  public increaseCaseCounter(): string {
-    return `${this.statementListCounters.switchCounter}${this.statementListCounters.caseCounter++}`;
-  }
-
-  public getSwitchCounter(): string {
-    return `${this.statementListCounters.switchCounter}`;
-  }
-
-  public increaseIfErrorCounter(): string {
-    return `${this.statementListCounters.ifErrorCounter++}`;
   }
 
   private joinThisWithIdentifier(identifier: string): string {
