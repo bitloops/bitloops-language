@@ -69,6 +69,7 @@ export class IfStatementNode extends StatementNode {
 
     const thenStatementList = this.getThenStatementList();
     thenStatementList.addToSymbolTable(symbolTableManager);
+    symbolTableManager.setCurrentSymbolTable(initialSymbolTable);
 
     if (this.hasElseBlock()) {
       const elseNode = this.getElseNode();

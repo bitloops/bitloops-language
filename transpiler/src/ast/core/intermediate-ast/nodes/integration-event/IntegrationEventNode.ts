@@ -79,7 +79,7 @@ export class IntegrationEventNode extends ClassTypeNode {
 
   addToSymbolTable(symbolTableManager: SymbolTableManager): void {
     const parameter = this.getParameter();
-    parameter.addClassTypeParameterToSymbolTable(symbolTableManager);
+    parameter.addToSymbolTable(symbolTableManager);
 
     const integrationEventMapperListNode = this.getIntegrationEventMapperListNode();
     integrationEventMapperListNode.addToSymbolTable(symbolTableManager);
