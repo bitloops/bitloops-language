@@ -1,7 +1,11 @@
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../../target/typescript-nest/core/modelToTargetLanguage.js';
 import { BitloopsPrimTypeIdentifiers } from '../../../../../target/typescript-nest/core/type-identifiers/bitloopsPrimType.js';
-import { bitloopsIdentifiersTypeKey } from '../../../../../types.js';
+import {
+  TBitloopsIdentifier,
+  TBitloopsPrimaryTypeValues,
+  bitloopsIdentifiersTypeKey,
+} from '../../../../../types.js';
 import { IntermediateASTTree } from '../../IntermediateASTTree.js';
 import { TBitloopsPrimitives, TValueObjectIdentifier } from '../../../../../types.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
@@ -32,7 +36,8 @@ type ValueObjectPrimitives = Record<
 
 type TGetFieldPrimitivesValue =
   | PrimitiveType // primitive, e.g. 'string', 'number', 'boolean'
-  | ValueObjectPrimitives;
+  | ValueObjectPrimitives
+  | Array<TGetFieldPrimitivesValue>; // array of any of the above
 type TGetFieldPrimitives = Record<string, TGetFieldPrimitivesValue>;
 
 export class PropsNode extends ClassTypeNode {
@@ -105,12 +110,13 @@ export class PropsNode extends ClassTypeNode {
         continue;
       }
       if (BitloopsPrimTypeIdentifiers.isBitloopsValueObjectIdentifier(type)) {
+        const valueObjectIdentifier: TBitloopsIdentifier = type[bitloopsIdentifiersTypeKey];
         const valueObject = tree.getValueObjectByIdentifier(type[bitloopsIdentifiersTypeKey]);
         const propsNode = tree.getPropsNodeOfValueObject(valueObject);
         const voFieldPrimitives = propsNode.getFieldsPrimitives(tree);
         primitivesValues[identifier] = {};
 
-        const valueObjectIdentifier = valueObject.getIdentifierValue();
+        // const valueObjectIdentifier = valueObject.getIdentifierValue();
         const voPrimitivesResult: ValueObjectPrimitives = {};
         for (const [fieldPrimitiveKey, fieldPrimitiveValue] of Object.entries(voFieldPrimitives)) {
           voPrimitivesResult[fieldPrimitiveKey] = {
@@ -131,17 +137,61 @@ export class PropsNode extends ClassTypeNode {
         continue;
       }
       if (BitloopsPrimTypeIdentifiers.isArrayPrimType(type)) {
+        // we want | Array<TGetFieldPrimitivesValue>; // array of any of the above
         // pass
-        // const result = BitloopsPrimTypeIdentifiers.arrayPrimTypeToPrimitiveType(type);
-        // primitivesValues[identifier] = {
-        //   primitiveValue: result.primitive,
-        //   identifier: result.type,
-        //   isStandardVO: true,
-        // };
       }
     }
 
     return primitivesValues;
+  }
+
+  private getPrimitiveValue(
+    type: TBitloopsPrimaryTypeValues,
+    tree: IntermediateASTTree,
+  ): TGetFieldPrimitivesValue {
+    if (BitloopsPrimTypeIdentifiers.isBitloopsPrimitive(type)) {
+      const res = modelToTargetLanguage({
+        type: BitloopsTypesMapping.TBitloopsPrimaryType,
+        value: { type },
+      });
+      const primitive: PrimitiveType = res.output;
+      return primitive;
+    }
+    if (BitloopsPrimTypeIdentifiers.isBitloopsBuiltInClass(type)) {
+      const primitive: PrimitiveType =
+        BitloopsPrimTypeIdentifiers.builtInClassToPrimitiveType(type);
+      return primitive;
+    }
+    if (BitloopsPrimTypeIdentifiers.isBitloopsValueObjectIdentifier(type)) {
+      const valueObjectIdentifier: TBitloopsIdentifier = type[bitloopsIdentifiersTypeKey];
+      const valueObject = tree.getValueObjectByIdentifier(type[bitloopsIdentifiersTypeKey]);
+      const propsNode = tree.getPropsNodeOfValueObject(valueObject);
+      const voFieldPrimitives = propsNode.getFieldsPrimitives(tree);
+
+      // const valueObjectIdentifier = valueObject.getIdentifierValue();
+      const voPrimitivesResult: ValueObjectPrimitives = {};
+      for (const [fieldPrimitiveKey, fieldPrimitiveValue] of Object.entries(voFieldPrimitives)) {
+        voPrimitivesResult[fieldPrimitiveKey] = {
+          primitiveValue: fieldPrimitiveValue,
+          identifier: valueObjectIdentifier,
+        };
+      }
+      return voPrimitivesResult;
+    }
+    if (BitloopsPrimTypeIdentifiers.isStandardValueType(type)) {
+      const result = BitloopsPrimTypeIdentifiers.standardVOToPrimitiveType(type);
+      return {
+        primitiveValue: result.primitive,
+        identifier: result.type,
+        isStandardVO: true,
+      } as any; // TODO Fix
+    }
+    if (BitloopsPrimTypeIdentifiers.isArrayPrimType(type)) {
+      // we want | Array<TGetFieldPrimitivesValue>; // array of any of the above
+      // pass
+    }
+    // TODO Fix
+    return {} as any;
   }
 
   public getPrimitiveFields(): Array<{ fieldValue: string; fieldType: TBitloopsPrimitives }> {
