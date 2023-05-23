@@ -1,0 +1,3 @@
+Rule ValidNameRule(name: string) throws DomainErrors.InvalidEmailError {
+    isBrokenIf(name.length > 2 AND name.length< 50);
+}

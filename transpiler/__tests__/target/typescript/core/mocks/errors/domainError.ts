@@ -5,7 +5,7 @@ import { ParameterListNodeBuilder } from '../../../../../../src/ast/core/interme
 import { IntermediateASTTree } from '../../../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { DomainErrorNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Error/DomainErrorNode.js';
 import { IntermediateASTRootNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
-import { ExpressionBuilderDirector } from '../../builders/expression.js';
+import { ExpressionBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/expressionNodeBuilderDirector.js';
 import { ParameterBuilderDirector } from '../../builders/parameterDirector.js';
 
 type TestCase = {
@@ -50,8 +50,13 @@ export const VALID_DOMAIN_ERROR_TEST_CASES: TestCase[] = [
           .build(),
       )
       .build(),
-    output:
-      "import { Domain } from '@bitloops/bl-boilerplate-core'; \n export class InvalidNameError extends Domain.Error { constructor(name: string, kindOfError: string){ super('${name} is an invalid name', 'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe'); }}",
+    output: `import { Domain } from '@bitloops/bl-boilerplate-core';
+      export class InvalidNameError extends Domain.Error { 
+        static readonly errorId:string = 'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe';
+        constructor(name: string, kindOfError: string){ 
+          super('\${name} is an invalid name', InvalidNameError.errorId);
+        }
+      }`,
   },
   {
     description: 'Domain error with string template',
@@ -84,7 +89,12 @@ export const VALID_DOMAIN_ERROR_TEST_CASES: TestCase[] = [
           .build(),
       )
       .build(),
-    output:
-      "import { Domain } from '@bitloops/bl-boilerplate-core'; \n export class InvalidNameError extends Domain.Error { constructor(name: string, kindOfError: string){ super('Invalid name', 'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe'); }}",
+    output: `import { Domain } from '@bitloops/bl-boilerplate-core';  
+      export class InvalidNameError extends Domain.Error { 
+        static readonly errorId:string = 'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe';
+        constructor(name: string, kindOfError: string){ 
+          super('Invalid name', InvalidNameError.errorId);
+        }
+    }`,
   },
 ];

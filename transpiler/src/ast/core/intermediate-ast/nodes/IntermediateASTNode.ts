@@ -1,5 +1,6 @@
 import { BitloopsTypesMapping, TBitloopsTypesValues } from '../../../../helpers/mappings.js';
-import { IntermediateASTValidationError } from '../../types.js';
+import { SymbolTableManager } from '../../../../semantic-analysis/type-inference/SymbolTableManager.js';
+import { ValidationError } from '../../types.js';
 import { StatementListNode } from './statements/StatementList.js';
 
 export type TNodeLineData = {
@@ -15,7 +16,7 @@ export type TNodeMetadata = {
 export const ROOT_TYPE = 'Root';
 export type TNodeType = TBitloopsTypesValues | typeof ROOT_TYPE;
 
-export class IntermediateASTNodeValidationError extends IntermediateASTValidationError {}
+export class IntermediateASTNodeValidationError extends ValidationError {}
 
 export abstract class IntermediateASTNode {
   protected nodeType: TNodeType;
@@ -122,6 +123,20 @@ export abstract class IntermediateASTNode {
     this.nextSibling = siblingNode;
   }
 
+  public addSiblingBetween(siblingNode: IntermediateASTNode): void {
+    const parent = this.getParent();
+    siblingNode.setParent(parent);
+
+    const nextSibling = this.nextSibling;
+    this.addSibling(siblingNode);
+    siblingNode.addSibling(nextSibling);
+
+    const allSiblings = parent.children;
+    const index = allSiblings.indexOf(this);
+    if (index === -1) throw new Error('Could not find child');
+    allSiblings.splice(index + 1, 0, siblingNode);
+  }
+
   public getFirstChild(): IntermediateASTNode {
     return this.children[0];
   }
@@ -160,6 +175,10 @@ export abstract class IntermediateASTNode {
     return;
   }
 
+  addToSymbolTable(_symbolTableManager: SymbolTableManager): void {
+    throw new Error('Method not implemented.');
+  }
+
   static isIntermediateASTNodeValidationError(
     value: void | IntermediateASTNodeValidationError,
   ): value is IntermediateASTNodeValidationError {
@@ -168,12 +187,11 @@ export abstract class IntermediateASTNode {
     }
     return false;
   }
-
   getStatementListNode(): StatementListNode | null {
     return this.getChildNodeByType(BitloopsTypesMapping.TStatements) as StatementListNode;
   }
 
-  IsStatementListNode(): boolean {
+  IsStatementListNode(): this is StatementListNode {
     return this.nodeType === BitloopsTypesMapping.TStatements;
   }
 
@@ -193,5 +211,25 @@ export abstract class IntermediateASTNode {
   ): Array<T> | [] {
     const children = this.getChildren();
     return (children.filter((child) => child.getNodeType() === nodeType) as T[]) ?? null;
+  }
+
+  protected getChildNodeByClassNodeName<T extends IntermediateASTNode>(
+    classNodeName: string,
+  ): T | null {
+    const children = this.getChildren();
+    return (children.find((child) => child.getClassNodeName() === classNodeName) as T) ?? null;
+  }
+
+  protected getFirstParentNodeByType<T extends IntermediateASTNode>(
+    nodeType: TBitloopsTypesValues,
+  ): T | null {
+    let parent = this.getParent();
+    while (!parent.isRoot()) {
+      if (parent.getNodeType() === nodeType) {
+        return parent as T;
+      }
+      parent = parent.getParent();
+    }
+    return null;
   }
 }

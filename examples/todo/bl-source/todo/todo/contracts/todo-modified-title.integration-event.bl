@@ -7,9 +7,9 @@ Struct IntegrationTodoModifiedTitleSchemaV1 {
 IntegrationEvent TodoModifiedTitleIntegrationEvent(event: TodoTitleModifiedDomainEvent) {  
     'v1' : IntegrationTodoModifiedTitleSchemaV1 {
         const todoTitleModified = IntegrationTodoModifiedTitleSchemaV1({
-            todoId: event.payload.aggregateId,
-            title: event.payload.title,
-            userId: event.payload.userId
+            todoId: event.aggregateId,
+            title: event.title,
+            userId: event.userId
         });
         return todoTitleModified;
     }

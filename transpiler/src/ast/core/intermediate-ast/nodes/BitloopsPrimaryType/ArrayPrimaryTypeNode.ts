@@ -10,4 +10,11 @@ export class ArrayPrimaryTypeNode extends BitloopsPrimaryTypeNode {
     this.classNodeName = ArrayPrimaryTypeNode.arrayClassNodeName;
     this.nodeType = BitloopsTypesMapping.ArrayBitloopsPrimType;
   }
+
+  getPrimaryTypeNode(): BitloopsPrimaryTypeNode {
+    const primaryType = this.getChildNodeByType<BitloopsPrimaryTypeNode>(
+      BitloopsTypesMapping.TBitloopsPrimaryType,
+    );
+    return primaryType;
+  }
 }

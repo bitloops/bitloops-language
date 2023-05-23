@@ -1,7 +1,12 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { TInferredTypes } from '../../../../../semantic-analysis/type-inference/types.js';
+import { TBitloopsPrimaryType, bitloopsPrimaryTypeKey } from '../../../../../types.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
+import { ArrayPrimaryTypeNode } from './ArrayPrimaryTypeNode.js';
 import { BitloopsIdentifierTypeNode } from './BitloopsIdentifierTypeNode.js';
+import { BuiltInClassTypeNode } from './BuildInClassTypeNode.js';
 import { PrimitiveTypeNode } from './PrimitiveTypeNode.js';
+import { StandardValueTypeNode } from './StandardValueTypeNode.js';
 
 export class BitloopsPrimaryTypeNode extends IntermediateASTNode {
   private static classNodeName = 'type';
@@ -22,6 +27,18 @@ export class BitloopsPrimaryTypeNode extends IntermediateASTNode {
     return this.getNodeType() === BitloopsTypesMapping.TBitloopsIdentifier;
   }
 
+  isBuiltInClassType(): this is BuiltInClassTypeNode {
+    return this.getNodeType() === BitloopsTypesMapping.TBitloopsBuiltInClasses;
+  }
+
+  isArrayPrimaryType(): this is ArrayPrimaryTypeNode {
+    return this.getNodeType() === BitloopsTypesMapping.ArrayBitloopsPrimType;
+  }
+
+  isStandardValueType(): this is StandardValueTypeNode {
+    return this.getNodeType() === BitloopsTypesMapping.TStandardValueType;
+  }
+
   isPrimaryWithPrimitiveTypeChild(): boolean {
     if (this.getNodeType() !== BitloopsTypesMapping.TBitloopsPrimaryType) {
       return false;
@@ -40,6 +57,10 @@ export class BitloopsPrimaryTypeNode extends IntermediateASTNode {
       BitloopsTypesMapping.TBitloopsIdentifier,
     );
     return !!child;
+  }
+
+  getBuiltInClassName(): string {
+    return this.getValue().type.builtInClassType;
   }
 
   getPrimitiveTypeNode(): PrimitiveTypeNode {
@@ -70,6 +91,17 @@ export class BitloopsPrimaryTypeNode extends IntermediateASTNode {
       return bitloopsIdentifierTypeNode.isRepoPortIdentifier();
     } catch (error) {
       return false;
+    }
+  }
+
+  public getInferredType(): TInferredTypes {
+    if (this.isArrayPrimaryType()) {
+      const primaryTypeNode = this.getPrimaryTypeNode();
+      return primaryTypeNode.getInferredType();
+    } else {
+      const childType = (this.getValue() as TBitloopsPrimaryType)[bitloopsPrimaryTypeKey];
+      const childValue = Object.values(childType)[0];
+      return childValue;
     }
   }
 }

@@ -1,0 +1,29 @@
+DomainService MarketingNotificationDomainService (notificationTemplateRepo: NotificationTemplateReadRepoPort) {
+
+    public getNotificationTemplateToBeSent(user: UserEntity): (OK(NotificationTemplateInput), Errors()) {
+        const emailOrigin = 'marketing@bitloops.com';
+        notificationTemplate: NotificationTemplateReadModel;
+        if (user.isFirstTodo()) {
+          const notificationTemplateResponse = this.notificationTemplateRepo.getByType(
+              'firstTodo'
+            ).ifError();
+          
+          notificationTemplate = notificationTemplateResponse;
+        } else {
+          notificationTemplate = null;
+        }
+        return NotificationTemplateInput({ emailOrigin : emailOrigin, notificationTemplate : notificationTemplate });
+    }
+}
+
+RepoPort NotificationTemplateReadRepoPort<NotificationTemplateReadModel> extends CRUDReadRepoPort {
+  getByType(type: string): (OK(NotificationTemplateReadModel),Errors());
+};
+
+Root Entity UserEntity {
+  static create(props: UserProps): (OK(UserProps), Errors())  {
+  }
+
+  public isFirstTodo(): bool {
+  }
+}

@@ -25,6 +25,7 @@ import { ParameterListNode } from '../ParameterList/ParameterListNode.js';
 import { StatementNode } from '../statements/Statement.js';
 import { ExecuteNode } from '../ExecuteNode.js';
 import { ParameterNode } from '../ParameterList/ParameterNode.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 
 export class QueryHandlerNode extends ClassTypeNode {
   private static classType = ClassTypes.QueryHandler;
@@ -56,5 +57,40 @@ export class QueryHandlerNode extends ClassTypeNode {
       BitloopsTypesMapping.TParameterList,
     );
     return parameterListNode.getParameters();
+  }
+
+  getExecute(): ExecuteNode {
+    return this.getChildNodeByType<ExecuteNode>(BitloopsTypesMapping.TExecute);
+  }
+
+  getMethodParameters(): ParameterNode[] {
+    const commandHandlerExecute = this.getChildNodeByType<ExecuteNode>(
+      BitloopsTypesMapping.TExecute,
+    );
+    const parameter = commandHandlerExecute.getParameter();
+    if (!parameter) return [];
+    return [parameter];
+  }
+
+  getParameterList(): ParameterListNode {
+    return this.getChildNodeByType<ParameterListNode>(BitloopsTypesMapping.TParameterList);
+  }
+
+  getFieldNodeType(identifier: string): string {
+    const parameterListNode = this.getChildNodeByType<ParameterListNode>(
+      BitloopsTypesMapping.TParameterList,
+    );
+    return parameterListNode.getParameterNodeType(identifier);
+  }
+
+  addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    symbolTableManager.addClassTypeThis(this.getIdentifier().getIdentifierName());
+    symbolTableManager.addIntegrationEventBus();
+
+    const parameterList = this.getParameterList();
+    parameterList.addClassTypeParametersToSymbolTable(symbolTableManager);
+
+    const execute = this.getExecute();
+    execute.addToSymbolTable(symbolTableManager);
   }
 }

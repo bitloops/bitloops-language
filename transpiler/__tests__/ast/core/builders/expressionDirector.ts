@@ -1,10 +1,12 @@
 import {
   TAdditiveOperator,
   TArgumentList,
+  TBitloopsPrimaryType,
   TEnvironmentVariableExpression,
   TEqualityOperator,
   TEvaluation,
   TExpression,
+  TIfErrorExpression,
   TLiteralValues,
   TMultiplicativeOperator,
   TNumericLiteral,
@@ -209,7 +211,10 @@ export class ExpressionBuilderDirector {
       argumentList,
     );
   }
-  buildIsInstanceOfExpression(expression: TExpression, className: string): TExpression {
+  buildIsInstanceOfExpression(
+    expression: TExpression,
+    className: TBitloopsPrimaryType,
+  ): TExpression {
     return {
       expression: {
         isInstanceOf: {
@@ -356,6 +361,14 @@ export class ExpressionBuilderDirector {
     return {
       expression: {
         ...evaluation,
+      },
+    };
+  }
+
+  buildIfErrorExpression(ifError: TIfErrorExpression): TExpression {
+    return {
+      expression: {
+        ...ifError,
       },
     };
   }

@@ -1,8 +1,8 @@
 import { ParameterBuilderDirector } from '../../builders/parameterDirector.js';
 import { ReturnOkErrorTypeBuilderDirector } from '../../builders/returnOkErrorTypeBuilderDirector.js';
-import { ExpressionBuilderDirector } from '../../builders/expression.js';
+import { ExpressionBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/expressionNodeBuilderDirector.js';
 import { ConstDeclarationBuilderDirector } from '../../builders/statement/constDeclaration.js';
-import { ReturnStatementBuilderDirector } from '../../builders/statement/returnDirector.js';
+import { ReturnStatementBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/returnNodeBuilderDirector.js';
 import { FileUtil } from '../../../../../../src/utils/file.js';
 import { ArgumentListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ArgumentList/ArgumentListNodeBuilder.js';
 import { ArgumentNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ArgumentList/ArgumentNodeBuilder.js';

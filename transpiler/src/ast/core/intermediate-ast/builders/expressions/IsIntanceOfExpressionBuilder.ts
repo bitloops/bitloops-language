@@ -13,8 +13,8 @@ export class IsInstanceOfExpressionNodeBuilder implements IBuilder<InstanceOfExp
     this.instanceOfEvaluationNode = new InstanceOfExpressionNode(metadata);
   }
 
-  public withExpression(domainEvaluation: ExpressionNode): IsInstanceOfExpressionNodeBuilder {
-    this.expressionNode = domainEvaluation;
+  public withExpression(expression: ExpressionNode): IsInstanceOfExpressionNodeBuilder {
+    this.expressionNode = expression;
     return this;
   }
 

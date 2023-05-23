@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { ExpressionNode } from '../Expression/ExpressionNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { StatementNode } from './Statement.js';
@@ -9,6 +10,10 @@ export class ReturnStatementNode extends StatementNode {
 
   constructor(metadata: TNodeMetadata) {
     super(BitloopsTypesMapping.TReturnStatement, metadata, ReturnStatementNode.classNodeName);
+  }
+
+  getExpression(): ExpressionNode | null {
+    return this.getChildNodeByType<ExpressionNode>(BitloopsTypesMapping.TExpression);
   }
 
   getExpressionValues(): ExpressionNode | null {
@@ -79,5 +84,11 @@ export class ReturnStatementNode extends StatementNode {
       return expressionOfDeclaredIdentifier;
     }
     return null;
+  }
+
+  public addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const expression = this.getExpressionValues();
+    const symbolTable = symbolTableManager.getSymbolTable();
+    expression.typeCheck(symbolTable);
   }
 }

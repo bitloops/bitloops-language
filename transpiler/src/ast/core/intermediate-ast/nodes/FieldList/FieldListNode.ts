@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { TBitloopsPrimitives, TValueObjectIdentifier, fieldsKey } from '../../../../../types.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
 import { FieldNode } from './FieldNode.js';
@@ -58,5 +59,17 @@ export class FieldListNode extends IntermediateASTNode {
     }
 
     return { result: true, type: primitiveFields[0].fieldType };
+  }
+
+  public getFieldNodeType(identifier: string): string {
+    const fieldNodes = this.getFieldNodes();
+    for (const fieldNode of fieldNodes) {
+      const fieldIdentifier = fieldNode.getIdentifierValue();
+      if (fieldIdentifier === identifier) {
+        const typeNode = fieldNode.getTypeNode();
+        return typeNode.getInferredType();
+      }
+    }
+    return SymbolTableManager.UNKNOWN_TYPE;
   }
 }

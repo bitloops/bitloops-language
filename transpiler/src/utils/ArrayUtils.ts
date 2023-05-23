@@ -21,4 +21,18 @@ export class ArrayUtils {
   static isEmpty<T>(arr: Array<T>): boolean {
     return arr.length === 0;
   }
+
+  static toObject<T extends string | number | symbol>(
+    arr: Array<T>,
+  ): {
+    [key in T]: T;
+  } {
+    const obj = arr.reduce(
+      (arr, value) => ({ ...arr, [value]: value }),
+      {} as {
+        [key in T]: T;
+      },
+    );
+    return obj;
+  }
 }

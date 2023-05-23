@@ -18,6 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { TClassTypesValues } from './helpers/mappings.js';
+import { ArrayUtils } from './utils/ArrayUtils.js';
 
 export type TClassName = string;
 
@@ -77,7 +78,7 @@ export type TParameterIdentifier = string;
 export type TParameter = {
   parameter: {
     value: TParameterIdentifier;
-  } & TParameterType;
+  } & Partial<TParameterType>;
 };
 
 export type TParameterList = {
@@ -120,6 +121,11 @@ export const bitloopsPrimitives = [
   'regex',
   'void',
 ] as const;
+
+export const bitloopsPrimitivesObj = ArrayUtils.toObject<TBitloopsPrimitives>([
+  ...bitloopsPrimitives,
+]);
+
 export type TBitloopsPrimitives = typeof bitloopsPrimitives[number]; //'string' | 'bool' | 'number';
 
 export const BitloopsBuiltInClassNames = {
@@ -137,9 +143,9 @@ export type TBitloopsPrimitivesObject = {
   [primitivesTypeKey]: TBitloopsPrimitives;
 };
 
-export const buildInClassTypeKey = 'buildInClassType';
+export const builtInClassTypeKey = 'builtInClassType';
 export type TBitloopsBuiltInClassesObject = {
-  [buildInClassTypeKey]: TBitloopsBuiltInClasses;
+  [builtInClassTypeKey]: TBitloopsBuiltInClasses;
 };
 
 export type TStandardValueType = {
@@ -220,7 +226,7 @@ export type TApplicationErrorValue = {
   Partial<TParameterList>;
 
 export type TInstanceOf = {
-  isInstanceOf: TExpression & { class: string };
+  isInstanceOf: TExpression & { class: TBitloopsPrimaryType };
 };
 
 export type TPropsEvaluation = {
@@ -402,7 +408,20 @@ export type TExpressionValues =
   | TInstanceOf
   | TGetClass
   | TEnvironmentVariableExpression
-  | TObjectLiteral;
+  | TObjectLiteral
+  | TIfErrorExpression;
+
+export type TIfErrorExpression = {
+  ifErrorExpression: TExpression & Partial<TAnonymousFunction>;
+};
+
+export type TStatementsObj = { statements: TStatements };
+
+export type TAnonymousFunction = {
+  anonymousFunction: {
+    arrowFunctionBody: TReturnStatement | TStatementsObj;
+  } & TParameterList;
+};
 
 export type TAssignmentExpression = {
   assignmentExpression: {

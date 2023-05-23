@@ -1,6 +1,6 @@
 import { IBuilder } from '../IBuilder.js';
 import { ExpressionNode } from '../../nodes/Expression/ExpressionNode.js';
-import { ToStringNode } from '../../nodes/Expression/ToString.js';
+import { ToStringNode } from '../../nodes/Expression/ToStringNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 
 export class ToStringBuilder implements IBuilder<ToStringNode> {

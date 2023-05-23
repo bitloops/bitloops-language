@@ -1,4 +1,4 @@
-import { ExpressionBuilderDirector } from '../../builders/expression.js';
+import { ExpressionBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/expressionNodeBuilderDirector.js';
 
 export const VALID_INSTANCE_OF_TEST_CASES = [
   {

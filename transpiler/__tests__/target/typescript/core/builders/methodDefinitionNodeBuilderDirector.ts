@@ -4,7 +4,7 @@ import { BitloopsPrimaryTypeNode } from '../../../../../src/ast/core/intermediat
 import { MethodDefinitionNode } from '../../../../../src/ast/core/intermediate-ast/nodes/method-definitions/MethodDefinitionNode.js';
 import { ParameterNode } from '../../../../../src/ast/core/intermediate-ast/nodes/ParameterList/ParameterNode.js';
 import { ReturnOkErrorTypeNode } from '../../../../../src/ast/core/intermediate-ast/nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
-import { ParameterListBuilderDirector } from './parameterListDirector.js';
+import { ParameterListNodeBuilderDirector } from '../../../../../src/ast/core/intermediate-ast/directors/parameterListNodeBuilderDirector.js';
 
 export class MethodDefinitionNodeBuilderDirector {
   private builder: MethodDefinitionNodeBuilder;
@@ -23,7 +23,7 @@ export class MethodDefinitionNodeBuilderDirector {
     type: BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode;
   }): MethodDefinitionNode {
     const identifierNode = new IdentifierNodeBuilder().withName(methodName).build();
-    const parameterListNode = new ParameterListBuilderDirector().buildParams(...parameters);
+    const parameterListNode = new ParameterListNodeBuilderDirector().buildParams(...parameters);
 
     return this.builder
       .withIdentifier(identifierNode)

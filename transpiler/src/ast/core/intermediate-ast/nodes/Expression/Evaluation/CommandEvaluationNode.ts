@@ -10,4 +10,9 @@ export class CommandEvaluationNode extends EvaluationNode {
     this.nodeType = BitloopsTypesMapping.TCommandEvaluation;
     this.classNodeName = CommandEvaluationNode.commandNodeName;
   }
+
+  public getInferredType(): string {
+    const commandEvaluationIdentifier = this.getIdentifierNode().getValue().identifier;
+    return commandEvaluationIdentifier;
+  }
 }

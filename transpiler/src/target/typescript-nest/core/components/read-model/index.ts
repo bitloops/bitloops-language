@@ -28,7 +28,7 @@ import {
 } from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
-import { isArray, isUndefined } from '../../../../../helpers/typeGuards.js';
+import { isArray, isUndefined } from '../../../../../helpers/typeGuards/typeGuards.js';
 import { getParentDependencies } from '../../dependencies.js';
 
 const readModelToTargetLanguage = (readModel: TReadModel): TTargetDependenciesTypeScript => {

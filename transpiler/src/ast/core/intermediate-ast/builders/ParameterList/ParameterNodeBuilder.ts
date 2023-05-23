@@ -6,7 +6,7 @@ import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
 
 export class ParameterNodeBuilder implements IBuilder<ParameterNode> {
   private parameterNode: ParameterNode;
-  private parameterTypeNode: BitloopsPrimaryTypeNode;
+  private parameterTypeNode?: BitloopsPrimaryTypeNode;
   private parameterIdentifierNode: ParameterIdentifierNode;
 
   constructor(metadata?: TNodeMetadata) {
@@ -24,8 +24,10 @@ export class ParameterNodeBuilder implements IBuilder<ParameterNode> {
   }
 
   public build(): ParameterNode {
-    this.parameterNode.addChild(this.parameterTypeNode);
     this.parameterNode.addChild(this.parameterIdentifierNode);
+    if (this.parameterTypeNode) {
+      this.parameterNode.addChild(this.parameterTypeNode);
+    }
     this.parameterNode.buildObjectValue();
 
     return this.parameterNode;

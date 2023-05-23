@@ -1,4 +1,3 @@
-import { ExpressionNode } from '../../nodes/Expression/ExpressionNode.js';
 import { LeftExpressionNode } from '../../nodes/Expression/leftExpressionNode.js';
 import { OperatorNode } from '../../nodes/Expression/OperatorNode.js';
 import { EqualityExpressionNode } from '../../nodes/Expression/equalityExpressionNode.js';
@@ -18,11 +17,11 @@ export class EqualityExpressionBuilder implements IBuilder<EqualityExpressionNod
     this.equalityExpressionNode = new EqualityExpressionNode(metadata);
   }
 
-  public withLeftExpression(expressionNode: ExpressionNode): EqualityExpressionBuilder {
+  public withLeftExpression(expressionNode: LeftExpressionNode): EqualityExpressionBuilder {
     this.leftExpressionNode = expressionNode;
     return this;
   }
-  public withRightExpression(expressionNode: ExpressionNode): EqualityExpressionBuilder {
+  public withRightExpression(expressionNode: RightExpressionNode): EqualityExpressionBuilder {
     this.rightExpressionNode = expressionNode;
     return this;
   }

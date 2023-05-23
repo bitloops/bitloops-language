@@ -7,6 +7,10 @@ import { PrivateMethodDeclarationListNode } from '../methods/PrivateMethodDeclar
 import { PublicMethodDeclarationListNode } from '../methods/PublicMethodDeclarationListNode.js';
 import { StatementNode } from '../statements/Statement.js';
 import { ReturnOkErrorTypeNode } from '../returnOkErrorType/ReturnOkErrorTypeNode.js';
+import { ParameterNode } from '../ParameterList/ParameterNode.js';
+import { PublicMethodDeclarationNode } from '../methods/PublicMethodDeclarationNode.js';
+import { PrivateMethodDeclarationNode } from '../methods/PrivateMethodDeclarationNode.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 
 export class DomainServiceNode extends ClassTypeNode {
   private static classType = ClassTypes.DomainService;
@@ -75,5 +79,59 @@ export class DomainServiceNode extends ClassTypeNode {
       });
     }
     return returnOkErrorNodes;
+  }
+
+  public getParameters(): ParameterNode[] {
+    const parameterList = this.getChildNodeByType<ParameterListNode>(
+      BitloopsTypesMapping.TParameterList,
+    );
+
+    return parameterList.getParameters();
+  }
+
+  public getParameterList(): ParameterListNode {
+    return this.getChildNodeByType<ParameterListNode>(BitloopsTypesMapping.TParameterList);
+  }
+
+  public getPublicMethods(): PublicMethodDeclarationNode[] {
+    const publicMethodList = this.getChildNodeByType<PublicMethodDeclarationListNode>(
+      BitloopsTypesMapping.TPublicMethods,
+    );
+
+    const publicMethods = publicMethodList.publicMethods;
+    return publicMethods;
+  }
+
+  public getPublicMethodList(): PublicMethodDeclarationListNode {
+    return this.getChildNodeByType<PublicMethodDeclarationListNode>(
+      BitloopsTypesMapping.TPublicMethods,
+    );
+  }
+
+  public getPrivateMethods(): PrivateMethodDeclarationNode[] {
+    const privateMethodList = this.getChildNodeByType<PrivateMethodDeclarationListNode>(
+      BitloopsTypesMapping.TPrivateMethods,
+    );
+
+    const privateMethods = privateMethodList.getPrivateMethodNodes();
+    return privateMethods;
+  }
+
+  public getPrivateMethodList(): PrivateMethodDeclarationListNode {
+    return this.getChildNodeByType<PrivateMethodDeclarationListNode>(
+      BitloopsTypesMapping.TPrivateMethods,
+    );
+  }
+
+  addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    symbolTableManager.addClassTypeThis(this.getIdentifier().getIdentifierName());
+    const parameterList = this.getParameterList();
+    parameterList.addClassTypeParametersToSymbolTable(symbolTableManager);
+
+    const publicMethodList = this.getPublicMethodList();
+    publicMethodList.addToSymbolTable(symbolTableManager);
+
+    const privateMethodList = this.getPrivateMethodList();
+    privateMethodList.addToSymbolTable(symbolTableManager);
   }
 }

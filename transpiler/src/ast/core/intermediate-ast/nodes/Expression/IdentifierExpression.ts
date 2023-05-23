@@ -1,8 +1,12 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { SymbolTable } from '../../../../../semantic-analysis/type-inference/SymbolTable.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
+import { TInferredTypes } from '../../../../../semantic-analysis/type-inference/types.js';
+import { MissingIdentifierError } from '../../../types.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ExpressionNode } from './ExpressionNode.js';
 import { InstanceOfExpressionNode } from './InstanceOfExpression.js';
-import { MemberDotExpressionNode } from './MemberDot/MemberDotExpression.js';
+import { MemberDotExpressionNode } from './MemberDot/MemberDotExpressionNode.js';
 
 export class IdentifierExpressionNode extends ExpressionNode {
   private static identifierExpressionNodeName = 'identifier';
@@ -72,5 +76,27 @@ export class IdentifierExpressionNode extends ExpressionNode {
       return false;
     }
     return true;
+  }
+
+  public getStringValue(): string {
+    return this.getIdentifierName();
+  }
+
+  public override typeCheck(symbolTable: SymbolTable): void {
+    const identifierName = this.getIdentifierName();
+    const identifierType = symbolTable.lookup(identifierName);
+    if (!identifierType) {
+      throw new MissingIdentifierError(identifierName, this.getMetadata());
+    }
+  }
+
+  public getInferredType(symbolTableManager: SymbolTableManager): TInferredTypes {
+    const symbolTable = symbolTableManager.getSymbolTable();
+    const identifierType = symbolTable.lookup(this.getIdentifierName());
+    if (!identifierType) {
+      throw new MissingIdentifierError(this.getIdentifierName(), this.getMetadata());
+    }
+
+    return identifierType.type;
   }
 }

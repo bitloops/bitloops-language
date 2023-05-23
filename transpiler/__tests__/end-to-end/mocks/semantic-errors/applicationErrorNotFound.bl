@@ -42,7 +42,7 @@ RepoPort TodoWriteRepoPort<TodoEntity> extends CRUDWriteRepoPort;
 
 CommandHandler DeleteTodoCommandHandler (todoRepo: TodoWriteRepoPort) {
   execute (deleteTodoCommand: DeleteTodoCommand): (OK(void), Errors(ApplicationErrors.ToDoNotFoundError)) {
-    const requestId = UUIDv4(requestDTO.id);
+    const requestId = UUIDv4(deleteTodoCommand.id);
 
     const todoFound = this.todoRepo.getById(requestId);
     if(NOT todoFound) {

@@ -1,8 +1,8 @@
 import { ArgumentNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ArgumentList/ArgumentNodeBuilder.js';
-import { ArgumentListDirector } from '../../builders/argumentList.js';
+import { ArgumentListDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/argumentList.js';
 import { EvaluationBuilderDirector } from '../../builders/evaluation.js';
 import { EvaluationFieldBuilderDirector } from '../../builders/evaluationFIeld.js';
-import { ExpressionBuilderDirector } from '../../builders/expression.js';
+import { ExpressionBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/expressionNodeBuilderDirector.js';
 
 export const VALID_EXPRESSION_TEST_CASES = [
   {

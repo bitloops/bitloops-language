@@ -1,6 +1,6 @@
 import { StatementListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/StatementListNodeBuilder.js';
 import { SwitchStatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/SwitchStatement/SwitchStatementNode.js';
-import { ExpressionBuilderDirector } from '../../builders/expression.js';
+import { ExpressionBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/expressionNodeBuilderDirector.js';
 import { ConstDeclarationBuilderDirector } from '../../builders/statement/constDeclaration.js';
 import { SwitchStatementBuilderDirector } from '../../builders/statement/switchDirector.js';
 

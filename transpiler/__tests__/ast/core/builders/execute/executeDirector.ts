@@ -136,6 +136,17 @@ export class ExecuteBuilderDirector {
           ),
         }),
         new StatementDirector().buildIfStatement({
+          condition: new ExpressionBuilderDirector().buildIsInstanceOfExpression(
+            new ExpressionBuilderDirector().buildIdentifierExpression('accountEntity'),
+            new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('Error'),
+          ),
+          thenStatements: [
+            new StatementDirector().buildReturnErrorStatement(
+              new ExpressionBuilderDirector().buildIdentifierExpression('accountEntity'),
+            ),
+          ],
+        }),
+        new StatementDirector().buildIfStatement({
           condition: new ExpressionBuilderDirector().buildLogicalNotExpression(
             new ExpressionBuilderDirector().buildIdentifierExpression('accountEntity'),
           ),
@@ -152,25 +163,60 @@ export class ExecuteBuilderDirector {
             ),
           ],
         }),
-        new ExpressionBuilderDirector().buildMethodCallExpression(
-          new ExpressionBuilderDirector().buildMemberExpression(
-            new ExpressionBuilderDirector().buildIdentifierExpression('accountEntity'),
-            'withdrawAmount',
-          ),
-          new ArgumentListBuilderDirector().buildMemberDotArguments([['command', 'amount']]),
-        ),
-        new ExpressionBuilderDirector().buildMethodCallExpression(
-          new ExpressionBuilderDirector().buildMemberExpression(
+        new ConstDeclarationBuilderDirector().buildConstDeclarationWithExpression({
+          name: 'result_123',
+          expression: new ExpressionBuilderDirector().buildMethodCallExpression(
             new ExpressionBuilderDirector().buildMemberExpression(
-              new ExpressionBuilderDirector().buildThisExpression(),
-              'accountRepo',
+              new ExpressionBuilderDirector().buildIdentifierExpression('accountEntity'),
+              'withdrawAmount',
             ),
-            'update',
+            new ArgumentListBuilderDirector().buildMemberDotArguments([['command', 'amount']]),
           ),
-          new ArgumentListBuilderDirector().buildArgumentListWithArgs([
-            new ArgumentBuilderDirector().buildIdentifierArgument('accountEntity'),
-          ]),
-        ),
+        }),
+        new StatementDirector().buildIfStatement({
+          condition: new ExpressionBuilderDirector().buildIsInstanceOfExpression(
+            new ExpressionBuilderDirector().buildIdentifierExpression('result_123'),
+            new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('Error'),
+          ),
+          thenStatements: [
+            new StatementDirector().buildReturnErrorStatement(
+              new ExpressionBuilderDirector().buildEvaluation(
+                new EvaluationBuilderDirector().buildErrorEvaluation(
+                  'ApplicationErrors.AccountNotFound',
+                  new ArgumentListBuilderDirector().buildMemberDotArguments([
+                    ['command', 'accountId'],
+                  ]),
+                ),
+              ),
+            ),
+          ],
+        }),
+        new ConstDeclarationBuilderDirector().buildConstDeclarationWithExpression({
+          name: 'result_123',
+          expression: new ExpressionBuilderDirector().buildMethodCallExpression(
+            new ExpressionBuilderDirector().buildMemberExpression(
+              new ExpressionBuilderDirector().buildMemberExpression(
+                new ExpressionBuilderDirector().buildThisExpression(),
+                'accountRepo',
+              ),
+              'update',
+            ),
+            new ArgumentListBuilderDirector().buildArgumentListWithArgs([
+              new ArgumentBuilderDirector().buildIdentifierArgument('accountEntity'),
+            ]),
+          ),
+        }),
+        new StatementDirector().buildIfStatement({
+          condition: new ExpressionBuilderDirector().buildIsInstanceOfExpression(
+            new ExpressionBuilderDirector().buildIdentifierExpression('result_123'),
+            new BitloopsPrimaryTypeDirector().buildIdentifierPrimaryType('Error'),
+          ),
+          thenStatements: [
+            new StatementDirector().buildReturnErrorStatement(
+              new ExpressionBuilderDirector().buildIdentifierExpression('result_123'),
+            ),
+          ],
+        }),
         new StatementDirector().buildEmptyReturnOK(),
       ])
       .build();

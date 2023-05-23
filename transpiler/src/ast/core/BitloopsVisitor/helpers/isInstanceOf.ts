@@ -33,7 +33,7 @@ export const isInstanceOfVisitor = (
 ): ExpressionNode => {
   const expression = thisVisitor.visit(ctx.expression());
 
-  const classToCompare = ctx.classTypes().getText();
+  const classToCompare = thisVisitor.visit(ctx.bitloopsPrimaryType());
   const classNode = new ClassNodeBuilder().withClass(classToCompare).build();
   const isInstanceOfNode = new IsInstanceOfExpressionNodeBuilder()
     .withClass(classNode)

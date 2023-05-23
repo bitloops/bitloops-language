@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ExpressionNode } from './ExpressionNode.js';
 export class RelationalExpressionNode extends ExpressionNode {
@@ -16,5 +17,20 @@ export class RelationalExpressionNode extends ExpressionNode {
       return expressions as ExpressionNode[];
     }
     return expressions[num] as ExpressionNode;
+  }
+
+  getLeftExpression(): ExpressionNode {
+    return (this.getExpressions(0) as ExpressionNode).getChildren()[0] as ExpressionNode;
+  }
+
+  getRightExpression(): ExpressionNode {
+    return (this.getExpressions(1) as ExpressionNode).getChildren()[0] as ExpressionNode;
+  }
+
+  public addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const leftExpression = this.getLeftExpression();
+    const rightExpression = this.getRightExpression();
+    leftExpression.addToSymbolTable(symbolTableManager);
+    rightExpression.addToSymbolTable(symbolTableManager);
   }
 }

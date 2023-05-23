@@ -1,4 +1,6 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { TInferredTypes } from '../../../../../semantic-analysis/type-inference/types.js';
+import { StringUtils } from '../../../../../utils/StringUtils.js';
 import { BitloopsPrimaryTypeNode } from '../BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 import { ErrorIdentifiersNode } from '../ErrorIdentifiers/ErrorIdentifiersNode.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
@@ -42,5 +44,22 @@ export class ReturnOkErrorTypeNode extends IntermediateASTNode {
       }
     }
     return false;
+  }
+
+  getInferredType(): TInferredTypes {
+    const returnOk = this.getReturnOkType();
+    const returnOkType = returnOk.getBitloopsPrimaryType();
+    const okInferredType = returnOkType.getInferredType();
+
+    const errorIdentifierNodes = this.getReturnErrorsType().getErrorIdentifierNodes();
+    let errorsString = '';
+    for (const errorIdentifierNode of errorIdentifierNodes) {
+      const errorIdentifier = errorIdentifierNode.getIdentifierName();
+      errorsString += `${errorIdentifier} |`;
+    }
+    if (errorsString.length > 0) {
+      errorsString = StringUtils.removeLastCharactersOfString(errorsString, 2);
+    }
+    return `(OK(${okInferredType}), Errors(${errorsString}))`;
   }
 }

@@ -149,6 +149,7 @@ Throws:                         'throws';
 ApplyRules:                     'applyRules';
 AddDomainEvent:                 'addDomainEvent';
 CorsOptions:                    'corsOptions';
+IfError:                        'ifError';
 
 Extends:                        'extends';
 Const:                          'const';
@@ -277,8 +278,6 @@ ToString: 'toString';
 // Ext.2 Additions to 1.8: Decorators
 //
 At: '@';
-
-ErrorClass: 'Error';
 
 /// Identifier Names and Identifiers
 DTOIdentifier:                  UpperCaseStart IdentifierPart* DTO;

@@ -1,6 +1,6 @@
 DomainEventHandler TodoCreatedDomainEventHandler() {
     handle(event: TodoCreatedDomainEvent): (OK(void), Errors()) {
-      this.commandBus.send(command);
+      this.commandBus.send(event);
     }
   }
 
@@ -43,6 +43,11 @@ IntegrationEventHandler MoneyDepositedIntegrationEventHandler() {
     
     handle(event: [banking][banking]MoneyDepositedIntegrationEvent): (OK(void), Errors()) {
   
+      const command = SendEmailCommand.create({
+        to: 'event.accountHolderEmail',
+        subject: 'Money deposited',
+        body: 'Money deposited to your account'
+      });
       this.commandBus.send(command);
     }
 }

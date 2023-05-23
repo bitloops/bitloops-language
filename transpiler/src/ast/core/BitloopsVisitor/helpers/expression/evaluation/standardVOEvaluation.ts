@@ -20,21 +20,21 @@
 
 import BitloopsVisitor from '../../../BitloopsVisitor.js';
 import BitloopsParser from '../../../../../../parser/core/grammar/BitloopsParser.js';
-import { DTOEvaluationNode } from '../../../../intermediate-ast/nodes/Expression/Evaluation/DTOEvaluation.js';
 import { StandardVOEvaluationNodeBuilder } from '../../../../intermediate-ast/builders/expressions/evaluation/StandardVOEvaluationNodeBuilder.js';
 import { IdentifierNode } from '../../../../intermediate-ast/nodes/identifier/IdentifierNode.js';
+import { StandardVOEvaluationNode } from '../../../../intermediate-ast/nodes/Expression/Evaluation/StandardVOEvaluationNode.js';
 
 export const standardVOEvaluationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.StandardVOEvaluationContext,
-): DTOEvaluationNode => {
-  const dtoIdentifierNode: IdentifierNode = thisVisitor.visit(ctx.upperCaseIdentifier());
+): StandardVOEvaluationNode => {
+  const standardVOIdentifier: IdentifierNode = thisVisitor.visit(ctx.upperCaseIdentifier());
   const fieldList = thisVisitor.visit(ctx.evaluationFieldList());
 
-  const dtoEvaluationNode = new StandardVOEvaluationNodeBuilder()
-    .withIdentifier(dtoIdentifierNode)
+  const standardVOEvaluationNode = new StandardVOEvaluationNodeBuilder()
+    .withIdentifier(standardVOIdentifier)
     .withEvaluationFieldList(fieldList)
     .build();
 
-  return dtoEvaluationNode;
+  return standardVOEvaluationNode;
 };

@@ -1,6 +1,6 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { IntermediateASTNode } from '../IntermediateASTNode.js';
-import { VariableDeclarationNode } from '../variableDeclaration.js';
+import { VariableDeclarationNode } from './variableDeclaration.js';
 import { ConstDeclarationNode } from './ConstDeclarationNode.js';
 import { ExpressionNode } from '../Expression/ExpressionNode.js';
 
@@ -28,6 +28,17 @@ export abstract class StatementNode extends IntermediateASTNode {
 
     return false;
   };
+
+  getExpression(): ExpressionNode | null {
+    const children = this.getChildren();
+    const expression = children.find(
+      (child) => child.getNodeType() === BitloopsTypesMapping.TExpression,
+    );
+    if (!expression) {
+      return null;
+    }
+    return expression as ExpressionNode;
+  }
 
   isExpressionNode(): this is ExpressionNode {
     return this.getNodeType() === BitloopsTypesMapping.TExpression;

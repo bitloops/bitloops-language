@@ -1,7 +1,7 @@
 import { ArgumentListNode } from '../../../../../src/ast/core/intermediate-ast/nodes/ArgumentList/ArgumentListNode.js';
 import { ArgumentDirector } from '../builders/argument.js';
-import { ArgumentListDirector } from '../builders/argumentList.js';
-import { ExpressionBuilderDirector } from '../builders/expression.js';
+import { ArgumentListDirector } from '../../../../../src/ast/core/intermediate-ast/directors/argumentList.js';
+import { ExpressionBuilderDirector } from '../../../../../src/ast/core/intermediate-ast/directors/expressionNodeBuilderDirector.js';
 
 type TestCase = {
   description: string;

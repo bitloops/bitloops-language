@@ -113,7 +113,7 @@ const BitloopsTypesMapping = {
   TXorExpression: 'TXorExpression',
   TParenthesizedExpression: 'TParenthesizedExpression',
   TVariableDeclaration: 'TVariableDeclaration',
-  TExpressionValues: ' TExpressionValues',
+  TExpressionValues: 'TExpressionValues',
   TDomainRule: 'TDomainRule',
   TEntityCreate: 'TEntityCreate',
   TBuiltInFunction: 'TBuiltInFunction',
@@ -138,7 +138,7 @@ const BitloopsTypesMapping = {
   TBitloopsPrimitives: 'TBitloopsPrimitives',
   ArrayBitloopsPrimType: 'ArrayBitloopsPrimType',
   TBitloopsIdentifier: 'TBitloopsIdentifier',
-  TBitloopsBuildInClasses: 'TBitloopsBuildInClasses',
+  TBitloopsBuiltInClasses: 'TBitloopsBuiltInClasses',
   TStandardValueType: 'TStandardValueType',
   TStandardVOType: 'TStandardVOType',
   TMethodCallExpression: 'TMethodCallExpression',
@@ -219,6 +219,9 @@ const BitloopsTypesMapping = {
   TPortToken: 'TPortToken',
   TMetadata: 'TMetadata',
   THandle: 'THandle',
+  TIfErrorExpression: 'TIfErrorExpression',
+  TAnonymousFunction: 'TAnonymousFunction',
+  TArrowFunctionBody: 'TArrowFunctionBody',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;

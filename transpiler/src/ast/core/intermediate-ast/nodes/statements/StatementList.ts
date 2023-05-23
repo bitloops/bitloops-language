@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { ExpressionNode } from '../Expression/ExpressionNode.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
 import { ReturnOKStatementNode } from './ReturnOKStatementNode.js';
@@ -43,5 +44,11 @@ export class StatementListNode extends IntermediateASTNode {
     return this.getChildrenNodesByType(
       BitloopsTypesMapping.TReturnOKStatement,
     ) as ReturnOKStatementNode[];
+  }
+
+  addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    for (const statement of this.statements) {
+      statement.addToSymbolTable(symbolTableManager);
+    }
   }
 }

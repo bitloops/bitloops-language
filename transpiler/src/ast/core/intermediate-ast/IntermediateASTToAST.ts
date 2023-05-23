@@ -19,6 +19,8 @@ import { ServicePortNode } from './nodes/service-port/ServicePortNode.js';
 import { ServicePortNodeTransformer } from './node-transformers/ServicePortNodeTransformer.js';
 import { DomainServiceNode } from './nodes/domain-service/DomainServiceNode.js';
 import { DomainServiceNodeTransformer } from './node-transformers/DomainServiceNodeTransformer.js';
+import { IfErrorExpressionNode } from './nodes/Expression/IfErrorExpressionNode.js';
+import { IfErrorExpressionNodeTransformer } from './node-transformers/IfErrorExpressionNodeTransformer.js';
 
 export class IntermediateASTToCompletedIntermediateASTTransformer {
   complete(intermediateAST: IntermediateAST): IntermediateAST {
@@ -47,6 +49,8 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
           }
         });
         treeUpdated.buildValueRecursiveBottomUp(rootNode);
+        // Uncomment to validate parent refs and prevent bugs from model-to-model transformations
+        // treeUpdated.validateParentRefs();
 
         if (!boundedContexts) {
           boundedContexts = {
@@ -75,6 +79,10 @@ export class IntermediateASTToCompletedIntermediateASTTransformer {
     const type: TNodeType = intermediateASTNode.getNodeType();
 
     switch (type) {
+      case BitloopsTypesMapping.TIfErrorExpression: {
+        const ifErrorExpressionNode = intermediateASTNode as IfErrorExpressionNode;
+        return new IfErrorExpressionNodeTransformer(intermediateASTTree, ifErrorExpressionNode);
+      }
       case BitloopsTypesMapping.TOkErrorReturnType: {
         const returnOkErrorNode = intermediateASTNode as ReturnOkErrorTypeNode;
         return new ReturnOKErrorNodeTransformer(intermediateASTTree, returnOkErrorNode);

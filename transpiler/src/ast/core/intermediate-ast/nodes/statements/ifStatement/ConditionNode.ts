@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
+import { SymbolTableManager } from '../../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { ExpressionNode } from '../../Expression/ExpressionNode.js';
 import { IntermediateASTNode, TNodeMetadata } from '../../IntermediateASTNode.js';
 
@@ -11,5 +12,9 @@ export class ConditionNode extends IntermediateASTNode {
 
   get expression(): ExpressionNode {
     return this.getChildren()[0] as ExpressionNode;
+  }
+
+  addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    this.expression.addToSymbolTable(symbolTableManager);
   }
 }

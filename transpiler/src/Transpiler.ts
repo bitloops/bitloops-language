@@ -2,28 +2,23 @@ import {
   isIntermediateASTValidationErrors,
   isOriginalParserOrIntermediateASTError,
 } from './ast/core/guards/index.js';
-import {
-  IIntermediateASTParser,
-  IIntermediateASTValidator,
-  IntermediateAST,
-  IntermediateASTError,
-  IntermediateASTValidationError,
-} from './ast/core/types.js';
+import { IIntermediateASTParser, IntermediateAST, ValidationError } from './ast/core/types.js';
 import { isParserErrors } from './parser/core/guards/index.js';
 import {
   IOriginalParser,
   OriginalAST,
-  type OriginalParserError,
+  type ParserSyntacticErrors,
   TParserInputData,
 } from './parser/index.js';
-import { ITargetGenerator, TargetGeneratorError, TOutputTargetContent } from './target/types.js';
+import { ITargetGenerator, TOutputTargetContent } from './target/types.js';
 import { isTargetGeneratorError } from './target/typescript-nest/guards/index.js';
-import type { TTranspileError, TTranspileOptions, TTranspileOutput } from './transpilerTypes.js';
+import type { TranspilerErrors, TTranspileOptions, TTranspileOutput } from './transpilerTypes.js';
+import { TSymbolTableSemantics } from './semantic-analysis/type-inference/types.js';
+import { SemanticAnalyzer } from './semantic-analysis/IntermediateASTValidator.js';
 
 export default class Transpiler {
   constructor(
     private parser: IOriginalParser,
-    private validator: IIntermediateASTValidator,
     private originalLanguageASTToIntermediateModelTransformer: IIntermediateASTParser,
     private intermediateASTModelToTargetLanguageGenerator: ITargetGenerator,
   ) {}
@@ -31,7 +26,7 @@ export default class Transpiler {
   public transpile(
     transpileInputData: TParserInputData,
     options: TTranspileOptions,
-  ): TTranspileOutput | TTranspileError[] {
+  ): TTranspileOutput | TranspilerErrors {
     const intermediateModel = this.bitloopsCodeToIntermediateModel(transpileInputData);
     if (isOriginalParserOrIntermediateASTError(intermediateModel)) {
       return intermediateModel;
@@ -43,16 +38,12 @@ export default class Transpiler {
       options,
     );
 
-    if (isTargetGeneratorError(targetCode)) {
-      return targetCode;
-    }
-
     return targetCode;
   }
 
   public bitloopsCodeToIntermediateModel(
     transpileInputData: TParserInputData,
-  ): IntermediateAST | OriginalParserError | IntermediateASTError {
+  ): IntermediateAST | TranspilerErrors {
     const originalAST = this.bitloopsCodeToOriginalAST(transpileInputData);
     if (isParserErrors(originalAST)) {
       return originalAST;
@@ -64,9 +55,22 @@ export default class Transpiler {
     return validatedIntermediateModel;
   }
 
+  public getSymbolTable(
+    inputData: TParserInputData,
+  ): ParserSyntacticErrors | TSymbolTableSemantics {
+    const originalAST = this.bitloopsCodeToOriginalAST(inputData);
+    if (isParserErrors(originalAST)) {
+      return originalAST;
+    }
+
+    const ast = this.originalASTToIntermediateModel(originalAST);
+    const validator = new SemanticAnalyzer();
+    return validator.getSymbolTable(ast);
+  }
+
   private bitloopsCodeToOriginalAST(
     parseInputData: TParserInputData,
-  ): OriginalAST | OriginalParserError {
+  ): OriginalAST | ParserSyntacticErrors {
     return this.parser.parse(parseInputData);
   }
 
@@ -77,14 +81,15 @@ export default class Transpiler {
   private intermediateASTModelToTargetLanguage(
     ASTModel: IntermediateAST,
     options: TTranspileOptions,
-  ): TOutputTargetContent | TargetGeneratorError[] {
+  ): TOutputTargetContent {
     return this.intermediateASTModelToTargetLanguageGenerator.generate(ASTModel, options);
   }
 
   private validateIntermediateModel(
     intermediateModel: IntermediateAST,
-  ): IntermediateASTValidationError[] | IntermediateAST {
-    const validationResult = this.validator.validate(intermediateModel);
+  ): ValidationError[] | IntermediateAST {
+    const validator = new SemanticAnalyzer();
+    const validationResult = validator.validate(intermediateModel);
     if (isIntermediateASTValidationErrors(validationResult)) {
       return validationResult;
     }
@@ -95,9 +100,10 @@ export default class Transpiler {
     return this.originalLanguageASTToIntermediateModelTransformer.complete(intermediateModel);
   }
 
+  // TODO: remove duplication of transpile errors
   static isTranspileError(
-    value: TOutputTargetContent | TTranspileError[],
-  ): value is TTranspileError[] {
+    value: TOutputTargetContent | TranspilerErrors,
+  ): value is TranspilerErrors {
     if (
       !isParserErrors(value) &&
       !isIntermediateASTValidationErrors(value) &&
@@ -106,5 +112,9 @@ export default class Transpiler {
       return false;
     }
     return true;
+  }
+
+  static isTranspilerError(value: any): value is TranspilerErrors {
+    return Array.isArray(value) && value.every((v) => v instanceof Error);
   }
 }

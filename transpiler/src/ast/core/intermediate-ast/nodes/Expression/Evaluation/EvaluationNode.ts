@@ -2,6 +2,13 @@ import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { ExpressionNode } from '../ExpressionNode.js';
 import { TNodeMetadata } from '../../IntermediateASTNode.js';
 import { ErrorEvaluationNode } from './ErrorEvaluation.js';
+import { TInferredTypes } from '../../../../../../semantic-analysis/type-inference/types.js';
+import { IdentifierNode } from '../../identifier/IdentifierNode.js';
+import { EvaluationFieldNode } from './EvaluationFieldList/EvaluationFieldNode.js';
+import { EvaluationFieldListNode } from './EvaluationFieldList/EvaluationFieldListNode.js';
+import { ArgumentNode } from '../../ArgumentList/ArgumentNode.js';
+import { ArgumentListNode } from '../../ArgumentList/ArgumentListNode.js';
+import { SymbolTableManager } from '../../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 
 export class EvaluationNode extends ExpressionNode {
   private static evaluationNodeName = 'evaluation';
@@ -19,6 +26,10 @@ export class EvaluationNode extends ExpressionNode {
   isDomainServiceEvaluation(): boolean {
     return this.getNodeType() === BitloopsTypesMapping.TDomainServiceEvaluation;
   }
+  isPackageEvaluation(): boolean {
+    return this.getNodeType() === BitloopsTypesMapping.TPackageEvaluation;
+  }
+
   isEntityEvaluation(): boolean {
     return this.getNodeType() === BitloopsTypesMapping.TEntityEvaluation;
   }
@@ -26,14 +37,60 @@ export class EvaluationNode extends ExpressionNode {
     return this.getChildren()[0] as EvaluationNode;
   }
 
-  // isErrorEvaluation(): this is  {
-  //   throw new Error('Not implemeneted');
-  // }
+  getIdentifierNode(): IdentifierNode {
+    return this.getChildNodeByType<IdentifierNode>(BitloopsTypesMapping.TIdentifier);
+  }
 
-  // isDTOEvaluation(): this is  {
-  //   throw new Error('Not implemeneted');
-  // }
-  // isValueObjectEvaluation(): this is {
-  //   throw new Error('Not implemeneted');
-  // }
+  getEvaluationFields(): EvaluationFieldNode[] {
+    const evaluationFieldList = this.getEvaluationFieldList();
+    if (!evaluationFieldList) return [];
+
+    return evaluationFieldList.getFields();
+  }
+
+  getEvaluationFieldList(): EvaluationFieldListNode {
+    const evaluationChild = this.getFirstChild() as EvaluationNode;
+    const evaluationFieldList = evaluationChild.getChildNodeByType<EvaluationFieldListNode>(
+      BitloopsTypesMapping.TEvaluationFields,
+    );
+
+    return evaluationFieldList;
+  }
+
+  getArguments(): ArgumentNode[] {
+    const evaluationChild = this.getFirstChild() as EvaluationNode;
+    const argumentList = evaluationChild.getChildNodeByType<ArgumentListNode>(
+      BitloopsTypesMapping.TArgumentList,
+    );
+    if (!argumentList) return [];
+    return argumentList.arguments;
+  }
+
+  getArgumentList(): ArgumentListNode {
+    const evaluationChild = this.getFirstChild() as EvaluationNode;
+    const argumentList = evaluationChild.getChildNodeByType<ArgumentListNode>(
+      BitloopsTypesMapping.TArgumentList,
+    );
+    return argumentList;
+  }
+
+  public getInferredType(): TInferredTypes {
+    for (const child of this.getChildren()) {
+      if (child instanceof EvaluationNode) {
+        return child.getInferredType();
+      }
+    }
+    throw new Error('No evaluation found to infer type');
+  }
+
+  public addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const evaluationFieldList = this.getEvaluationFieldList();
+    if (evaluationFieldList) {
+      evaluationFieldList.addToSymbolTable(symbolTableManager);
+    }
+    const argumentList = this.getArgumentList();
+    if (argumentList) {
+      argumentList.addToSymbolTable(symbolTableManager);
+    }
+  }
 }

@@ -19,7 +19,7 @@ import {
 import { BitloopsPrimaryTypeNodeDirector } from './bitloopsPrimaryTypeDirector.js';
 import { PrivateMethodBuilderDirector } from './methods/privateMethodBuilderDirector.js';
 import { PublicMethodBuilderDirector } from './methods/publicMethodBuilderDirector.js';
-import { ParameterListBuilderDirector } from './parameterListDirector.js';
+import { ParameterListNodeBuilderDirector } from '../../../../../src/ast/core/intermediate-ast/directors/parameterListNodeBuilderDirector.js';
 
 export class DomainServiceNodeBuilderDirector {
   private builder: DomainServiceNodeBuilder;
@@ -48,7 +48,7 @@ export class DomainServiceNodeBuilderDirector {
         )
         .build();
     });
-    const parameterListNode: ParameterListNode = new ParameterListBuilderDirector().buildParams(
+    const parameterListNode: ParameterListNode = new ParameterListNodeBuilderDirector().buildParams(
       ...parameterNodes,
     );
 
@@ -82,7 +82,7 @@ export class DomainServiceNodeBuilderDirector {
         )
         .build();
     });
-    const parameterListNode: ParameterListNode = new ParameterListBuilderDirector().buildParams(
+    const parameterListNode: ParameterListNode = new ParameterListNodeBuilderDirector().buildParams(
       ...parameterNodes,
     );
 
@@ -126,7 +126,7 @@ export class DomainServiceNodeBuilderDirector {
         )
         .build();
     });
-    const parameterListNode: ParameterListNode = new ParameterListBuilderDirector().buildParams(
+    const parameterListNode: ParameterListNode = new ParameterListNodeBuilderDirector().buildParams(
       ...parameterNodes,
     );
 

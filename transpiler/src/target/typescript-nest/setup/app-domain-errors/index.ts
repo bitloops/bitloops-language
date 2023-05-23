@@ -104,7 +104,7 @@ export class AppAndDomainErrorsAggregator implements IAppAndDomainErrorsAggregat
 
       const fileName = getTargetFileName(className, classType);
       imports += `import { ${className} as ${classNameWithoutError} } from './${fileName}';`;
-      content += `export class ${className} extends ${classNameWithoutError} {}`;
+      content += `export class ${className} extends ${classNameWithoutError} { static readonly errorId = ${classNameWithoutError}.errorId;}`;
     }
     content += '}';
     const finalContent = imports + content;

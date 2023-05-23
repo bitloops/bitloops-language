@@ -22,7 +22,7 @@ import Transpiler from '../../src/Transpiler.js';
 import { TOutputTargetContent } from '../../src/target/types.js';
 import { formatString } from '../../src/target/typescript-nest/core/codeFormatting.js';
 import { transpiler } from '../../src/index.js';
-import { IntermediateASTValidationError } from '../../src/ast/core/types.js';
+import { ValidationError } from '../../src/ast/core/types.js';
 import { DOMAIN_SERVICE_END_TO_END_TEST_CASES } from './mocks/domain-service/index.js';
 import { SupportedLanguages } from '../../src/target/supportedLanguages.js';
 import { TLanguage } from '../../src/types.js';
@@ -59,7 +59,7 @@ describe('Valid Domain service End To End', () => {
         targetCode = result;
       } else {
         result.forEach((error) => {
-          throw new Error((error as IntermediateASTValidationError).message);
+          throw new Error((error as ValidationError).message);
         });
       }
 
@@ -75,7 +75,7 @@ describe('Valid Domain service End To End', () => {
         },
       ];
 
-      expect(targetCode.core[5]).toEqual(expectedOutput[0]);
+      expect(targetCode.core[testCase.outputIndex]).toEqual(expectedOutput[0]);
     });
   });
 });

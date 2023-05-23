@@ -22,11 +22,10 @@ import {
   SEMANTIC_BC_ERRORS_END_TO_END_TEST_CASES,
   SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES,
 } from './mocks/semantic-errors/semantic-errors.js';
-import { IntermediateASTValidationError } from '../../src/ast/core/types.js';
+import { ValidationError } from '../../src/ast/core/types.js';
 import { BitloopsParser } from '../../src/parser/index.js';
 import { IntermediateASTParser } from '../../src/ast/core/index.js';
 import { TargetGenerator } from '../../src/target/index.js';
-import { SemanticAnalyzer } from '../../src/semantic-analysis/IntermediateASTValidator.js';
 import { SupportedLanguages } from '../../src/target/supportedLanguages.js';
 
 describe('Semantic core error End To End', () => {
@@ -39,13 +38,11 @@ describe('Semantic core error End To End', () => {
 
   SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES.forEach((testCase) => {
     const parser = new BitloopsParser();
-    const validator = new SemanticAnalyzer();
     const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
     const intermediateASTModelToTargetLanguageGenerator = new TargetGenerator();
 
     const transpiler = new Transpiler(
       parser,
-      validator,
       originalLanguageASTToIntermediateModelTransformer,
       intermediateASTModelToTargetLanguageGenerator,
     );
@@ -79,11 +76,9 @@ describe('Semantic core error End To End', () => {
       let i = 0;
       // expect(result.length).toEqual(testCase.expectedErrorMessages.length);
       result.forEach((error) => {
-        expect(error).toBeInstanceOf(IntermediateASTValidationError);
-        expect((error as IntermediateASTValidationError).message).toEqual(
-          testCase.expectedErrorMessages[i],
-        );
-        // console.log((error as IntermediateASTValidationError).message);
+        expect(error).toBeInstanceOf(ValidationError);
+        expect((error as ValidationError).message).toEqual(testCase.expectedErrorMessages[i]);
+        // console.log((error as ValidationError).message);
         i++;
       });
     });
@@ -100,13 +95,11 @@ describe('Semantic bounded context errors End To End', () => {
     const boundedContext = 'Demo';
     const module = 'Todo';
     const parser = new BitloopsParser();
-    const validator = new SemanticAnalyzer();
     const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
     const intermediateASTModelToTargetLanguageGenerator = new TargetGenerator();
 
     const transpiler = new Transpiler(
       parser,
-      validator,
       originalLanguageASTToIntermediateModelTransformer,
       intermediateASTModelToTargetLanguageGenerator,
     );
@@ -132,11 +125,9 @@ describe('Semantic bounded context errors End To End', () => {
       let i = 0;
       // expect(result.length).toEqual(testCase.expectedErrorMessages.length);
       result.forEach((error) => {
-        expect(error).toBeInstanceOf(IntermediateASTValidationError);
-        expect((error as IntermediateASTValidationError).message).toEqual(
-          testCase.expectedErrorMessages[i],
-        );
-        // console.log((error as IntermediateASTValidationError).message);
+        expect(error).toBeInstanceOf(ValidationError);
+        expect((error as ValidationError).message).toEqual(testCase.expectedErrorMessages[i]);
+        // console.log((error as ValidationError).message);
         i++;
       });
     });

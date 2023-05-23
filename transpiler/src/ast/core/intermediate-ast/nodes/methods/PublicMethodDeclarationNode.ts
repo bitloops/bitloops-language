@@ -6,6 +6,8 @@ import { IdentifierNode } from '../identifier/IdentifierNode.js';
 import { ReturnOkErrorTypeNode } from '../returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { StatementNode } from '../statements/Statement.js';
 import { StatementListNode } from '../statements/StatementList.js';
+import { BitloopsPrimaryTypeNode } from '../BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 
 export class PublicMethodDeclarationNode extends IntermediateASTNode {
   private static classNodeName = 'publicMethod';
@@ -21,11 +23,19 @@ export class PublicMethodDeclarationNode extends IntermediateASTNode {
     return statementList.statements;
   }
 
+  getStatementList(): StatementListNode {
+    return this.getChildNodeByType<StatementListNode>(BitloopsTypesMapping.TStatements);
+  }
+
   getMethodParameters(): ParameterNode[] {
     const parameterList = this.getChildNodeByType<ParameterListNode>(
       BitloopsTypesMapping.TParameterList,
     );
     return parameterList.getParameters();
+  }
+
+  getMethodParameterList(): ParameterListNode {
+    return this.getChildNodeByType<ParameterListNode>(BitloopsTypesMapping.TParameterList);
   }
 
   public getMethodName(): string {
@@ -39,10 +49,33 @@ export class PublicMethodDeclarationNode extends IntermediateASTNode {
     return this.getChildNodeByType<ReturnOkErrorTypeNode>(BitloopsTypesMapping.TOkErrorReturnType);
   }
 
+  public getBitloopsPrimaryType(): BitloopsPrimaryTypeNode | null {
+    return this.getChildNodeByType<BitloopsPrimaryTypeNode>(
+      BitloopsTypesMapping.TBitloopsPrimaryType,
+    );
+  }
+
+  public getReturnType(): ReturnOkErrorTypeNode | BitloopsPrimaryTypeNode {
+    return this.getReturnOkErrorType() ?? this.getBitloopsPrimaryType();
+  }
+
   public returnsOkError(): boolean {
     return (
       this.getChildNodeByType<ReturnOkErrorTypeNode>(BitloopsTypesMapping.TOkErrorReturnType) !==
       undefined
     );
+  }
+
+  addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const initialSymbolTable = symbolTableManager.getSymbolTable();
+    const methodName = this.getMethodName();
+    symbolTableManager.createSymbolTableChildScope(methodName, this);
+
+    const methodParameterList = this.getMethodParameterList();
+    methodParameterList.addToSymbolTable(symbolTableManager);
+
+    const methodStatementList = this.getStatementList();
+    methodStatementList.addToSymbolTable(symbolTableManager);
+    symbolTableManager.setCurrentSymbolTable(initialSymbolTable);
   }
 }

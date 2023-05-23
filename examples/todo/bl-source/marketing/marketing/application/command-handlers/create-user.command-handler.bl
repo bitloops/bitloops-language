@@ -7,14 +7,11 @@ CommandHandler CreateUserCommandHandler (userRepo: UserWriteRepoPort){
     execute (command: CreateUserCommand): (OK(void),Errors())
     {
         const userId = UUIDv4(command.userId);
-        const completedTodos = CompletedTodosVO.create({ counter: 0 });
-        const email = EmailVO.create({ email: command.email });
-        const user = UserEntity.create({ completedTodos: completedTodos, email: email, id: userId });
+        const completedTodos = CompletedTodosVO.create({ counter: 0 }).ifError();
+        const email = EmailVO.create({ email: command.email }).ifError();
+        const user = UserEntity.create({ completedTodos: completedTodos, email: email, id: userId }).ifError();
 
-        const saveResult = this.userRepo.save(user);
-        if(saveResult is Error){
-          return Error(saveResult);
-        }
+        const saveResult = this.userRepo.save(user).ifError();
     }
   }
 

@@ -1,0 +1,27 @@
+DomainService MarketingNotificationDomainService (notificationTemplateRepo: NotificationTemplateReadRepoPort) {
+
+    public geEmailToBeSent(user: UserEntity): (OK(NotificationTemplateInput), Errors()) {
+        const emailOrigin = user.getEmail(1).getAddress();
+        return emailOrigin;
+    }
+}
+
+RepoPort NotificationTemplateReadRepoPort<NotificationTemplateReadModel> extends CRUDReadRepoPort {
+  getByType(type: string): (OK(NotificationTemplateReadModel),Errors());
+};
+
+Root Entity UserEntity {
+  static create(props: UserProps): (OK(UserProps), Errors())  {
+  }
+
+  public getEmail(num: int32): EmailEntity {
+  }
+}
+
+Entity EmailEntity {
+    static create(props: EmailProps): (OK(EmailEntity), Errors()) {
+    }
+
+    public getAddress(): string {
+    }
+}

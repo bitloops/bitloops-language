@@ -5,7 +5,7 @@ import { ParameterListNodeBuilder } from '../../../../../../src/ast/core/interme
 import { IntermediateASTTree } from '../../../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { ApplicationErrorNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Error/ApplicationError.js';
 import { IntermediateASTRootNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/RootNode.js';
-import { ExpressionBuilderDirector } from '../../builders/expression.js';
+import { ExpressionBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/expressionNodeBuilderDirector.js';
 import { ParameterBuilderDirector } from '../../builders/parameterDirector.js';
 
 type TestCase = {
@@ -50,7 +50,12 @@ export const VALID_APPLICATION_ERROR_TEST_CASES: TestCase[] = [
           .build(),
       )
       .build(),
-    output:
-      "import { Application } from '@bitloops/bl-boilerplate-core'; \n export class InvalidNameError extends Application.Error { constructor(name: string, kindOfError: string){ super('${name} is an invalid name', 'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe'); }}",
+    output: `import { Application } from '@bitloops/bl-boilerplate-core';
+      export class InvalidNameError extends Application.Error { 
+        static readonly errorId:string = 'e5a0bd82-8ef7-4b1a-ab67-cb83d1d7772fe';
+        constructor(name: string, kindOfError: string){ 
+          super('\${name} is an invalid name', InvalidNameError.errorId);
+        }
+      }`,
   },
 ];

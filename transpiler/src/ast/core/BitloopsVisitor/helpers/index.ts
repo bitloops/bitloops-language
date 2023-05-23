@@ -115,6 +115,7 @@ export {
   toStringExpressionVisitor,
   assignmentExpressionVisitor,
   identifierExpressionVisitor,
+  ifErrorExpressionVisitor,
 } from './expression/index.js';
 
 export { decimalEvaluation } from './expression/literal/decimalLiteral.js';

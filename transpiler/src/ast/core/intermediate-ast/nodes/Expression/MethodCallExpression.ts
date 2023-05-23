@@ -1,7 +1,10 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { SymbolTable } from '../../../../../semantic-analysis/type-inference/SymbolTable.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
+import { ArgumentListNode } from '../ArgumentList/ArgumentListNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ExpressionNode } from './ExpressionNode.js';
-import { MemberDotExpressionNode } from './MemberDot/MemberDotExpression.js';
+import { MemberDotExpressionNode } from './MemberDot/MemberDotExpressionNode.js';
 import { ThisExpressionNode } from './ThisExpressionNode.js';
 
 const NAME = 'methodCallExpression';
@@ -51,6 +54,14 @@ export class MethodCallExpressionNode extends ExpressionNode {
     return leftMostExpression;
   }
 
+  getMemberDotExpression(): MemberDotExpressionNode {
+    const expression = this.getExpressionValues();
+    if (!expression.isMemberDotExpression()) {
+      return null;
+    }
+    return expression;
+  }
+
   isThisDependencyMethodCall(dependencyIdentifier: string): boolean {
     if (!this.isThisMethodCall()) {
       return false;
@@ -74,5 +85,45 @@ export class MethodCallExpressionNode extends ExpressionNode {
       return false;
     }
     return true;
+  }
+
+  public getArgumentList(): ArgumentListNode {
+    const argumentList = this.getChildNodeByType<ArgumentListNode>(
+      BitloopsTypesMapping.TArgumentList,
+    );
+    return argumentList;
+  }
+
+  public getStringValue(): string {
+    const expression = this.getExpression();
+    const leftStringValue = expression.getStringValue();
+    return leftStringValue + '()';
+  }
+
+  public override typeCheck(symbolTable: SymbolTable): void {
+    const expressionNode = this.getExpressionValues();
+    expressionNode.typeCheck(symbolTable);
+
+    const argumentList = this.getChildNodeByType<ArgumentListNode>(
+      BitloopsTypesMapping.TArgumentList,
+    );
+
+    const argumentNodes = argumentList.arguments;
+
+    for (const argument of argumentNodes) {
+      const expression = argument.getExpression();
+      expression.typeCheck(symbolTable);
+    }
+  }
+
+  public addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const expression = this.getExpression();
+    expression.addToSymbolTable(symbolTableManager, true);
+  }
+
+  public getInferredType(symbolTableManager: SymbolTableManager): string {
+    const expression = this.getExpressionValues();
+    const expressionType = expression.getInferredType(symbolTableManager);
+    return expressionType;
   }
 }

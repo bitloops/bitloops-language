@@ -1,8 +1,9 @@
 import { OriginalAST } from '../../parser/index.js';
+import { TSymbolTableSemantics } from '../../semantic-analysis/type-inference/types.js';
 import { IntermediateASTTree } from './intermediate-ast/IntermediateASTTree.js';
 import { TNodeMetadata } from './intermediate-ast/nodes/IntermediateASTNode.js';
 import { ConstDeclarationNode } from './intermediate-ast/nodes/statements/ConstDeclarationNode.js';
-import { VariableDeclarationNode } from './intermediate-ast/nodes/variableDeclaration.js';
+import { VariableDeclarationNode } from './intermediate-ast/nodes/statements/variableDeclaration.js';
 
 export type IntermediateAST = {
   core: TBoundedContexts;
@@ -19,13 +20,13 @@ export type IntermediateASTSetup = {
   [fileId: string]: IntermediateASTTree;
 };
 
-export type IntermediateASTError = IntermediateASTValidationError[];
+export type ValidationErrors = ValidationError[];
 export interface IIntermediateASTParser {
   parse: (ast: OriginalAST) => IntermediateAST;
   complete: (ast: IntermediateAST) => IntermediateAST;
 }
 
-export class IntermediateASTValidationError extends Error {
+export class ValidationError extends Error {
   private _metadata: TNodeMetadata;
   private _message: string;
   constructor(message: string, metadata: TNodeMetadata) {
@@ -43,8 +44,27 @@ export class IntermediateASTValidationError extends Error {
   }
 }
 
+export class MissingIdentifierError extends ValidationError {
+  constructor(identifier: string, metadata: TNodeMetadata) {
+    super(`Identifier ${identifier} not defined.`, metadata);
+  }
+}
+
+export class AlreadyDefinedIdentifierError extends ValidationError {
+  constructor(identifier: string, metadata: TNodeMetadata) {
+    super(`Identifier ${identifier} is already defined.`, metadata);
+  }
+}
+
+export class ConstVariableReassingedError extends ValidationError {
+  constructor(identifier: string, metadata: TNodeMetadata) {
+    super(`Cannot reassign constant variable ${identifier}.`, metadata);
+  }
+}
+
 export interface IIntermediateASTValidator {
-  validate: (ast: IntermediateAST) => void | IntermediateASTValidationError[];
+  validate: (ast: IntermediateAST) => void | ValidationError[];
+  getSymbolTable: (ast: IntermediateAST) => TSymbolTableSemantics;
 }
 
 export type TVariableDeclarationStatement = ConstDeclarationNode | VariableDeclarationNode;

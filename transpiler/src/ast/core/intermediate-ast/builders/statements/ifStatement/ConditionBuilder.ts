@@ -1,6 +1,6 @@
+import { ExpressionNode } from '../../../nodes/Expression/ExpressionNode.js';
 import { TNodeMetadata } from '../../../nodes/IntermediateASTNode.js';
 import { ConditionNode } from '../../../nodes/statements/ifStatement/ConditionNode.js';
-import { ThenStatementsNode as ExpressionNode } from '../../../nodes/statements/ifStatement/ThenStatements.js';
 import { IBuilder } from '../../IBuilder.js';
 
 export class ConditionNodeBuilder implements IBuilder<ConditionNode> {

@@ -1,9 +1,9 @@
 import { ParameterBuilderDirector } from '../../builders/parameterDirector.js';
 import { ReturnOkErrorTypeBuilderDirector } from '../../builders/returnOkErrorTypeBuilderDirector.js';
-import { ExpressionBuilderDirector } from '../../builders/expression.js';
-import { ArgumentListDirector } from '../../builders/argumentList.js';
+import { ExpressionBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/expressionNodeBuilderDirector.js';
+import { ArgumentListDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/argumentList.js';
 import { ConstDeclarationBuilderDirector } from '../../builders/statement/constDeclaration.js';
-import { ReturnStatementBuilderDirector } from '../../builders/statement/returnDirector.js';
+import { ReturnStatementBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/returnNodeBuilderDirector.js';
 import { FileUtil } from '../../../../../../src/utils/file.js';
 import { CommandHandlerBuilderDirector } from '../../builders/commandHandlerBuilderDirector.js';
 import { EvaluationBuilderDirector } from '../../builders/evaluation.js';

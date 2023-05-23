@@ -23,7 +23,6 @@ import { JwtAuthGuard } from '@bitloops/bl-boilerplate-infra-nest-auth-passport'
 import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 import { Infra } from '@bitloops/bl-boilerplate-core';
 import { CompleteTodoCommand } from '@src/lib/bounded-contexts/todo/todo/commands/complete-todo.command';
-// import { CompleteTodoCommand } from '@src/lib/bounded-contexts/todo/todo/commands/complete-todo.command';
 
 @Injectable()
 @Controller('todo')

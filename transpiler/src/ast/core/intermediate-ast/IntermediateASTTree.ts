@@ -3,13 +3,13 @@ import { IntermediateASTNode } from './nodes/IntermediateASTNode.js';
 import { IntermediateASTRootNode } from './nodes/RootNode.js';
 import { StatementNode } from './nodes/statements/Statement.js';
 import { ReturnStatementNode } from './nodes/statements/ReturnStatementNode.js';
-import { isArray, isObject } from '../../../helpers/typeGuards.js';
+import { isArray, isObject } from '../../../helpers/typeGuards/typeGuards.js';
 import { IdentifierExpressionNode } from './nodes/Expression/IdentifierExpression.js';
-import { MemberDotExpressionNode } from './nodes/Expression/MemberDot/MemberDotExpression.js';
+import { MemberDotExpressionNode } from './nodes/Expression/MemberDot/MemberDotExpressionNode.js';
 import { TVariableDeclarationStatement } from '../types.js';
 import { MethodCallExpressionNode } from './nodes/Expression/MethodCallExpression.js';
 import { ConstDeclarationNode } from './nodes/statements/ConstDeclarationNode.js';
-import { VariableDeclarationNode } from './nodes/variableDeclaration.js';
+import { VariableDeclarationNode } from './nodes/statements/variableDeclaration.js';
 import { EntityEvaluationNode } from './nodes/Expression/Evaluation/EntityEvaluation.js';
 import { ValueObjectEvaluationNode } from './nodes/Expression/Evaluation/ValueObjectEvaluation.js';
 import { RootEntityDeclarationNode } from './nodes/RootEntity/RootEntityDeclarationNode.js';
@@ -23,6 +23,15 @@ import { ReadModelNode } from './nodes/readModel/ReadModelNode.js';
 import { ParameterNode } from './nodes/ParameterList/ParameterNode.js';
 import { DomainServiceEvaluationNode } from './nodes/Expression/Evaluation/DomainServiceEvaluationNode.js';
 import { RepoPortNode } from './nodes/repo-port/RepoPortNode.js';
+import { ClassTypeNode } from './nodes/ClassTypeNode.js';
+import { QueryDeclarationNode } from './nodes/query/QueryDeclarationNode.js';
+import { QueryHandlerNode } from './nodes/query/QueryHandlerNode.js';
+import { BitloopsPrimaryTypeNode } from './nodes/BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
+import { ReturnOkErrorTypeNode } from './nodes/returnOkErrorType/ReturnOkErrorTypeNode.js';
+import { CommandDeclarationNode } from './nodes/command/CommandDeclarationNode.js';
+import { DomainEventDeclarationNode } from './nodes/DomainEvent/DomainEventDeclarationNode.js';
+import { IntegrationEventNode } from './nodes/integration-event/IntegrationEventNode.js';
+import { StructNode } from './nodes/struct/StructNode.js';
 
 type Policy = (node: IntermediateASTNode) => boolean;
 
@@ -113,6 +122,17 @@ export class IntermediateASTTree {
     }
   }
 
+  public validateParentRefs(): void {
+    this.traverse(this.rootNode, (node) => {
+      const nodeChildren = node.getChildren();
+      for (const child of nodeChildren) {
+        if (child.getParent() !== node) {
+          throw new Error('Invalid parent ref for child');
+        }
+      }
+    });
+  }
+
   public traverseBFS(
     currentNode: IntermediateASTNode,
     cb?: (node: IntermediateASTNode) => any,
@@ -164,6 +184,9 @@ export class IntermediateASTTree {
     return node.buildLeafValue(nodeValue);
   }
 
+  public getClassTypeNodes(): ClassTypeNode[] {
+    return this.getRootNode().getChildren() as ClassTypeNode[];
+  }
   public getAggregateIdentifier(identifier: string): EntityIdentifierNode | null {
     return this.getNodeWithPolicy(
       this.rootNode,
@@ -242,7 +265,9 @@ export class IntermediateASTTree {
       BitloopsTypesMapping.TValueObject,
     );
 
-    return valueObjectDeclarationNodes.find((node) => node.getIdentifier() === identifier) ?? null;
+    return (
+      valueObjectDeclarationNodes.find((node) => node.getIdentifierValue() === identifier) ?? null
+    );
   };
 
   public getRepoPortByIdentifier = (identifier: string): RepoPortNode => {
@@ -250,6 +275,55 @@ export class IntermediateASTTree {
       BitloopsTypesMapping.TRepoPort,
     );
     return repoPortNodes.find((node) => node.getIdentifier().getIdentifierName() === identifier);
+  };
+
+  public getQueryByIdentifier = (identifier: string): QueryDeclarationNode => {
+    const queryNodes = this.getRootChildrenNodesByType<QueryDeclarationNode>(
+      BitloopsTypesMapping.TQuery,
+    );
+    return queryNodes.find((node) => node.getIdentifier().getIdentifierName() === identifier);
+  };
+
+  public getCommandByIdentifier = (identifier: string): CommandDeclarationNode => {
+    const commandNodes = this.getRootChildrenNodesByType<CommandDeclarationNode>(
+      BitloopsTypesMapping.TCommand,
+    );
+    return commandNodes.find((node) => node.getIdentifier().getIdentifierName() === identifier);
+  };
+
+  public getQueryHandlerByIdentifier = (identifier: string): QueryHandlerNode => {
+    const queryHandlerNodes = this.getRootChildrenNodesByType<QueryHandlerNode>(
+      BitloopsTypesMapping.TQueryHandler,
+    );
+    return queryHandlerNodes.find(
+      (node) => node.getIdentifier().getIdentifierName() === identifier,
+    );
+  };
+
+  public getDomainEventByIdentifier = (identifier: string): DomainEventDeclarationNode => {
+    const domainEventNodes = this.getRootChildrenNodesByType<DomainEventDeclarationNode>(
+      BitloopsTypesMapping.TDomainEvent,
+    );
+    return domainEventNodes.find((node) => node.getIdentifier().getIdentifierName() === identifier);
+  };
+
+  public getIntegrationEventByIdentifier = (identifier: string): IntegrationEventNode => {
+    const integrationEventNodes = this.getRootChildrenNodesByType<IntegrationEventNode>(
+      BitloopsTypesMapping.TIntegrationEvent,
+    );
+    return integrationEventNodes.find(
+      (node) => node.getIdentifier().getIdentifierName() === identifier,
+    );
+  };
+
+  public getStructByIdentifier = (identifier: string): StructNode => {
+    const structNodes = this.getRootChildrenNodesByType<StructNode>(BitloopsTypesMapping.TStruct);
+    return structNodes.find((node) => node.getIdentifier().getIdentifierName() === identifier);
+  };
+
+  public getPropsByIdentifier = (identifier: string): PropsNode => {
+    const propsNodes = this.getRootChildrenNodesByType<PropsNode>(BitloopsTypesMapping.TProps);
+    return propsNodes.find((node) => node.getIdentifier().getIdentifierName() === identifier);
   };
 
   public getPropsFieldTypeOfDomainCreateByFieldIdentifier(
@@ -340,6 +414,25 @@ export class IntermediateASTTree {
       }
       const expression = node.getExpressionValues();
       if (expression.isDomainServiceEvaluationExpression()) {
+        return true;
+      }
+      return false;
+    };
+    return this.getIdentifierOfVariableConstDeclaration(statements, policy);
+  }
+
+  getIdentifiersOfPackageEvaluations(statements: StatementNode[]): string[] {
+    const policy = (node: IntermediateASTNode): boolean => {
+      const statementIsVariableDeclaration =
+        node instanceof ConstDeclarationNode || node instanceof VariableDeclarationNode;
+      if (!statementIsVariableDeclaration) {
+        return false;
+      }
+      const expression = node.getExpressionValues();
+      if (!expression) {
+        return false;
+      }
+      if (expression.isPackageEvaluationExpression()) {
         return true;
       }
       return false;
@@ -709,7 +802,7 @@ export class IntermediateASTTree {
     valueObjectNodes: ValueObjectDeclarationNode[],
     identifier: string,
   ): ValueObjectDeclarationNode {
-    return valueObjectNodes.find((node) => node.getIdentifier() === identifier);
+    return valueObjectNodes.find((node) => node.getIdentifierValue() === identifier);
   }
 
   private findProps(propsNodes: PropsNode[], identifier: string): PropsNode {
@@ -777,5 +870,36 @@ export class IntermediateASTTree {
     }
 
     return identifiers;
+  }
+
+  public getMethodDefinitionTypesOfRepoPort(
+    repoPortNode: RepoPortNode,
+  ): Record<string, BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode> {
+    let methodTypes: Record<string, BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode> = {};
+
+    const methodDefinitionNodes = repoPortNode.getMethodDefinitionNodes();
+    for (const methodDefinitionNode of methodDefinitionNodes) {
+      const identifierNode = methodDefinitionNode.getIdentifierNode();
+      const typeNode = methodDefinitionNode.getTypeNode();
+      methodTypes[identifierNode.getIdentifierName()] = typeNode;
+    }
+    if (repoPortNode.isReadRepoPort()) {
+      if (repoPortNode.extendsCRUDReadRepoPort) {
+        const readMethodTypes = repoPortNode.getReadMethodTypes();
+        methodTypes = { ...methodTypes, ...readMethodTypes };
+      }
+    } else if (repoPortNode.isWriteRepoPort()) {
+      if (repoPortNode.extendsCRUDWriteRepoPort) {
+        const writeMethodTypes = repoPortNode.getWriteMethodTypes();
+        methodTypes = { ...methodTypes, ...writeMethodTypes };
+      }
+    }
+    const extendIdentifiers = repoPortNode.getExtendsRepoPortIdentifiersExcludingCRUDOnes();
+    for (const extendIdentifier of extendIdentifiers) {
+      const extendedRepoPortNode = this.getRepoPortByIdentifier(extendIdentifier);
+      return { ...methodTypes, ...this.getMethodDefinitionTypesOfRepoPort(extendedRepoPortNode) };
+    }
+
+    return methodTypes;
   }
 }

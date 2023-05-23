@@ -17,5 +17,4 @@ export default {
   collectCoverageFrom: ['src/**/*.ts', 'src/**/*.mts', '!src/**/*.d.ts', '!src/**/*.d.mts'],
   setupFilesAfterEnv: ['jest-extended/all'],
   transform: {},
-  // "extensionsToTreatAsEsm": [".ts"]
 };

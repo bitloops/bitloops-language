@@ -2,10 +2,7 @@ Query GetTodosQuery {}
 
 QueryHandler GetTodosQueryHandler (todoRepo: TodoReadRepoPort) {
     execute (query: GetTodosQuery): (OK(TodoReadModel[]), Errors()) {
-      const todos = this.todoRepo.getAll();
-      if(todos is Error){
-        return Error(todos);
-      }
+      const todos = this.todoRepo.getAll().ifError();
   
       if (NOT todos) {
         return [];

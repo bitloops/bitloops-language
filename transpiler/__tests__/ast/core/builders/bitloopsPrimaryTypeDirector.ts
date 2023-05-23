@@ -62,7 +62,7 @@ export class BitloopsPrimaryTypeDirector {
 
   buildBuiltinClassPrimaryType(type: TBitloopsBuiltInClasses): TBitloopsPrimaryType {
     const primaryType = this.builder
-      .withType({ [bitloopsPrimaryTypeKey]: { buildInClassType: type } })
+      .withType({ [bitloopsPrimaryTypeKey]: { builtInClassType: type } })
       .build();
     return primaryType;
   }

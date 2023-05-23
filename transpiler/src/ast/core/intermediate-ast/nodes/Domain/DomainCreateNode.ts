@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
 import { ParameterNode } from '../ParameterList/ParameterNode.js';
 import { StatementNode } from '../statements/Statement.js';
@@ -22,9 +23,28 @@ export class DomainCreateNode extends IntermediateASTNode {
     return statementList.statements;
   }
 
+  getStatementList(): StatementListNode {
+    return this.getChildNodeByType<StatementListNode>(BitloopsTypesMapping.TStatements);
+  }
+
   getMethodParameters(): ParameterNode[] {
     const parameterNode = this.getParameterNode();
     if (!parameterNode) return [];
     return [parameterNode];
+  }
+
+  addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const initialSymbolTable = symbolTableManager.getSymbolTable();
+    symbolTableManager.createSymbolTableChildScope(
+      SymbolTableManager.SCOPE_NAMES.DOMAIN_CREATE,
+      this,
+    );
+    const domainCreateParam = this.getParameterNode();
+    domainCreateParam.addToSymbolTable(symbolTableManager);
+
+    const domainCreateStatementList = this.getStatementList();
+    domainCreateStatementList.addToSymbolTable(symbolTableManager);
+
+    symbolTableManager.setCurrentSymbolTable(initialSymbolTable);
   }
 }

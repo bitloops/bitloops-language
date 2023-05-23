@@ -46,9 +46,9 @@ export const bitloopsPrimaryTypeToTargetLanguage = (
     const { primitiveType } = primaryTypeValue;
     mappedType = bitloopsTypeToLangMapping[SupportedLanguages.TypeScript](primitiveType);
   } else if (BitloopsPrimTypeIdentifiers.isBitloopsBuiltInClass(primaryTypeValue)) {
-    const { buildInClassType } = primaryTypeValue;
-    mappedType = `${mappingBitloopsBuiltInClassToLayer[buildInClassType]}.${buildInClassType}`;
-    dependencies = getChildDependencies(buildInClassType);
+    const { builtInClassType } = primaryTypeValue;
+    mappedType = `${mappingBitloopsBuiltInClassToLayer[builtInClassType]}.${builtInClassType}`;
+    dependencies = getChildDependencies(builtInClassType);
   } else if (BitloopsPrimTypeIdentifiers.isArrayPrimType(primaryTypeValue)) {
     const value = primaryTypeValue.arrayPrimaryType;
     const arrayPrimType = bitloopsPrimaryTypeToTargetLanguage({ type: value });

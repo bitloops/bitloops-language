@@ -19,4 +19,8 @@ export class EntityEvaluationNode extends EvaluationNode {
     const entityIdentifier = domainEvaluationNode.getEntityIdentifier();
     return entityIdentifier;
   }
+
+  getInferredType(): string {
+    return this.getEntityIdentifier();
+  }
 }

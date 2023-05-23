@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
 import { DomainCreateNode } from '../Domain/DomainCreateNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
@@ -19,9 +20,7 @@ export class EntityDeclarationNode extends ClassTypeNode {
   }
 
   public getDomainCreateNode(): DomainCreateNode {
-    const domainCreateValuesNode = this.getChildNodeByType<EntityValuesNode>(
-      BitloopsTypesMapping.TEntityValues,
-    );
+    const domainCreateValuesNode = this.getEntityValues();
     return domainCreateValuesNode.getDomainCreateMethod();
   }
 
@@ -30,5 +29,18 @@ export class EntityDeclarationNode extends ClassTypeNode {
       BitloopsTypesMapping.TEntityIdentifier,
     ) as EntityIdentifierNode;
     return identifier;
+  }
+
+  public getEntityValues(): EntityValuesNode {
+    const entityValues = this.getChildNodeByType(
+      BitloopsTypesMapping.TEntityValues,
+    ) as EntityValuesNode;
+    return entityValues;
+  }
+
+  addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    symbolTableManager.addClassTypeThis(this.getIdentifier().getIdentifierName());
+    const entityValues = this.getEntityValues();
+    entityValues.addToSymbolTable(symbolTableManager);
   }
 }

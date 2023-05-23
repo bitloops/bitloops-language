@@ -6,8 +6,8 @@ Struct IntegrationTodoDeletedSchemaV1 {
 IntegrationEvent TodoDeletedIntegrationEvent(event: TodoDeletedDomainEvent) {  
     'v1' : IntegrationTodoDeletedSchemaV1 {
         const todoDeleted = IntegrationTodoDeletedSchemaV1({
-            todoId: event.payload.aggregateId,
-            userId: event.payload.userId
+            todoId: event.aggregateId,
+            userId: event.userId
         });
         return todoDeleted;
     }

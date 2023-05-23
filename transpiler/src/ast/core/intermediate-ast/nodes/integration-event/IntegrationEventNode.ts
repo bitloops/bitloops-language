@@ -1,9 +1,13 @@
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { BitloopsPrimaryTypeNode } from '../BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ParameterNode } from '../ParameterList/ParameterNode.js';
+import { StructIdentifierNode } from '../struct/StructIdentifierNode.js';
 import { IntegrationEventIdentifierNode } from './IntegrationEventIdentifierNode.js';
+import { IntegrationVersionMapperListNode } from './IntegrationVersionMapperListNode.js';
+import { IntegrationVersionMapperNode } from './IntegrationVersionMapperNode.js';
 
 export class IntegrationEventNode extends ClassTypeNode {
   private static classType = ClassTypes.IntegrationEvent;
@@ -42,5 +46,42 @@ export class IntegrationEventNode extends ClassTypeNode {
     }
 
     return integrationEventIdentifier.getIdentifierName();
+  }
+
+  public getParameter(): ParameterNode {
+    return this.getChildNodeByType<ParameterNode>(BitloopsTypesMapping.TParameter);
+  }
+
+  public getIntegrationEventMapperNodes(): IntegrationVersionMapperNode[] {
+    const integrationVersionMapperList = this.getChildNodeByType<IntegrationVersionMapperListNode>(
+      BitloopsTypesMapping.TIntegrationVersionMappers,
+    );
+
+    return integrationVersionMapperList.getIntegrationVersionMapperNodes();
+  }
+
+  public getIntegrationEventMapperListNode(): IntegrationVersionMapperListNode {
+    return this.getChildNodeByType<IntegrationVersionMapperListNode>(
+      BitloopsTypesMapping.TIntegrationVersionMappers,
+    );
+  }
+
+  public getIntegrationEventMapperSchemas(): Record<string, StructIdentifierNode> {
+    const integrationEventMapperNodes = this.getIntegrationEventMapperNodes();
+    const integrationEventMapperSchemas: Record<string, StructIdentifierNode> = {};
+    integrationEventMapperNodes.forEach((integrationEventMapperNode) => {
+      const version = integrationEventMapperNode.getVersionName();
+      const schema = integrationEventMapperNode.getSchemaType();
+      integrationEventMapperSchemas[version] = schema;
+    });
+    return integrationEventMapperSchemas;
+  }
+
+  addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const parameter = this.getParameter();
+    parameter.addToSymbolTable(symbolTableManager);
+
+    const integrationEventMapperListNode = this.getIntegrationEventMapperListNode();
+    integrationEventMapperListNode.addToSymbolTable(symbolTableManager);
   }
 }

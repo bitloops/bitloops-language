@@ -170,7 +170,7 @@ methodDefinitionList
     ;
 
 methodDefinition
-    : identifier parameterList? returnMethodType SemiColon
+    : identifier parameterList returnMethodType SemiColon
     ;
 
 typeAnnotation
@@ -286,8 +286,7 @@ condition
     ;
 
 returnStatement
-    : Return expression?                                   # ReturnSimpleStatement
-    | Return ErrorClass OpenParen expression? CloseParen   # ReturnErrorStatement
+    : Return expression?
     ;
 
 constDeclaration
@@ -379,7 +378,7 @@ domainRuleBody
 ;
 
 domainRuleDeclaration
-: Rule domainRuleIdentifier parameterList? Throws errorIdentifier OpenBrace domainRuleBody CloseBrace
+: Rule domainRuleIdentifier parameterList Throws errorIdentifier OpenBrace domainRuleBody CloseBrace
 ;
 
 aggregateDeclaration
@@ -438,7 +437,7 @@ queryDeclaration
     ;
 
 commandHandler
-    : CommandHandler commandHandlerIdentifier parameterList? OpenBrace executeDeclaration CloseBrace SemiColon?
+    : CommandHandler commandHandlerIdentifier parameterList OpenBrace executeDeclaration CloseBrace SemiColon?
     ;
 
 commandHandlerIdentifier
@@ -446,7 +445,7 @@ commandHandlerIdentifier
     ;
 
 queryHandler
-    : QueryHandler queryHandlerIdentifier parameterList? OpenBrace executeDeclaration CloseBrace SemiColon?
+    : QueryHandler queryHandlerIdentifier parameterList OpenBrace executeDeclaration CloseBrace SemiColon?
     ;
 
 queryHandlerIdentifier
@@ -661,11 +660,11 @@ packageEvaluation
     ;
 
 domainErrorDeclaration
-    : DomainError domainErrorIdentifier parameterList? '{' evaluationFieldList? '}' SemiColon?
+    : DomainError domainErrorIdentifier parameterList '{' evaluationFieldList? '}' SemiColon?
     ;
 
 applicationErrorDeclaration
-    : ApplicationError applicationErrorIdentifier parameterList? '{' evaluationFieldList? '}' SemiColon?
+    : ApplicationError applicationErrorIdentifier parameterList '{' evaluationFieldList? '}' SemiColon?
     ;
 
 domainErrorIdentifier
@@ -744,11 +743,11 @@ staticKeyword
     ;
 
 privateMethodDeclaration
-    : Private staticKeyword? identifier parameterList? returnMethodType OpenBrace functionBody CloseBrace
+    : Private staticKeyword? identifier parameterList returnMethodType OpenBrace functionBody CloseBrace
     ;
 
 publicMethodDeclaration
-    : Public? staticKeyword? identifier parameterList? returnMethodType OpenBrace functionBody CloseBrace    
+    : Public? staticKeyword? identifier parameterList returnMethodType OpenBrace functionBody CloseBrace    
     ;
 
 returnMethodType
@@ -785,10 +784,6 @@ elementList
     : expression (Comma expression)*
     ;
 
-// arguments
-//     : OpenParen (argumentList Comma?)? CloseParen
-//     ;
-
 argumentList
     : argument (Comma argument)*
     ;
@@ -814,16 +809,23 @@ expression
     | expression '=' expression                                  # AssignmentExpression
     | literal                                                    # LiteralExpression
     | evaluation                                                 # EvaluationExpression 
-    | expression Is classTypes                                   # IsInstanceOfExpression
+    | expression Is bitloopsPrimaryType                          # IsInstanceOfExpression
     | regularIdentifier                                          # IdentifierExpression
     | arrayLiteral                                               # ArrayLiteralExpression
     | This                                                       # ThisExpression
-    | EnvPrefix OpenParen (identifier | upperCaseIdentifier) Comma literal CloseParen                # EnvVarWithDefaultValueExpression
-    | envVariable                                                            # EnvironmentVariableExpression
-    ;   
+    | EnvPrefix OpenParen (identifier | upperCaseIdentifier) Comma literal CloseParen           # EnvVarWithDefaultValueExpression
+    | envVariable                                                # EnvironmentVariableExpression
+    | expression Dot IfError OpenParen anonymousFunction? CloseParen  # IfErrorExpression
+    ;
 
-//TODO rename this
-classTypes: ErrorClass;
+anonymousFunction
+    : parameterList ARROW arrowFunctionBody
+    ;
+
+arrowFunctionBody
+    : returnStatement SemiColon?
+    | OpenBrace functionBody CloseBrace
+    ;
 
 literal
     : NullLiteral               # NullLiteral

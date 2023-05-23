@@ -17,7 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { hasOkErrorReturnType } from '../../../../../helpers/typeGuards.js';
+import { hasOkErrorReturnType } from '../../../../../helpers/typeGuards/typeGuards.js';
 import { TPrivateMethod, TTargetDependenciesTypeScript } from '../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';

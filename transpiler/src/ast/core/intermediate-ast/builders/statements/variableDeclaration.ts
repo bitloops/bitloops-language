@@ -2,7 +2,7 @@ import { BitloopsPrimaryTypeNode } from '../../nodes/BitloopsPrimaryType/Bitloop
 import { ExpressionNode } from '../../nodes/Expression/ExpressionNode.js';
 import { IdentifierNode } from '../../nodes/identifier/IdentifierNode.js';
 import { TNodeMetadata } from '../../nodes/IntermediateASTNode.js';
-import { VariableDeclarationNode } from '../../nodes/variableDeclaration.js';
+import { VariableDeclarationNode } from '../../nodes/statements/variableDeclaration.js';
 import { IBuilder } from '../IBuilder.js';
 
 export class VariableDeclarationNodeBuilder implements IBuilder<VariableDeclarationNode> {

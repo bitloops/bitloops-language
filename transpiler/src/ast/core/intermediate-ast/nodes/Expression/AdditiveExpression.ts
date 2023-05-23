@@ -1,4 +1,6 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
+import { TInferredTypes } from '../../../../../semantic-analysis/type-inference/types.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ExpressionNode } from './ExpressionNode.js';
 
@@ -23,5 +25,18 @@ export class AdditiveExpressionNode extends ExpressionNode {
       return expressions as ExpressionNode[];
     }
     return expressions[num] as ExpressionNode;
+  }
+
+  public getInferredType(symbolTableManager: SymbolTableManager): TInferredTypes {
+    const left = this.getExpressions(0) as ExpressionNode;
+    const right = this.getExpressions(1) as ExpressionNode;
+    if (left && right) {
+      const leftType = left.getInferredType(symbolTableManager);
+      const rightType = right.getInferredType(symbolTableManager);
+      if (leftType === rightType) {
+        return leftType;
+      }
+    }
+    throw new Error('Inferred type of additive expression is not the same');
   }
 }

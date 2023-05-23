@@ -10,10 +10,10 @@ import { EntityDeclarationNode } from '../../../../../../src/ast/core/intermedia
 import { PropsNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Props/PropsNode.js';
 import { BitloopsPrimaryTypeNodeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
 import { RootEntityBuilderDirector } from '../../builders/domain/rootEntityDirector.js';
-import { ExpressionBuilderDirector } from '../../builders/expression.js';
+import { ExpressionBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/expressionNodeBuilderDirector.js';
 import { FieldBuilderDirector } from '../../builders/field.js';
 import { PropsDeclarationBuilderDirector } from '../../builders/propsDeclarationDirector.js';
-import { ReturnStatementBuilderDirector } from '../../builders/statement/returnDirector.js';
+import { ReturnStatementBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/returnNodeBuilderDirector.js';
 import { ValueObjectDeclarationNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/valueObject/ValueObjectDeclarationNode.js';
 import { FileUtil } from '../../../../../../src/utils/file.js';
 import { ArgumentListNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ArgumentList/ArgumentListNodeBuilder.js';

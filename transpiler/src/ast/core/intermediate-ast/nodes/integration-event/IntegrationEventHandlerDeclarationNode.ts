@@ -1,12 +1,15 @@
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { TEventHandlerBusDependencies } from '../../../../../types.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
 import { EventHandlerBusDependenciesNode } from '../DomainEventHandler/EventHandlerBusDependenciesNode.js';
+import { EvaluationFieldNode } from '../Expression/Evaluation/EvaluationFieldList/EvaluationFieldNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { ParameterListNode } from '../ParameterList/ParameterListNode.js';
 import { ParameterNode } from '../ParameterList/ParameterNode.js';
 import { StatementNode } from '../statements/Statement.js';
 import { IntegrationEventHandlerHandleMethodNode } from './IntegrationEventHandlerHandleMethodNode.js';
+import { IntegrationEventParameterNode } from './IntegrationEventParameterNode.js';
 
 export class IntegrationEventHandlerDeclarationNode extends ClassTypeNode {
   private static classType = ClassTypes.IntegrationEventHandler;
@@ -52,5 +55,45 @@ export class IntegrationEventHandlerDeclarationNode extends ClassTypeNode {
       BitloopsTypesMapping.TParameterList,
     );
     return parameterListNode.getParameters();
+  }
+
+  getParameterList(): ParameterListNode {
+    return this.getChildNodeByType<ParameterListNode>(BitloopsTypesMapping.TParameterList);
+  }
+
+  getHandle(): IntegrationEventHandlerHandleMethodNode {
+    const handle = this.getChildNodeByType<IntegrationEventHandlerHandleMethodNode>(
+      BitloopsTypesMapping.TIntegrationEventHandlerHandleMethod,
+    );
+    return handle;
+  }
+
+  getHandleParameter(): IntegrationEventParameterNode {
+    const eventHandler = this.getHandle();
+
+    const parameter = eventHandler.getParameter();
+    return parameter;
+  }
+
+  getEventVersion(): EvaluationFieldNode {
+    return this.getChildNodeByType<EvaluationFieldNode>(BitloopsTypesMapping.TEvaluationField);
+  }
+
+  getEventVersionValue(): string {
+    const evaluationFieldNode = this.getEventVersion();
+    const expression = evaluationFieldNode.getExpression();
+    const literalNode = expression.getLiteralNode();
+    return literalNode.getStringLiteralValue();
+  }
+
+  addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    symbolTableManager.addClassTypeThis(this.getIdentifier().getIdentifierName());
+    const parameterList = this.getParameterList();
+    parameterList.addClassTypeParametersToSymbolTable(symbolTableManager);
+
+    symbolTableManager.addCommandQueryBus();
+
+    const handle = this.getHandle();
+    handle.addToSymbolTable(symbolTableManager);
   }
 }

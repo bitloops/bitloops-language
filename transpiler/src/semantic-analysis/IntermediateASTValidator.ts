@@ -22,19 +22,13 @@ import {
   IIntermediateASTValidator,
   IntermediateAST,
   IntermediateASTSetup,
-  IntermediateASTValidationError,
   TBoundedContexts,
+  ValidationError,
 } from '../ast/core/types.js';
 import { IntermediateASTTree } from '../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { ArgumentNode } from '../ast/core/intermediate-ast/nodes/ArgumentList/ArgumentNode.js';
 import { BitloopsIdentifierTypeNode } from '../ast/core/intermediate-ast/nodes/BitloopsPrimaryType/BitloopsIdentifierTypeNode.js';
-import { CommandDeclarationNode } from '../ast/core/intermediate-ast/nodes/command/CommandDeclarationNode.js';
-import { DomainServiceNode } from '../ast/core/intermediate-ast/nodes/domain-service/DomainServiceNode.js';
-import { DomainEventDeclarationNode } from '../ast/core/intermediate-ast/nodes/DomainEvent/DomainEventDeclarationNode.js';
 import { DomainRuleIdentifierNode } from '../ast/core/intermediate-ast/nodes/DomainRule/DomainRuleIdentifierNode.js';
-import { DomainRuleNode } from '../ast/core/intermediate-ast/nodes/DomainRule/DomainRuleNode.js';
-import { DTONode } from '../ast/core/intermediate-ast/nodes/DTO/DTONode.js';
-import { EntityDeclarationNode } from '../ast/core/intermediate-ast/nodes/Entity/EntityDeclarationNode.js';
 import { EntityIdentifierNode } from '../ast/core/intermediate-ast/nodes/Entity/EntityIdentifierNode.js';
 import { ApplicationErrorNode } from '../ast/core/intermediate-ast/nodes/Error/ApplicationError.js';
 import { DomainErrorNode } from '../ast/core/intermediate-ast/nodes/Error/DomainErrorNode.js';
@@ -44,14 +38,7 @@ import { IntegrationEventNode } from '../ast/core/intermediate-ast/nodes/integra
 import { IntermediateASTNode } from '../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
 import { PackagePortNode } from '../ast/core/intermediate-ast/nodes/package/packagePort/PackagePortNode.js';
 import { PropsNode } from '../ast/core/intermediate-ast/nodes/Props/PropsNode.js';
-import { QueryDeclarationNode } from '../ast/core/intermediate-ast/nodes/query/QueryDeclarationNode.js';
 import { ReadModelIdentifierNode } from '../ast/core/intermediate-ast/nodes/readModel/ReadModelIdentifierNode.js';
-import { ReadModelNode } from '../ast/core/intermediate-ast/nodes/readModel/ReadModelNode.js';
-import { RepoPortNode } from '../ast/core/intermediate-ast/nodes/repo-port/RepoPortNode.js';
-import { RootEntityDeclarationNode } from '../ast/core/intermediate-ast/nodes/RootEntity/RootEntityDeclarationNode.js';
-import { ServicePortNode } from '../ast/core/intermediate-ast/nodes/service-port/ServicePortNode.js';
-import { StructNode } from '../ast/core/intermediate-ast/nodes/struct/StructNode.js';
-import { ValueObjectDeclarationNode } from '../ast/core/intermediate-ast/nodes/valueObject/ValueObjectDeclarationNode.js';
 import {
   bitloopsIdentifierError,
   domainRuleIdentifierError,
@@ -61,26 +48,66 @@ import {
   domainServiceEvaluationError,
   entityIdentifierError,
 } from './validators/index.js';
+import { ClassTypeNode } from '../ast/core/intermediate-ast/nodes/ClassTypeNode.js';
+import { TypeInferenceValidator } from './type-inference/TypeInferenceValidator.js';
+// import { isIntermediateASTValidationErrors } from '../index.js';
+import { TSymbolTableSemantics } from './type-inference/types.js';
+
+const isIntermediateASTValidationErrors = (
+  value: void | ValidationError[],
+): value is ValidationError[] => {
+  if (Array.isArray(value)) {
+    for (const err of value) {
+      if (!(err instanceof ValidationError)) {
+        return false;
+      }
+    }
+    return true;
+  }
+  return false;
+};
 
 export class SemanticAnalyzer implements IIntermediateASTValidator {
   private symbolTableCore: Record<string, Set<string>>;
   private symbolTableSetup: Record<string, Set<string>>;
-  private errors: IntermediateASTValidationError[] = [];
+  private errors: ValidationError[] = [];
+  private typeInference: TypeInferenceValidator;
 
   constructor() {
     this.symbolTableCore = {};
     this.symbolTableSetup = {};
+    this.typeInference = new TypeInferenceValidator();
   }
 
-  validate(ast: IntermediateAST): void | IntermediateASTValidationError[] {
+  validate(ast: IntermediateAST): void | ValidationError[] {
     this.createSymbolTablesCore(ast.core);
     this.validateCore(ast.core);
-    // if (errors.length > 0) return errors;
     this.validateSetup(ast.setup);
-    if (this.errors.length > 0) return this.errors;
+
+    const validationErrors: ValidationError[] = [];
+    validationErrors.push(...this.errors);
+
+    const typeInferenceValidation = this.typeInference.validate(ast);
+    if (isIntermediateASTValidationErrors(typeInferenceValidation)) {
+      validationErrors.push(...typeInferenceValidation);
+    }
+    if (validationErrors.length > 0) return validationErrors;
   }
 
-  private addError(...errors: IntermediateASTValidationError[]): void {
+  public getSymbolTable(ast: IntermediateAST): TSymbolTableSemantics {
+    const validationResult = this.validate(ast);
+
+    const semanticErrors: ValidationError[] = [];
+    if (isIntermediateASTValidationErrors(validationResult)) {
+      semanticErrors.push(...validationResult);
+    }
+    return {
+      symbolTables: this.typeInference.getSymbolTable(ast),
+      semanticErrors,
+    };
+  }
+
+  private addError(...errors: ValidationError[]): void {
     this.errors.push(...errors);
   }
 
@@ -88,26 +115,13 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
     for (const [boundedContextName, boundedContext] of Object.entries(core)) {
       this.symbolTableCore[boundedContextName] = new Set();
       for (const ASTTree of Object.values(boundedContext)) {
-        ASTTree.traverse(ASTTree.getRootNode(), (node: IntermediateASTNode) => {
+        const classTypeNodes = ASTTree.getClassTypeNodes();
+
+        for (const node of classTypeNodes) {
           switch (node.getNodeType()) {
-            case BitloopsTypesMapping.TRootEntity: {
-              const identifierNode = (node as RootEntityDeclarationNode).getIdentifier();
-              this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
-              break;
-            }
-            case BitloopsTypesMapping.TEntity: {
-              const identifierNode = (node as EntityDeclarationNode).getIdentifier();
-              this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
-              break;
-            }
             case BitloopsTypesMapping.TProps: {
               const identifierNode = (node as PropsNode).getPropsIdentifierNode();
               this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
-              break;
-            }
-            case BitloopsTypesMapping.TValueObject: {
-              const identifier = (node as ValueObjectDeclarationNode).getIdentifier();
-              this.symbolTableCore[boundedContextName].add(identifier);
               break;
             }
             case BitloopsTypesMapping.TDomainError: {
@@ -124,49 +138,9 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
               );
               break;
             }
-            case BitloopsTypesMapping.TDTO: {
-              const identifierNode = (node as DTONode).getIdentifier();
-              this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
-              break;
-            }
-            case BitloopsTypesMapping.TRepoPort: {
-              const identifierNode = (node as RepoPortNode).getIdentifier();
-              this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
-              break;
-            }
-            case BitloopsTypesMapping.TStruct: {
-              const identifierNode = (node as StructNode).getIdentifier();
-              this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
-              break;
-            }
-            case BitloopsTypesMapping.TReadModel: {
-              const identifierNode = (node as ReadModelNode).getIdentifier();
-              this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
-              break;
-            }
-            case BitloopsTypesMapping.TDomainRule: {
-              const identifierNode = (node as DomainRuleNode).getIdentifier();
-              this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
-              break;
-            }
             case BitloopsTypesMapping.TPackagePort: {
               const identifier = (node as PackagePortNode).identifier;
               this.symbolTableCore[boundedContextName].add(identifier);
-              break;
-            }
-            case BitloopsTypesMapping.TCommand: {
-              const identifierNode = (node as CommandDeclarationNode).getIdentifier();
-              this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
-              break;
-            }
-            case BitloopsTypesMapping.TQuery: {
-              const identifierNode = (node as QueryDeclarationNode).getIdentifier();
-              this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
-              break;
-            }
-            case BitloopsTypesMapping.TDomainEvent: {
-              const identifierNode = (node as DomainEventDeclarationNode).getIdentifier();
-              this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
               break;
             }
             case BitloopsTypesMapping.TIntegrationEvent: {
@@ -174,18 +148,13 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
               this.symbolTableCore[boundedContextName].add(identifier);
               break;
             }
-            case BitloopsTypesMapping.TServicePort: {
-              const identifierNode = (node as ServicePortNode).getIdentifier();
-              this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
-              break;
-            }
-            case BitloopsTypesMapping.TDomainService: {
-              const identifierNode = (node as DomainServiceNode).getIdentifier();
+            default: {
+              const identifierNode = (node as ClassTypeNode).getIdentifier();
               this.symbolTableCore[boundedContextName].add(identifierNode.getIdentifierName());
               break;
             }
           }
-        });
+        }
       }
     }
   }
@@ -193,7 +162,7 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
   private validateCore(core: TBoundedContexts): void {
     for (const [boundedContextName, boundedContext] of Object.entries(core)) {
       for (const ASTTree of Object.values(boundedContext)) {
-        this.validateNodes(ASTTree, boundedContextName);
+        // this.validateNodes(ASTTree, boundedContextName);
 
         this.validateClassTypeNodesCore(ASTTree, boundedContextName);
       }
@@ -207,13 +176,13 @@ export class SemanticAnalyzer implements IIntermediateASTValidator {
   }
 
   //isn't being used right now
-  private validateNodes(ASTTree: IntermediateASTTree, boundedContextName: string): void {
-    ASTTree.traverse(ASTTree.getRootNode(), (node: IntermediateASTNode) => {
-      const validationRes = node.validate(this.symbolTableCore[boundedContextName]);
-      if (IntermediateASTNode.isIntermediateASTNodeValidationError(validationRes))
-        this.addError(validationRes);
-    });
-  }
+  //   private validateNodes(ASTTree: IntermediateASTTree, boundedContextName: string): void {
+  //     ASTTree.traverse(ASTTree.getRootNode(), (node: IntermediateASTNode) => {
+  //       const validationRes = node.validate(this.symbolTableCore[boundedContextName]);
+  //       if (IntermediateASTNode.isIntermediateASTNodeValidationError(validationRes))
+  //         this.addError(validationRes);
+  //     });
+  //   }
 
   private validateClassTypeNodesCore(ASTTree: IntermediateASTTree, boundedContext: string): void {
     ASTTree.traverse(ASTTree.getRootNode(), (node: IntermediateASTNode) => {

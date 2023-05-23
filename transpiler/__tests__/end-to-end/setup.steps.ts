@@ -21,7 +21,7 @@ import Transpiler from '../../src/Transpiler.js';
 import { TOutputTargetContent } from '../../src/target/types.js';
 import { SETUP_END_TO_END_TEST_CASES } from './mocks/setup/setup.js';
 import { transpiler } from '../../src/index.js';
-import { IntermediateASTValidationError } from '../../src/ast/core/types.js';
+import { ValidationError } from '../../src/ast/core/types.js';
 import { SupportedLanguages } from '../../src/target/supportedLanguages.js';
 
 describe('Valid Setup End To End', () => {
@@ -45,7 +45,7 @@ describe('Valid Setup End To End', () => {
         targetCode = result;
       } else {
         result.forEach((error) => {
-          throw new Error((error as IntermediateASTValidationError).message);
+          throw new Error((error as ValidationError).message);
         });
       }
 

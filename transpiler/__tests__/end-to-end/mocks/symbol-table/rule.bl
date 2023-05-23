@@ -1,0 +1,4 @@
+Rule ValidEmailRule(email: string) throws DomainErrors.InvalidEmailError {
+    const re = /\S+@\S+\.\S+/;
+    isBrokenIf(re.test(email) == false);
+}

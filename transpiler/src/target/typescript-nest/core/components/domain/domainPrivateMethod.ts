@@ -17,7 +17,7 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { hasOkErrorReturnType } from '../../../../../helpers/typeGuards.js';
+import { hasOkErrorReturnType } from '../../../../../helpers/typeGuards/typeGuards.js';
 import {
   TPrivateMethod,
   TPrivateMethodValuesOkErrorReturnType,

@@ -45,14 +45,18 @@ export const parameterVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.ParameterContext,
 ): ParameterNode => {
-  const type: BitloopsPrimaryTypeNode = thisVisitor.visit(ctx.typeAnnotation());
   const parameterIdentifier: ParameterIdentifierNode = thisVisitor.visit(ctx.parameterIdentifier());
-
   const metadata = produceMetadata(ctx, thisVisitor);
-  return new ParameterNodeBuilder(metadata)
-    .withIdentifier(parameterIdentifier)
-    .withType(type)
-    .build();
+  const parameterNodeBuilder = new ParameterNodeBuilder(metadata).withIdentifier(
+    parameterIdentifier,
+  );
+
+  if (ctx.typeAnnotation()) {
+    const type: BitloopsPrimaryTypeNode = thisVisitor.visit(ctx.typeAnnotation());
+    parameterNodeBuilder.withType(type);
+  }
+
+  return parameterNodeBuilder.build();
 };
 
 export const parameterArgIdentifierVisitor = (

@@ -1,7 +1,7 @@
 import { StatementNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/statements/Statement.js';
 import { BitloopsPrimaryTypeNodeDirector } from '../../builders/bitloopsPrimaryTypeDirector.js';
-import { ExpressionBuilderDirector } from '../../builders/expression.js';
-import { ReturnStatementBuilderDirector } from '../../builders/statement/returnDirector.js';
+import { ExpressionBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/expressionNodeBuilderDirector.js';
+import { ReturnStatementBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/returnNodeBuilderDirector.js';
 import { StatementBuilderDirector } from '../../builders/statement/statementDirector.js';
 import { VariableDeclarationBuilderDirector } from '../../builders/statement/variableDeclaration.js';
 

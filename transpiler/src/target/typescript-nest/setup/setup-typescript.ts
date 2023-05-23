@@ -21,11 +21,7 @@ import prettier from 'prettier';
 import path from 'path';
 import { AppAndDomainErrorsAggregator } from './app-domain-errors/index.js';
 
-import {
-  IIntermediateSetupASTToTarget,
-  TargetSetupGeneratorError,
-  TTargetSetupContent,
-} from '../../types.js';
+import { IIntermediateSetupASTToTarget, TTargetSetupContent } from '../../types.js';
 import { IntermediateAST } from '../../../ast/core/types.js';
 import { TTranspileOptions } from '../../../transpilerTypes.js';
 import { setupTypeMapper, TSetupFileType } from './fileDestinations.js';
@@ -66,7 +62,7 @@ export class IntermediateSetupASTToTarget implements IIntermediateSetupASTToTarg
   generateSetupFiles = (
     params: IntermediateAST,
     options: TTranspileOptions,
-  ): TTargetSetupContent[] | TargetSetupGeneratorError => {
+  ): TTargetSetupContent[] => {
     const { setup: _setup, core } = params;
 
     const formatterConfig = options.formatterConfig ?? {

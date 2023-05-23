@@ -22,4 +22,8 @@ export class ParameterBuilderDirector {
       .withValue(parameterName)
       .build();
   }
+
+  buildParameterWithoutType(parameterName: string): TParameter {
+    return this.builder.withValue(parameterName).build();
+  }
 }

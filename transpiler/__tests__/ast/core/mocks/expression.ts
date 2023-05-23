@@ -2,6 +2,8 @@ import { ArgumentBuilderDirector } from './../builders/argumentDirector.js';
 import { EvaluationBuilderDirector } from '../builders/evaluationDirector.js';
 import { EvaluationFieldBuilderDirector } from '../builders/evaluationFieldDirector.js';
 import { ExpressionBuilderDirector } from '../builders/expressionDirector.js';
+import { IfErrorExpressionBuilderDirector } from '../builders/ifErrorExpressionBuilderDirector.js';
+import { ArgumentListBuilderDirector } from '../builders/argumentListBuilderDirector.js';
 
 export const generalExpressionTestCases = [
   {
@@ -356,3 +358,73 @@ export const validXorExpressionTestCases = [
     ),
   },
 ];
+
+export const validIfErrorExpressionTestCases = [
+  {
+    description: 'If error expression with no arrow function',
+    fileId: 'testFile.bl',
+    inputBLString: "JestTestExpression { NameVO.create({ message: 'Hello, World!' }).ifError() }",
+    expression: new ExpressionBuilderDirector().buildIfErrorExpression(
+      new IfErrorExpressionBuilderDirector().buildEmptyIfError(
+        new ExpressionBuilderDirector().buildEvaluation(
+          new EvaluationBuilderDirector().buildValueObjectEvaluation('NameVO', {
+            fields: [
+              new EvaluationFieldBuilderDirector().buildStringEvaluationField(
+                'message',
+                'Hello, World!',
+              ),
+            ],
+          }),
+        ),
+      ),
+    ),
+  },
+  {
+    description: 'If error expression with default arrow function',
+    fileId: 'testFile.bl',
+    inputBLString:
+      "JestTestExpression { NameVO.create({ message: 'Hello, World!' }).ifError((err) => return err; ) }",
+    expression: new ExpressionBuilderDirector().buildIfErrorExpression(
+      new IfErrorExpressionBuilderDirector().buildDefaultIfError(
+        new ExpressionBuilderDirector().buildEvaluation(
+          new EvaluationBuilderDirector().buildValueObjectEvaluation('NameVO', {
+            fields: [
+              new EvaluationFieldBuilderDirector().buildStringEvaluationField(
+                'message',
+                'Hello, World!',
+              ),
+            ],
+          }),
+        ),
+      ),
+    ),
+  },
+  {
+    description: 'If error expression with arrow function statements',
+    fileId: 'testFile.bl',
+    inputBLString:
+      'JestTestExpression { this.accountRepo.getById(id).ifError((err) => { return err; } ) }',
+    expression: new ExpressionBuilderDirector().buildIfErrorExpression(
+      new IfErrorExpressionBuilderDirector().buildIfErrorStatements(
+        new ExpressionBuilderDirector().buildMethodCallExpression(
+          new ExpressionBuilderDirector().buildMemberExpression(
+            new ExpressionBuilderDirector().buildMemberExpression(
+              new ExpressionBuilderDirector().buildThisExpression(),
+              'accountRepo',
+            ),
+            'getById',
+          ),
+          new ArgumentListBuilderDirector().buildArgumentListWithArgs([
+            new ArgumentBuilderDirector().buildIdentifierArgument('id'),
+          ]),
+        ),
+      ),
+    ),
+  },
+];
+
+// const notificationTemplateResponse = this.notificationTemplateRepo
+//   .getByType('firstTodo')
+//   .ifError((err) => {
+//     return err;
+//   });

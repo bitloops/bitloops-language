@@ -1,7 +1,7 @@
 import { ArrayPrimaryTypeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/BitloopsPrimaryType/ArrayPrimaryTypeBuilder.js';
 import { BitloopsIdentifierTypeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/BitloopsPrimaryType/BitloopsIdentifierTypeBuilder.js';
 import { BitloopsPrimaryTypeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/BitloopsPrimaryType/BitloopsPrimaryTypeBuilder.js';
-import { BuildInClassTypeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/BitloopsPrimaryType/BuildInClassTypeBuilder.js';
+import { BuiltInClassTypeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/BitloopsPrimaryType/BuiltInClassTypeBuilder.js';
 import { PrimitiveTypeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/BitloopsPrimaryType/PrimitiveTypeBuilder.js';
 import { StandardVOTypeNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/BitloopsPrimaryType/StandardVOTypeNodeBuilder.js';
 import { StandardValueTypeNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/BitloopsPrimaryType/StandardValueTypeNodeBuilder.js';
@@ -58,7 +58,7 @@ export class BitloopsPrimaryTypeNodeDirector {
   }
 
   buildBuiltinClassPrimaryType(type: TBitloopsBuiltInClasses): BitloopsPrimaryTypeNode {
-    const buildInClassTypeNode = new BuildInClassTypeBuilder().withType(type).build();
+    const buildInClassTypeNode = new BuiltInClassTypeBuilder().withType(type).build();
     return new BitloopsPrimaryTypeBuilder().withPrimaryType(buildInClassTypeNode).build();
   }
 

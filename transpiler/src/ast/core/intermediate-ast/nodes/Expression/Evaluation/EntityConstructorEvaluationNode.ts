@@ -18,7 +18,9 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
+import { EntityIdentifierNode } from '../../Entity/EntityIdentifierNode.js';
 import { TNodeMetadata } from '../../IntermediateASTNode.js';
+import { DomainEvaluationNode } from './DomainEvaluation/DomainEvaluation.js';
 import { EvaluationNode } from './EvaluationNode.js';
 
 export class EntityConstructorEvaluationNode extends EvaluationNode {
@@ -28,5 +30,20 @@ export class EntityConstructorEvaluationNode extends EvaluationNode {
     super(metadata);
     this.nodeType = BitloopsTypesMapping.TEntityConstructorEvaluation;
     this.classNodeName = EntityConstructorEvaluationNode.nodeName;
+  }
+
+  public override getIdentifierNode(): EntityIdentifierNode {
+    const domainEvaluationNode = this.getChildNodeByType<DomainEvaluationNode>(
+      BitloopsTypesMapping.TDomainEvaluation,
+    );
+    const identifier = domainEvaluationNode.getChildren().find((child) => {
+      return child.getNodeType() === BitloopsTypesMapping.TEntityIdentifier;
+    }) as EntityIdentifierNode;
+    return identifier;
+  }
+
+  public getInferredType(): string {
+    const entityEvaluationIdentifier = this.getIdentifierNode().getValue().entityIdentifier;
+    return entityEvaluationIdentifier;
   }
 }

@@ -6,6 +6,7 @@ import { IdentifierExpressionBuilder } from '../builders/expressions/IdentifierE
 import { IdentifierNodeBuilder } from '../builders/identifier/IdentifierBuilder.js';
 import { IntegrationEventIdentifierNodeBuilder } from '../builders/integration-event/IntegrationEventIdentifierNodeBuilder.js';
 import { ConstDeclarationNodeBuilder } from '../builders/statements/constDeclaration.js';
+import { ExpressionNode } from '../nodes/Expression/ExpressionNode.js';
 import { ConstDeclarationNode } from '../nodes/statements/ConstDeclarationNode.js';
 
 export class ConstDeclarationNodeBuilderDirector {
@@ -48,5 +49,16 @@ export class ConstDeclarationNodeBuilderDirector {
       .withIdentifier(constIdentifierNode)
       .withExpression(constDeclarationExpression)
       .build();
+  }
+
+  public buildConstDeclarationWithExpression({
+    constIdentifierName,
+    expressionNode,
+  }: {
+    constIdentifierName: string;
+    expressionNode: ExpressionNode;
+  }): ConstDeclarationNode {
+    const constIdentifierNode = new IdentifierNodeBuilder().withName(constIdentifierName).build();
+    return this.builder.withIdentifier(constIdentifierNode).withExpression(expressionNode).build();
   }
 }

@@ -21,7 +21,7 @@
 import BitloopsParser from '../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsParserVisitor from '../../../parser/core/grammar/BitloopsParserVisitor.js';
 import { BitloopsIdentifierTypeBuilder } from '../intermediate-ast/builders/BitloopsPrimaryType/BitloopsIdentifierTypeBuilder.js';
-import { BuildInClassTypeBuilder } from '../intermediate-ast/builders/BitloopsPrimaryType/BuildInClassTypeBuilder.js';
+import { BuiltInClassTypeBuilder } from '../intermediate-ast/builders/BitloopsPrimaryType/BuiltInClassTypeBuilder.js';
 import { DTOIdentifierNodeBuilder } from '../intermediate-ast/builders/DTO/DTOIdentifierNodeBuilder.js';
 import { ExpressionBuilder } from '../intermediate-ast/builders/expressions/ExpressionBuilder.js';
 import { ThisExpressionNodeBuilder } from '../intermediate-ast/builders/expressions/thisExpressionBuilder.js';
@@ -115,6 +115,7 @@ import {
   arrayBitloopsPrimTypeVisitor,
   arrayLiteralVisitor,
   memberDotExpressionVisitor,
+  ifErrorExpressionVisitor,
   methodCallExpressionVisitor,
   getClassExpressionVisitor,
   toStringExpressionVisitor,
@@ -226,7 +227,6 @@ import {
 } from './helpers/integration-event/integrationEventHandlerDeclarationVisitor.js';
 import { IntegrationEventHandlerIdentifierNode } from '../intermediate-ast/nodes/integration-event/IntegrationEventHandlerIdentifierNode.js';
 import { BitloopsPrimaryTypeNodeBuilderDirector } from '../intermediate-ast/directors/BitloopsPrimaryTypeNodeBuilderDirector.js';
-import { EventHandleNode } from '../intermediate-ast/nodes/EventHandleNode.js';
 import { servicePortDeclarationVisitor } from './helpers/service-port/servicePortDeclarationVisitor.js';
 import { servicePortIdentifierVisitor } from './helpers/service-port/servicePortIdentifierVisitor.js';
 import { ServicePortIdentifierNode } from '../intermediate-ast/nodes/service-port/ServicePortIdentifierNode.js';
@@ -243,8 +243,9 @@ import {
 import { IntegrationEventParameterNode } from '../intermediate-ast/nodes/integration-event/IntegrationEventParameterNode.js';
 import { NullLiteralBuilder } from '../intermediate-ast/builders/expressions/literal/NullLiteralBuilder.js';
 import { domainServiceEvaluationVisitor } from './helpers/expression/evaluation/domainServiceEvaluation.js';
-import { ReturnErrorStatementNode } from '../intermediate-ast/nodes/statements/ReturnErrorStatementNode.js';
-import { ReturnErrorStatementNodeBuilder } from '../intermediate-ast/builders/statements/ReturnErrorStatementNodeBuilder.js';
+import { IntegrationEventHandlerHandleMethodNode } from '../intermediate-ast/nodes/integration-event/IntegrationEventHandlerHandleMethodNode.js';
+import { anonymousFunctionVisitor } from './helpers/anonymousFunctionVisitor.js';
+import { arrowFunctionBodyVisitor } from './helpers/arrowFunctionBodyVisitor.js';
 
 export type TContextInfo = {
   boundedContextName: string;
@@ -384,6 +385,18 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitMemberDotExpression(ctx: BitloopsParser.MemberDotExpressionContext) {
     return memberDotExpressionVisitor(this, ctx);
+  }
+
+  visitIfErrorExpression(ctx: BitloopsParser.IfErrorExpressionContext) {
+    return ifErrorExpressionVisitor(this, ctx);
+  }
+
+  visitAnonymousFunction(ctx: BitloopsParser.AnonymousFunctionContext) {
+    return anonymousFunctionVisitor(this, ctx);
+  }
+
+  visitArrowFunctionBody(ctx: BitloopsParser.ArrowFunctionBodyContext) {
+    return arrowFunctionBodyVisitor(this, ctx);
   }
 
   visitMethodCallExpression(ctx: BitloopsParser.MethodCallExpressionContext) {
@@ -842,9 +855,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return returnPrivateMethodTypeVisitor(this, ctx);
   }
 
-  visitReturnSimpleStatement(
-    ctx: BitloopsParser.ReturnSimpleStatementContext,
-  ): ReturnStatementNode {
+  visitReturnStatement(ctx: BitloopsParser.ReturnStatementContext): ReturnStatementNode {
     const metadata = produceMetadata(ctx, this);
 
     const returnStatementNodeBuilder = new ReturnStatementNodeBuilder(metadata);
@@ -856,22 +867,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     const returnStatementNode = returnStatementNodeBuilder.build();
 
     return returnStatementNode;
-  }
-
-  visitReturnErrorStatement(
-    ctx: BitloopsParser.ReturnErrorStatementContext,
-  ): ReturnErrorStatementNode {
-    const metadata = produceMetadata(ctx, this);
-
-    const returnErrorStatementNodeBuilder = new ReturnErrorStatementNodeBuilder(metadata);
-
-    if (ctx.expression()) {
-      const expressionNode = this.visit(ctx.expression());
-      returnErrorStatementNodeBuilder.withExpression(expressionNode);
-    }
-    const returnErrorStatementNode = returnErrorStatementNodeBuilder.build();
-
-    return returnErrorStatementNode;
   }
 
   /**
@@ -920,10 +915,6 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitIsInstanceOfExpression(ctx: BitloopsParser.IsInstanceOfExpressionContext): any {
     return isInstanceOfVisitor(this, ctx);
-  }
-
-  visitClassTypes(ctx: BitloopsParser.ClassTypesContext): any {
-    return ctx.ErrorClass().getText();
   }
 
   visitExecuteDeclaration(ctx: BitloopsParser.ExecuteDeclarationContext): any {
@@ -999,7 +990,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitBitloopsBuiltInClassPrimType(ctx: BitloopsParser.BitloopsBuiltInClassPrimTypeContext) {
     const buildInClassType = ctx.bitloopsBuiltInClass().getText();
-    const buildInClassTypeNode = new BuildInClassTypeBuilder().withType(buildInClassType).build();
+    const buildInClassTypeNode = new BuiltInClassTypeBuilder().withType(buildInClassType).build();
     return buildInClassTypeNode;
   }
 
@@ -1209,7 +1200,7 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitIntegrationEventHandlerHandleDeclaration(
     ctx: BitloopsParser.IntegrationEventHandlerHandleDeclarationContext,
-  ): EventHandleNode {
+  ): IntegrationEventHandlerHandleMethodNode {
     return integrationEventHandlerHandleMethodVisitor(this, ctx);
   }
 

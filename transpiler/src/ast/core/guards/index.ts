@@ -1,11 +1,11 @@
 import { isParserErrors } from '../../../parser/core/guards/index.js';
-import { OriginalParserError } from '../../../parser/index.js';
-import { TTranspileError, TTranspileOutput } from '../../../transpilerTypes.js';
-import { IntermediateASTValidationError, IntermediateAST, IntermediateASTError } from '../types.js';
+import { ParserSyntacticErrors } from '../../../parser/index.js';
+import { TranspilerErrors, TTranspileOutput } from '../../../transpilerTypes.js';
+import { ValidationError, IntermediateAST, ValidationErrors } from '../types.js';
 
 const isOriginalParserOrIntermediateASTError = (
-  value: OriginalParserError | IntermediateASTError | IntermediateAST,
-): value is OriginalParserError | IntermediateASTError => {
+  value: ParserSyntacticErrors | ValidationErrors | IntermediateAST,
+): value is ParserSyntacticErrors | ValidationErrors => {
   if (isParserErrors(value) || isIntermediateASTValidationErrors(value)) {
     return true;
   }
@@ -13,16 +13,11 @@ const isOriginalParserOrIntermediateASTError = (
 };
 
 const isIntermediateASTValidationErrors = (
-  value:
-    | IntermediateAST
-    | TTranspileOutput
-    | TTranspileError[]
-    | void
-    | IntermediateASTValidationError[],
-): value is IntermediateASTValidationError[] => {
+  value: IntermediateAST | TTranspileOutput | TranspilerErrors | void | ValidationError[],
+): value is ValidationError[] => {
   if (Array.isArray(value)) {
     for (const err of value) {
-      if (!(err instanceof IntermediateASTValidationError)) {
+      if (!(err instanceof ValidationError)) {
         return false;
       }
     }

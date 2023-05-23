@@ -44,12 +44,11 @@ export class TodoEntity extends Domain.Entity<TodoProps> {
   }
   public complete(): Either<TodoEntity, never> {
     const title = TitleVO.create({ title: requestDTO.title });
-    if (!title.isFail()) {
-      this.props.title = title.value;
-      return 'hey';
-    } else {
+    if (title.isFail()) {
       return fail(title.value);
     }
+    this.props.title = title.value;
+    return 'hey';
   }
   public static fromPrimitives(data: TTodoEntityPrimitives): TodoEntity {
     const TodoEntityProps = {

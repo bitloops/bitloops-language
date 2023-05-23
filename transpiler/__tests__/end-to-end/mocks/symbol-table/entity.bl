@@ -1,0 +1,45 @@
+Props TitleProps {
+    string title;
+}
+
+ValueObject TitleVO {
+    static create(props: TitleProps): (OK(TitleVO), Errors()) {
+    }
+}
+
+Props TodoProps {
+    optional UUIDv4 id;
+    TitleVO title;
+    bool completed;
+}
+
+Entity TodoEntity {
+    static create(props: TodoProps): (OK(TodoEntity), Errors())  {
+        todo: TodoEntity = TodoEntity(props);
+        const isNew = props.id != null;
+        if (isNew) {
+            const event = TodoAddedDomainEvent.create({ 
+                aggregateId: todo.id.toString(),
+                title: todo.title.title,
+                completed: todo.completed,
+            });
+            todo.addDomainEvent(event);
+        }
+        return todo;
+    }
+
+    public complete(): (OK(void), Errors(DomainErrors.TodoAlreadyCompletedError)) {
+        applyRules(TodoAlreadyCompletedRule(this.completed, this.id.toString()))
+        this.completed = true;
+        const event = TodoCompletedDomainEvent.create({ 
+            aggregateId: this.id.toString(),
+            title: this.title.title,
+        });
+        this.addDomainEvent(event);
+    } 
+
+    private isCompleted(): bool {
+        const a = this.completed;
+        return a;
+    }
+}

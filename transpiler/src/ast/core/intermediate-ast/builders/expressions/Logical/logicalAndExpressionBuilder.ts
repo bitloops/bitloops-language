@@ -1,4 +1,3 @@
-import { ExpressionNode } from '../../../nodes/Expression/ExpressionNode.js';
 import { LeftExpressionNode } from '../../../nodes/Expression/leftExpressionNode.js';
 import { OperatorNode } from '../../../nodes/Expression/OperatorNode.js';
 import { RightExpressionNode } from '../../../nodes/Expression/rightExpression.js';
@@ -18,11 +17,11 @@ export class LogicalAndExpressionBuilder implements IBuilder<LogicalAndExpressio
     this.logicalAndExpressionNode = new LogicalAndExpressionNode(metadata);
   }
 
-  public withLeftExpression(expressionNode: ExpressionNode): LogicalAndExpressionBuilder {
+  public withLeftExpression(expressionNode: LeftExpressionNode): LogicalAndExpressionBuilder {
     this.leftExpressionNode = expressionNode;
     return this;
   }
-  public withRightExpression(expressionNode: ExpressionNode): LogicalAndExpressionBuilder {
+  public withRightExpression(expressionNode: RightExpressionNode): LogicalAndExpressionBuilder {
     this.rightExpressionNode = expressionNode;
     return this;
   }

@@ -9,4 +9,9 @@ export class StandardVOEvaluationNode extends EvaluationNode {
     this.nodeType = BitloopsTypesMapping.TStandardVOEvaluation;
     this.classNodeName = StandardVOEvaluationNode.nodeName;
   }
+
+  public getInferredType(): string {
+    const standardVOIdentifier = this.getIdentifierNode().getValue().identifier;
+    return standardVOIdentifier;
+  }
 }

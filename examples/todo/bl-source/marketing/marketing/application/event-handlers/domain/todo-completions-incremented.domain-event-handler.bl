@@ -1,13 +1,10 @@
 DomainEventHandler TodoCompletionsIncrementedDomainEventHandler(userRepo: UserWriteRepoPort, notificationTemplateRepo: NotificationTemplateReadRepoPort) {
 
     handle(event: TodoCompletionsIncrementedDomainEvent): (OK(void),Errors(ApplicationErrors.UserNotFoundError)) {
-      const user = event.payload;
+      const user = event;
 
       const userId = UUIDv4(user.aggregateId);
-      const userFound = this.userRepo.getById(userId);
-      if(userFound is Error){
-        return Error(userFound);
-      }
+      const userFound = this.userRepo.getById(userId).ifError();
 
       if (NOT userFound) {
         return ApplicationErrors.UserNotFoundError(user.aggregateId);
@@ -15,12 +12,9 @@ DomainEventHandler TodoCompletionsIncrementedDomainEventHandler(userRepo: UserWr
 
       const marketingNotificationService = MarketingNotificationDomainService.create(this.notificationTemplateRepo);
 
-      const emailToBeSentInfo = marketingNotificationService.getNotificationTemplateToBeSent(userFound);
-      if(emailToBeSentInfo is Error){
-        return Error(emailToBeSentInfo);
-      }
+      const emailToBeSentInfo = marketingNotificationService.getNotificationTemplateToBeSent(userFound).ifError();
       
-      if (NOT emailToBeSentInfo OR NOT emailToBeSentInfo.notificationTemplate) {
+      if (NOT emailToBeSentInfo OR NOT (emailToBeSentInfo.notificationTemplate)) {
         return;
       }
 

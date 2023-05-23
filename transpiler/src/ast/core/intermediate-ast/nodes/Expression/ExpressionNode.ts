@@ -1,11 +1,23 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { SymbolTable } from '../../../../../semantic-analysis/type-inference/SymbolTable.js';
+import { TInferredTypes } from '../../../../../semantic-analysis/type-inference/types.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { StatementNode } from '../statements/Statement.js';
+import { BuiltInFunctionNode } from '../statements/builtinFunction/BuiltinFunctionNode.js';
+import { AssignmentExpressionNode } from './AssignmentExpression.js';
 import { EvaluationNode } from './Evaluation/EvaluationNode.js';
 import { IdentifierExpressionNode } from './IdentifierExpression.js';
-import { MemberDotExpressionNode } from './MemberDot/MemberDotExpression.js';
+import { LogicalExpressionNode } from './Logical/LogicalExpressionNode.js';
+import { LogicalNotExpressionNode } from './Logical/LogicalNotExpression.js';
+import { MemberDotExpressionNode } from './MemberDot/MemberDotExpressionNode.js';
 import { MethodCallExpressionNode } from './MethodCallExpression.js';
 import { ThisExpressionNode } from './ThisExpressionNode.js';
+import { ToStringNode } from './ToStringNode.js';
+import { EqualityExpressionNode } from './equalityExpressionNode.js';
+import { LiteralNode } from './Literal/LiteralNode.js';
+import { IfErrorExpressionNode } from './IfErrorExpressionNode.js';
+import { RelationalExpressionNode } from './relationalExpressionNode.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 
 // export abstract class ExpressionNode extends IntermediateASTNode {
 //   isMethodCallExpression(): this is MethodCallExpressionNode {
@@ -20,17 +32,6 @@ export class ExpressionNode extends StatementNode {
   }
 
   get childrenIdentifiers(): string[] {
-    // if (this instanceof IdentifierExpressionNode) {
-    //   return [this.getValue()];
-    // }
-
-    // if (this instanceof MethodCallExpressionNode) {
-    //   return this.getExpression().childrenIdentifiers;
-    // }
-    // if (this instanceof MemberDotExpressionNode) {
-    //   return [...this.expression.childrenIdentifiers, this.identifierExpression.identifierName];
-    // }
-
     return [];
   }
 
@@ -40,6 +41,30 @@ export class ExpressionNode extends StatementNode {
 
   isMethodCallExpression(): this is MethodCallExpressionNode {
     return this.getNodeType() === BitloopsTypesMapping.TMethodCallExpression;
+  }
+
+  isAssingmentExpression(): this is AssignmentExpressionNode {
+    return this.getNodeType() === BitloopsTypesMapping.TAssignmentExpression;
+  }
+
+  isEqualityExpression(): this is EqualityExpressionNode {
+    return this.getNodeType() === BitloopsTypesMapping.TEqualityExpression;
+  }
+
+  isRelationalExpression(): this is RelationalExpressionNode {
+    return this.getNodeType() === BitloopsTypesMapping.TRelationalExpression;
+  }
+
+  isToStringExpression(): this is ToStringNode {
+    return this.getNodeType() === BitloopsTypesMapping.TToStringExpression;
+  }
+
+  isBuiltInFunctionExpression(): this is BuiltInFunctionNode {
+    return this.getNodeType() === BitloopsTypesMapping.TBuiltInFunction;
+  }
+
+  isIfErrorExpression(): this is IfErrorExpressionNode {
+    return this.getNodeType() === BitloopsTypesMapping.TIfErrorExpression;
   }
 
   isThisMethodCallExpressionWithTwoMemberDots(): boolean {
@@ -90,6 +115,36 @@ export class ExpressionNode extends StatementNode {
       return false;
     }
     return true;
+  }
+
+  isPackageEvaluationExpression(): boolean {
+    if (!this.isEvaluation()) {
+      return false;
+    }
+    if (!this.getEvaluation().isPackageEvaluation()) {
+      return false;
+    }
+    return true;
+  }
+
+  isMemberDotExpression(): this is MemberDotExpressionNode {
+    return this.getNodeType() === BitloopsTypesMapping.TMemberDotExpression;
+  }
+
+  isThisExpression(): this is ThisExpressionNode {
+    return this.getNodeType() === BitloopsTypesMapping.TThisExpression;
+  }
+
+  isEvaluation(): this is EvaluationNode {
+    return this.getNodeType() === BitloopsTypesMapping.TEvaluation;
+  }
+
+  isLogicalExpression(): this is LogicalExpressionNode {
+    return this.getNodeType() === BitloopsTypesMapping.TLogicalExpression;
+  }
+
+  isLogicalNotExpression(): this is LogicalNotExpressionNode {
+    return this.getNodeType() === BitloopsTypesMapping.TNotExpression;
   }
 
   /**
@@ -152,19 +207,47 @@ export class ExpressionNode extends StatementNode {
     return this.getMethodName();
   }
 
-  isMemberDotExpression(): this is MemberDotExpressionNode {
-    return this.getNodeType() === BitloopsTypesMapping.TMemberDotExpression;
-  }
-
-  isThisExpression(): this is ThisExpressionNode {
-    return this.getNodeType() === BitloopsTypesMapping.TThisExpression;
-  }
-
-  isEvaluation(): this is EvaluationNode {
-    return this.getNodeType() === BitloopsTypesMapping.TEvaluation;
-  }
-
   getEvaluation(): EvaluationNode {
     return this.getChildren()[0] as EvaluationNode;
+  }
+
+  getLiteralNode(): LiteralNode {
+    return this.getChildren()[0] as LiteralNode;
+  }
+
+  public getInferredType(symbolTableManager: SymbolTableManager): TInferredTypes {
+    for (const child of this.getChildren()) {
+      if (child instanceof ExpressionNode) {
+        return child.getInferredType(symbolTableManager);
+      }
+    }
+    throw new Error('No expression found to infer type');
+  }
+
+  getStringValue(): string {
+    for (const child of this.getChildren()) {
+      if (child instanceof ExpressionNode) {
+        return child.getStringValue();
+      }
+    }
+    throw new Error('No expression found to get string value');
+  }
+
+  public typeCheck(symbolTable: SymbolTable): void {
+    for (const child of this.getChildren()) {
+      if (child instanceof ExpressionNode) {
+        child.typeCheck(symbolTable);
+      }
+    }
+  }
+
+  public addToSymbolTable(symbolTableManager: SymbolTableManager, isMethodCall = false): void {
+    for (const child of this.getChildren()) {
+      if (child instanceof ExpressionNode) {
+        const symbolTable = symbolTableManager.getSymbolTable();
+        child.typeCheck(symbolTable);
+        return child.addToSymbolTable(symbolTableManager, isMethodCall);
+      }
+    }
   }
 }

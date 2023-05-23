@@ -168,7 +168,7 @@ const getBuiltInclassToPrimitivesValue = (data: {
   let builtInClassVariableFound = false;
   for (const fieldNode of fields) {
     if (fieldNode.getIdentifierNode().getValue().identifier === key) {
-      if (fieldNode.getTypeNode().getValue().type.buildInClassType === 'UUIDv4') {
+      if (fieldNode.getTypeNode().getBuiltInClassName() === 'UUIDv4') {
         if (isNestedKey(keyToAppend)) {
           builtInClassVariableValue += `${key}: this.props.${keyToAppend}.${key}.toString(),`;
         } else {
@@ -339,10 +339,7 @@ const getBuiltInClassFromPrimitivesValue = (data: {
   let builtInClassVariableValue = '';
   for (const fieldNode of fields) {
     if (fieldNode.getIdentifierNode().getValue().identifier === key) {
-      if (
-        fieldNode.getTypeNode().getValue().type.buildInClassType ===
-        BitloopsBuiltInClassNames.UUIDv4
-      ) {
+      if (fieldNode.getTypeNode().getBuiltInClassName() === BitloopsBuiltInClassNames.UUIDv4) {
         if (isNestedKey(keyToAppend)) {
           builtInClassVariableValue += `${key}: new Domain.UUIDv4(data.${keyToAppend}.${key}) as Domain.UUIDv4`;
         } else {
