@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@bitloops/bl-boilerplate-core@^0.3.4":
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/@bitloops/bl-boilerplate-core/-/bl-boilerplate-core-0.3.4.tgz#84f4e77114e9ac2fc6218c2729b0a5fd0da6bcc2"
-  integrity sha512-XnGqab4/k98GmkVKRctR2mzwhEl7S5f7eStRfLeIPRS44x+YDBNcbUWWVGUDJh/Jd6Ooj/+Io806N6Uhkc4m2g==
+"@bitloops/bl-boilerplate-core@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@bitloops/bl-boilerplate-core/-/bl-boilerplate-core-0.4.0.tgz#70890dbd8d53ee3d2698d5d0d3cf2bbd26ef3f77"
+  integrity sha512-9z2YcFAu2DO3o3xVG/Z95txF4wI1SzDo3pbG3j+bp1fZpTOg6X325qt8LMMHAMYGfEqs9RAIl0qaxiCXstW/VQ==
   dependencies:
     class-transformer "^0.5.1"
     nats "^2.10.2"
