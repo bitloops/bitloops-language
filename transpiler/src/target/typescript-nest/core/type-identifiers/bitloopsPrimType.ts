@@ -33,7 +33,6 @@ import {
   TStandardValueType,
   TBitloopsPrimitives,
 } from '../../../../types.js';
-
 export class BitloopsPrimTypeIdentifiers {
   static isArrayPrimType(
     primaryType: TBitloopsPrimaryTypeValues,
