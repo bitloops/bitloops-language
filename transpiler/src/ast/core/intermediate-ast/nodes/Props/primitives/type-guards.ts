@@ -24,7 +24,7 @@ export class PrimitivesObjectTypeGuard {
   static isValueObjectType(
     propertyTypeValue: TGetFieldPrimitivesValue,
   ): propertyTypeValue is ValueObjectPrimitives {
-    return TypeUtils.hasObjectType(propertyTypeValue);
+    return (propertyTypeValue as any).type === PrimitiveObjectPropertyType.ValueObject;
   }
 
   static hasObjectType(type): boolean {

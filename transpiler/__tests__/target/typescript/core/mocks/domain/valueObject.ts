@@ -72,6 +72,9 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
     import { TitleProps } from './title.props';
     import { DomainErrors } from './errors/index';
     import { DomainRules } from './rules/index';
+    export type TTitleVOPrimitives = {
+       title: string;
+    };
     export class TitleVO extends Domain.ValueObject<TitleProps> {
       private constructor(props: TitleProps) {
         super(props);
@@ -85,6 +88,15 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
       get title(): string {
         return this.props.title;
       }
+       public static fromPrimitives(data: TTitleVOPrimitives): TitleVO {
+         const TitleVOProps = { title: data.title };
+         return new TitleVO(TitleVOProps);
+       }
+       public toPrimitives(): TTitleVOPrimitives {
+         return {
+           title: this.title,
+         };
+       }
     }`,
     outputProps: 'export interface TitleProps { title: string; }',
   },
@@ -175,6 +187,9 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
     output: `import { Domain, Either, ok } from '@bitloops/bl-boilerplate-core';
     import { NameProps } from './name.props';
     import { DomainErrors } from './errors/index';
+    export type TNameVOPrimitives = {
+      name: string;
+    };
     const vName: string = 'Kostas';
     export class NameVO extends Domain.ValueObject<NameProps> {
       private constructor(props: NameProps) {
@@ -194,6 +209,15 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
       private isInvalidName(name: string): boolean {
         return regName.test(name);
       }
+     public static fromPrimitives(data: TNameVOPrimitives): NameVO {
+       const NameVOProps = { name: data.name };
+       return new NameVO(NameVOProps);
+     }
+     public toPrimitives(): TNameVOPrimitives {
+       return {
+         name: this.name,
+       };
+     }
     }`,
     outputProps: 'export interface TitleProps { title: string; }',
   },
@@ -217,6 +241,9 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
     ),
     output: `import { Domain, Either, ok } from '@bitloops/bl-boilerplate-core';
     import { UserIdProps } from './user-id.props';
+  export type TUserIdVOPrimitives = {
+       id: string;
+    };
     export class UserIdVO extends Domain.ValueObject<UserIdProps> {
       private constructor(props: UserIdProps) {
         super(props);
@@ -227,6 +254,15 @@ export const VALID_VALUE_OBJECT_TEST_CASES: TestCase[] = [
       get id(): Domain.UUIDv4 {
         return this.props.id;
       }
+      public static fromPrimitives(data: TUserIdVOPrimitives): UserIdVO {
+         const UserIdVOProps = { id: new Domain.UUIDv4(data.id) as Domain.UUIDv4 };
+         return new UserIdVO(UserIdVOProps);
+       }
+       public toPrimitives(): TUserIdVOPrimitives {
+         return {
+           id: this.id.toString(),
+         };
+       }
     }`,
     outputProps: 'export interface UserIdProps { id: Domain.UUIDv4; }',
   },

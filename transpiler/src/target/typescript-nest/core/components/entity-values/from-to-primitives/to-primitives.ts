@@ -2,6 +2,7 @@ import { IntermediateASTTree } from '../../../../../../ast/core/intermediate-ast
 import { FieldNode } from '../../../../../../ast/core/intermediate-ast/nodes/FieldList/FieldNode.js';
 import { PrimitivesObjectTypeGuard } from '../../../../../../ast/core/intermediate-ast/nodes/Props/primitives/type-guards.js';
 import {
+  TArrayPropertyValue,
   TGetFieldPrimitives,
   ValueObjectPrimitives,
 } from '../../../../../../ast/core/intermediate-ast/nodes/Props/primitives/types.js';
@@ -24,7 +25,7 @@ class ToPrimitivesMethod {
   static buildToPrimitives(
     primitivesObject: TGetFieldPrimitives,
     ast: IntermediateASTTree,
-    keyToAppend = '',
+    keyToPrepend = 'this.props',
   ): string {
     let result = '';
     for (const [key, keyValue] of Object.entries(primitivesObject)) {
@@ -33,51 +34,95 @@ class ToPrimitivesMethod {
         continue;
       }
       if (PrimitivesObjectTypeGuard.isArrayType(keyValue)) {
-        continue;
-      } else if (PrimitivesObjectTypeGuard.isValueObjectType(keyValue)) {
-        const valueObjectToPrimitives = this.buildToPrimitivesOfValueObject(
-          key,
+        const updatedKeyToPrepend = `${keyToPrepend}.${key}`;
+        const arrayToPrimitives = this.buildToPrimitivesOfArray(
           keyValue,
           ast,
-          keyToAppend,
+          updatedKeyToPrepend,
+          key,
         );
-        result += `${key}: ${valueObjectToPrimitives}`;
-      } else {
-        // const updatedKey = keyToAppend ? keyToAppend : key;
-        result += this.buildToPrimitivesLeafValue({ keyToAppend, key });
+        result += `${key}: ${arrayToPrimitives},`;
+        continue;
       }
+      if (PrimitivesObjectTypeGuard.isValueObjectType(keyValue)) {
+        const updatedKeyToPrepend = `${keyToPrepend}.${key}`;
+        const valueObjectToPrimitives = this.buildToPrimitivesOfValueObject(
+          keyValue,
+          ast,
+          updatedKeyToPrepend,
+        );
+        result += `${key}: ${valueObjectToPrimitives},`;
+        continue;
+      }
+      if (PrimitivesObjectTypeGuard.isPrimitiveProperty(keyValue)) {
+        // const updatedKey = keyToAppend ? keyToAppend : key;
+        result += this.buildToPrimitivesLeafValue({ keyToPrepend, key });
+        continue;
+      }
+      throw new Error(`Unknown type: ${keyValue}`);
     }
     return result;
   }
 
+  private static isIdPrimitivesKey = (primitivesKey: string): boolean => {
+    return primitivesKey === 'id';
+  };
+
   private static buildToPrimitivesOfValueObject(
-    parentKey: string,
     keyValue: ValueObjectPrimitives,
     ast: IntermediateASTTree,
-    keyToAppend: string,
+    keyToPrepend: string,
   ): string {
-    const updatedKey = keyToAppend ? `${keyToAppend}.${parentKey}` : parentKey;
-
     let result = '{\n';
     for (const [childKey, voChildKeyProperty] of Object.entries(keyValue.value)) {
       if (PrimitivesObjectTypeGuard.isValueObjectType(voChildKeyProperty)) {
         const primitivesObject = { [childKey]: voChildKeyProperty };
-        result += this.buildToPrimitives(primitivesObject, ast, updatedKey);
+        result += this.buildToPrimitives(primitivesObject, ast, keyToPrepend);
         continue;
       }
       // The value object is either primitive or array
       const voIdentifier = keyValue.identifier;
       const fields = this.getFieldNodesOfVOIdentifier(ast, voIdentifier);
       result += this.buildToPrimitivesFieldValue({
-        keyToAppend: updatedKey,
+        keyToPrepend,
         key: childKey,
         fields,
       });
     }
 
-    result += '},';
+    result += '}';
     return result;
   }
+
+  private static buildToPrimitivesOfArray = (
+    propertyValue: TArrayPropertyValue,
+    ast: IntermediateASTTree,
+    keyToPrepend: string,
+    key: string,
+  ): string => {
+    /**
+     * We need to do something like this:
+    -       : this.props.locations.map((x) => ({
+    -        path: x.path,
+    -      })),
+     */
+    const arrayValue = propertyValue.value;
+    if (PrimitivesObjectTypeGuard.isValueObjectType(arrayValue)) {
+      const variableName = 'x';
+      return `${keyToPrepend}.map((${variableName}) => (${this.buildToPrimitivesOfValueObject(
+        arrayValue,
+        ast,
+        variableName,
+      )})
+      )`;
+    }
+    // If array of primitives, we don't need to map
+    if (PrimitivesObjectTypeGuard.isPrimitiveProperty(arrayValue)) {
+      return `${keyToPrepend}.${key}`;
+    }
+    // Probably array of arrays
+    throw new Error('Unhandled array types case');
+  };
 
   private static getToPrimitivesIdValue = (key: string, fullPathKey: string): string => {
     return `${key}: this.${fullPathKey}.toString(),`;
@@ -94,25 +139,22 @@ class ToPrimitivesMethod {
   };
 
   private static buildToPrimitivesLeafValue = (data: {
-    keyToAppend: string;
+    keyToPrepend: string;
     key: string;
   }): string => {
-    const { keyToAppend, key } = data;
-    if (keyToAppend) {
-      return `${key}: this.props.${keyToAppend}.${key},`;
-    }
-    return `${key}: this.props.${key},`;
+    const { keyToPrepend, key } = data;
+    return `${key}: ${keyToPrepend}.${key},`;
   };
 
   private static buildToPrimitivesFieldValue = (data: {
-    keyToAppend: string;
+    keyToPrepend: string;
     key: string;
     fields: FieldNode[];
   }): string => {
-    const { keyToAppend, key, fields } = data;
+    const { keyToPrepend, key, fields } = data;
     const { builtInClassVariableValue, builtInClassVariableFound } =
       this.getBuiltInclassToPrimitivesValue({
-        keyToAppend,
+        keyToPrepend: keyToPrepend,
         key,
         fields,
       });
@@ -120,31 +162,24 @@ class ToPrimitivesMethod {
     if (builtInClassVariableFound) {
       return builtInClassVariableValue;
     }
-    if (keyToAppend) {
-      return `${key}: this.props.${keyToAppend}.${key},`;
-    }
-    return `${key}: this.props.${key},`;
+    return `${key}: ${keyToPrepend}.${key},`;
   };
 
   private static getBuiltInclassToPrimitivesValue = (data: {
-    keyToAppend: string;
+    keyToPrepend: string;
     key: string;
     fields: FieldNode[];
   }): {
     builtInClassVariableValue: string;
     builtInClassVariableFound: boolean;
   } => {
-    const { keyToAppend, key, fields } = data;
+    const { keyToPrepend: keyToAppend, key, fields } = data;
     let builtInClassVariableValue = '';
     let builtInClassVariableFound = false;
     for (const fieldNode of fields) {
       if (fieldNode.getIdentifierNode().getValue().identifier === key) {
         if (fieldNode.getTypeNode().getBuiltInClassName() === 'UUIDv4') {
-          if (keyToAppend) {
-            builtInClassVariableValue += `${key}: this.props.${keyToAppend}.${key}.toString(),`;
-          } else {
-            builtInClassVariableValue += `${key}: this.props.${key}.toString(),`;
-          }
+          builtInClassVariableValue += `${key}: ${keyToAppend}.${key}.toString(),`;
           builtInClassVariableFound = true;
           continue;
         }
@@ -154,10 +189,6 @@ class ToPrimitivesMethod {
       builtInClassVariableValue,
       builtInClassVariableFound,
     };
-  };
-
-  private static isIdPrimitivesKey = (primitivesKey: string): boolean => {
-    return primitivesKey === 'id';
   };
 }
 

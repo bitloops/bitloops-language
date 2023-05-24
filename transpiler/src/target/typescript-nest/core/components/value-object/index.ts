@@ -29,6 +29,13 @@ import { constantVariables, generateGetters } from '../domain/index.js';
 import { getParentDependencies } from '../../dependencies.js';
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { domainPrivateMethods } from '../domain/domainMethods.js';
+import { getValueObjectPrimitivesObject } from './from-to-primitives/primitives-object.js';
+import {
+  ValueObjectPrimitivesTypeFactory,
+  getPrimitivesType,
+} from './from-to-primitives/primitives-type.js';
+import { generateFromPrimitives } from './from-to-primitives/from-primitives.js';
+import { generateToPrimitives } from './from-to-primitives/to-primitives.js';
 
 const VO_DEPENDENCIES: () => TDependenciesTypeScript = () => [
   {
@@ -63,25 +70,24 @@ const valueObjectsToTargetLanguage = (params: {
 }): TTargetDependenciesTypeScript => {
   const { valueObject, model } = params;
 
-  const initialObjectValuesLangMapping = (voName: string, propsName: string): string =>
-    `export class ${voName} extends Domain.ValueObject<${propsName}> { `;
-
   let result = '';
   let dependencies: TDependenciesTypeScript = VO_DEPENDENCIES();
 
   const { privateMethods, create, constants, valueObjectIdentifier } = valueObject.ValueObject;
   const domainCreateProps = create.parameter.type;
-  //TODO uncomment?
-  // if (BitloopsPrimTypeIdentifiers.isArrayPrimType(propsNameType)) {
-  //   throw new Error(
-  //     `Value Object ${valueObjectIdentifier} has an array as a property. This is not supported yet.`,
-  //   );
-  // }
+
+  const primitivesObject = getValueObjectPrimitivesObject(model, valueObjectIdentifier);
+
+  const primitivesType = getPrimitivesType(primitivesObject, valueObjectIdentifier);
+  result += primitivesType + '\n';
+  const toBeImportedPrimitiveTypes =
+    ValueObjectPrimitivesTypeFactory.getPrimitiveTypesThatNeedToBeImported(primitivesObject);
+
   const { output: propsName, dependencies: propsTypeDependencies } = modelToTargetLanguage({
     type: BitloopsTypesMapping.TBitloopsPrimaryType,
     value: { type: domainCreateProps },
   });
-  dependencies = [...dependencies, ...propsTypeDependencies];
+  dependencies = [...dependencies, ...propsTypeDependencies, ...toBeImportedPrimitiveTypes];
 
   if (constants) {
     const constantsRes = constantVariables(constants);
@@ -89,7 +95,7 @@ const valueObjectsToTargetLanguage = (params: {
     dependencies = [...dependencies, ...constantsRes.dependencies];
   }
 
-  result += initialObjectValuesLangMapping(valueObjectIdentifier, propsName);
+  result += `export class ${valueObjectIdentifier} extends Domain.ValueObject<${propsName}> { `;
   // Add this.props to constructor when overriding from bl
 
   const voCreateModel = modelToTargetLanguage({
@@ -114,6 +120,12 @@ const valueObjectsToTargetLanguage = (params: {
     result += voMethodsModel.output;
     dependencies = [...dependencies, ...voMethodsModel.dependencies];
   }
+
+  const fromPrimitives = generateFromPrimitives(primitivesObject, valueObjectIdentifier);
+  result += fromPrimitives + '\n';
+
+  const toPrimitives = generateToPrimitives(primitivesObject, valueObjectIdentifier);
+  result += toPrimitives + '\n';
 
   result += '}';
 
