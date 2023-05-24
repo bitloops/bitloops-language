@@ -3,18 +3,27 @@ import {
   PrimitiveObjectPropertyType,
   PrimitiveType,
   TArrayPropertyValue,
+  TGetFieldPrimitivesValue,
   ValueObjectPrimitives,
 } from './types.js';
 
 export class PrimitivesObjectTypeGuard {
-  static isPrimitiveProperty(propertyTypeValue: any): propertyTypeValue is PrimitiveType {
+  static isPrimitiveProperty(
+    propertyTypeValue: TGetFieldPrimitivesValue,
+  ): propertyTypeValue is PrimitiveType {
     return typeof propertyTypeValue === 'string';
   }
-  static isArrayType(propertyTypeValue: any): propertyTypeValue is TArrayPropertyValue {
-    return propertyTypeValue && propertyTypeValue.type === PrimitiveObjectPropertyType.Array;
+  static isArrayType(
+    propertyTypeValue: TGetFieldPrimitivesValue,
+  ): propertyTypeValue is TArrayPropertyValue {
+    return (
+      propertyTypeValue && (propertyTypeValue as any).type === PrimitiveObjectPropertyType.Array
+    );
   }
 
-  static isValueObjectType(propertyTypeValue: any): propertyTypeValue is ValueObjectPrimitives {
+  static isValueObjectType(
+    propertyTypeValue: TGetFieldPrimitivesValue,
+  ): propertyTypeValue is ValueObjectPrimitives {
     return TypeUtils.hasObjectType(propertyTypeValue);
   }
 

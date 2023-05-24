@@ -22,7 +22,8 @@ export class PrimitivesTypeFactory {
       if (PrimitivesObjectTypeGuard.isPrimitiveProperty(keyValue)) {
         result += `${key}: ${keyValue};\n`;
       } else if (PrimitivesObjectTypeGuard.isArrayType(keyValue)) {
-        result += this.buildTypeForArray(key, keyValue);
+        const arrayTypeResult = this.buildTypeForArray(key, keyValue);
+        result += `${key}: ${arrayTypeResult};\n`;
       } else if (PrimitivesObjectTypeGuard.isValueObjectType(keyValue)) {
         result += `${key}: ${this.buildType(keyValue.value)};\n`;
       }
@@ -32,12 +33,16 @@ export class PrimitivesTypeFactory {
   }
 
   private static buildTypeForArray(key: string, keyValue: TArrayPropertyValue): string {
-    const type = keyValue.type;
+    const type = keyValue.value;
+    // Primitive is the base condition
     if (PrimitivesObjectTypeGuard.isPrimitiveProperty(type)) {
-      return `${key}: ${type}[];\n`;
+      return `${type}[]`;
     } else if (PrimitivesObjectTypeGuard.isValueObjectType(type)) {
-      return `${key}: ${this.buildType(type.value)}[];\n`;
+      return `${this.buildType(type.value)}[]`;
     }
-    // TODO Handle nested arrays
+    if (PrimitivesObjectTypeGuard.isArrayType(type)) {
+      return `${this.buildTypeForArray(key, type)}[]`;
+    }
+    throw new Error(`Unknown type: ${type}`);
   }
 }
