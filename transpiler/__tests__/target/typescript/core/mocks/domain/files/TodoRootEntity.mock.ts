@@ -1,13 +1,10 @@
 import { Domain, Either, ok } from '@bitloops/bl-boilerplate-core';
 import { TodoProps } from './todo.props';
-import { TitleVO } from './title.value-object';
+import { TTitleVOPrimitives, TitleVO } from './title.value-object';
 type TTodoRootEntityPrimitives = {
   id: string;
   completed: boolean;
-  title: {
-    title: string;
-    language: string;
-  };
+  title: TTitleVOPrimitives;
 };
 export class TodoRootEntity extends Domain.Aggregate<TodoProps> {
   private constructor(props: TodoProps) {
@@ -37,21 +34,15 @@ export class TodoRootEntity extends Domain.Aggregate<TodoProps> {
     const TodoRootEntityProps = {
       id: new Domain.UUIDv4(data.id) as Domain.UUIDv4,
       completed: data.completed,
-      title: TitleVO.create({
-        title: data.title.title,
-        language: data.title.language,
-      }).value as TitleVO,
+      title: TitleVO.fromPrimitives(data.title),
     };
     return new TodoRootEntity(TodoRootEntityProps);
   }
   public toPrimitives(): TTodoRootEntityPrimitives {
     return {
       id: this.id.toString(),
-      completed: this.props.completed,
-      title: {
-        title: this.props.title.title,
-        language: this.props.title.language,
-      },
+      completed: this.completed,
+      title: this.title.toPrimitives(),
     };
   }
 }

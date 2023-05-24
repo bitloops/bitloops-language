@@ -29,13 +29,13 @@ import { constantVariables, generateGetters } from '../domain/index.js';
 import { getParentDependencies } from '../../dependencies.js';
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { domainPrivateMethods } from '../domain/domainMethods.js';
-import { getValueObjectPrimitivesObject } from './from-to-primitives/primitives-object.js';
 import {
-  ValueObjectPrimitivesTypeFactory,
+  PrimitivesTypeFactory,
   getPrimitivesType,
-} from './from-to-primitives/primitives-type.js';
-import { generateFromPrimitives } from './from-to-primitives/from-primitives.js';
-import { generateToPrimitives } from './from-to-primitives/to-primitives.js';
+} from '../entity-values/from-to-primitives/primitives-type.js';
+import { getPrimitivesObject } from '../entity-values/from-to-primitives/primitives-object.js';
+import { generateFromPrimitives } from '../entity-values/from-to-primitives/from-primitives.js';
+import { generateToPrimitives } from '../entity-values/from-to-primitives/to-primitives.js';
 
 const VO_DEPENDENCIES: () => TDependenciesTypeScript = () => [
   {
@@ -76,12 +76,12 @@ const valueObjectsToTargetLanguage = (params: {
   const { privateMethods, create, constants, valueObjectIdentifier } = valueObject.ValueObject;
   const domainCreateProps = create.parameter.type;
 
-  const primitivesObject = getValueObjectPrimitivesObject(model, valueObjectIdentifier);
+  const primitivesObject = getPrimitivesObject(model, valueObjectIdentifier);
 
   const primitivesType = getPrimitivesType(primitivesObject, valueObjectIdentifier);
   result += primitivesType + '\n';
   const toBeImportedPrimitiveTypes =
-    ValueObjectPrimitivesTypeFactory.getPrimitiveTypesThatNeedToBeImported(primitivesObject);
+    PrimitivesTypeFactory.getPrimitiveTypesThatNeedToBeImported(primitivesObject);
 
   const { output: propsName, dependencies: propsTypeDependencies } = modelToTargetLanguage({
     type: BitloopsTypesMapping.TBitloopsPrimaryType,

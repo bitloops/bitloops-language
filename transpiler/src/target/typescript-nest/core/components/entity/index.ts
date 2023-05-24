@@ -31,10 +31,13 @@ import { domainMethods } from '../domain/domainMethods.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
 import { getParentDependencies } from '../../dependencies.js';
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
-import { getEntityPrimitivesObject } from '../entity-values/from-to-primitives/primitives-object.js';
-import { generateToPrimitives } from '../entity-values/from-to-primitives/to-primitives.js';
-import { getPrimitivesType } from '../entity-values/from-to-primitives/primitives-type.js';
+import { getPrimitivesObject } from '../entity-values/from-to-primitives/primitives-object.js';
+import {
+  PrimitivesTypeFactory,
+  getPrimitivesType,
+} from '../entity-values/from-to-primitives/primitives-type.js';
 import { generateFromPrimitives } from '../entity-values/from-to-primitives/from-primitives.js';
+import { generateToPrimitives } from '../entity-values/from-to-primitives/to-primitives.js';
 
 const ENTITY_DEPENDENCIES: () => TDependenciesTypeScript = () => [
   {
@@ -83,17 +86,20 @@ const entityToTargetLanguage = (params: {
 
   const propsNameType = create.parameter.type;
 
-  const primitivesObject = getEntityPrimitivesObject(model, entityIdentifier);
+  const primitivesObject = getPrimitivesObject(model, entityIdentifier);
 
   const primitivesType = getPrimitivesType(primitivesObject, entityIdentifier);
   result += primitivesType + '\n';
+
+  const toBeImportedPrimitiveTypes =
+    PrimitivesTypeFactory.getPrimitiveTypesThatNeedToBeImported(primitivesObject);
 
   const { output: propsName, dependencies: propsTypeDependencies } = modelToTargetLanguage({
     type: BitloopsTypesMapping.TBitloopsPrimaryType,
     value: { type: propsNameType },
   });
 
-  dependencies = [...dependencies, ...propsTypeDependencies];
+  dependencies = [...dependencies, ...propsTypeDependencies, ...toBeImportedPrimitiveTypes];
 
   if (constants) {
     // TODO fix with new model/types
@@ -124,10 +130,10 @@ const entityToTargetLanguage = (params: {
   result += entityMethodsModel.output;
   dependencies = [...dependencies, ...entityMethodsModel.dependencies];
 
-  const fromPrimitives = generateFromPrimitives(primitivesObject, entityIdentifier, model);
+  const fromPrimitives = generateFromPrimitives(primitivesObject, entityIdentifier);
   result += fromPrimitives + '\n';
 
-  const toPrimitives = generateToPrimitives(primitivesObject, entityIdentifier, model);
+  const toPrimitives = generateToPrimitives(primitivesObject, entityIdentifier);
   result += toPrimitives + '\n';
   result += '}';
 
