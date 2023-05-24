@@ -40,12 +40,13 @@ export class PrimitivesObject {
       const voFieldPrimitives = propsNode.getFieldsPrimitives(tree);
 
       // const valueObjectIdentifier = valueObject.getIdentifierValue();
-      const voPrimitivesResult: ValueObjectPrimitives = {};
-      for (const [fieldPrimitiveKey, fieldPrimitiveValue] of Object.entries(voFieldPrimitives)) {
-        voPrimitivesResult[fieldPrimitiveKey] = {
-          primitiveValue: fieldPrimitiveValue,
-          identifier: valueObjectIdentifier,
-        };
+      const voPrimitivesResult: ValueObjectPrimitives = {
+        type: PrimitiveObjectPropertyType.ValueObject,
+        identifier: valueObjectIdentifier,
+        value: {},
+      };
+      for (const [fieldPrimitiveKey, fieldPrimitiveValues] of Object.entries(voFieldPrimitives)) {
+        voPrimitivesResult.value[fieldPrimitiveKey] = fieldPrimitiveValues;
       }
       return voPrimitivesResult;
     }

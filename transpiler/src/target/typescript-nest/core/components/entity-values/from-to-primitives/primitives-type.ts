@@ -1,6 +1,8 @@
 import { PrimitivesObjectTypeGuard } from '../../../../../../ast/core/intermediate-ast/nodes/Props/primitives/type-guards.js';
-import { TGetFieldPrimitives } from '../../../../../../ast/core/intermediate-ast/nodes/Props/primitives/types.js';
-import { TypeUtils } from '../../../../../../utils/TypeUtils.js';
+import {
+  TArrayPropertyValue,
+  TGetFieldPrimitives,
+} from '../../../../../../ast/core/intermediate-ast/nodes/Props/primitives/types.js';
 
 export const getPrimitivesType = (
   primitivesObject: TGetFieldPrimitives,
@@ -8,45 +10,34 @@ export const getPrimitivesType = (
 ): string => {
   const typeName = `T${entityName}Primitives`;
   let resultType = `type ${typeName} = `;
-  resultType += buildPrimitivesTypeValue(primitivesObject, entityName);
+  resultType += PrimitivesTypeFactory.buildType(primitivesObject);
   return resultType;
 };
 
-const buildPrimitivesTypeValue = (
-  primitivesObject: TGetFieldPrimitives,
-  entityName: string,
-  isStandardValueType = false,
-): string => {
-  let result = '{\n';
+export class PrimitivesTypeFactory {
+  static buildType(primitivesObject: TGetFieldPrimitives): string {
+    let result = '{\n';
 
-  // TODO fix this undefined fallback
-  for (const [key, value] of Object.entries(primitivesObject ?? {})) {
-    const type = (value as any).primitiveValue ?? value;
-    if (PrimitivesObjectTypeGuard.isArrayType(type)) {
-      const nestedType = type.value as any; // TODO fix
-      result += `${key}: ${buildPrimitivesTypeValue(nestedType, entityName)}[];\n`;
-    } else if (PrimitivesObjectTypeGuard.hasObjectType(type)) {
-      let nestedType = type;
-      const isStandardVO = type.isStandardVO === true;
-      if (nestedType.primitiveValue) {
-        nestedType = type.primitiveValue;
-      } else if (isStandardVO) {
-        nestedType = type.primitiveValue;
-        if (TypeUtils.hasObjectType(nestedType)) {
-          nestedType = Object.values(nestedType)[0];
-        }
-      }
-      result += `${key}: ${buildPrimitivesTypeValue(nestedType, entityName, isStandardVO)};\n`;
-    } else {
-      if (isStandardValueType) {
-        const objType = primitivesObject.primitiveValue || type;
-        result = objType;
-        return result;
-      } else {
-        result += `${key}: ${type};\n`;
+    for (const [key, keyValue] of Object.entries(primitivesObject)) {
+      if (PrimitivesObjectTypeGuard.isPrimitiveProperty(keyValue)) {
+        result += `${key}: ${keyValue};\n`;
+      } else if (PrimitivesObjectTypeGuard.isArrayType(keyValue)) {
+        result += this.buildTypeForArray(key, keyValue);
+      } else if (PrimitivesObjectTypeGuard.isValueObjectType(keyValue)) {
+        result += `${key}: ${this.buildType(keyValue.value)};\n`;
       }
     }
+    result += '}';
+    return result;
   }
-  result += '}';
-  return result;
-};
+
+  private static buildTypeForArray(key: string, keyValue: TArrayPropertyValue): string {
+    const type = keyValue.type;
+    if (PrimitivesObjectTypeGuard.isPrimitiveProperty(type)) {
+      return `${key}: ${type}[];\n`;
+    } else if (PrimitivesObjectTypeGuard.isValueObjectType(type)) {
+      return `${key}: ${this.buildType(type.value)}[];\n`;
+    }
+    // TODO Handle nested arrays
+  }
+}
