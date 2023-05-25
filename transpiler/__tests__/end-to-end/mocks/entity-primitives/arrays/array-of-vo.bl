@@ -7,7 +7,9 @@ Props DocumentProps {
 }
 
 Root Entity DocumentEntity {
-    static create(props: DocumentProps): (OK(DocumentEntity), Errors()) { }
+    static create(props: DocumentProps): (OK(DocumentEntity), Errors()) {
+        return DocumentEntity(props);
+    }
 }
 
 // **** Row Entity ****
