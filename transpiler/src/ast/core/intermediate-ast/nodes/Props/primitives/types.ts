@@ -1,14 +1,3 @@
-// const a: TGetFieldPrimitives = {
-//   id: 'string',
-//   name: 'string',
-//   status: {
-//     status: {
-//       primitiveValue: 'string',
-//       identifier: 'StatusVO',
-//     },
-//   },
-// };
-// TODO Better use an Enum with a type field, for each different type of possible value
 export enum PrimitiveObjectPropertyType {
   Primitive,
   StandardVO,
@@ -22,7 +11,6 @@ export type PrimitiveType = {
   type: PrimitiveObjectPropertyType.Primitive;
   value: string;
 };
-// TODO Fix standard VOs, they should be done just like regular VOs, calling their respective fromPrimitives & toPrimitives
 export type StandardVOType = {
   type: PrimitiveObjectPropertyType.StandardVO;
   identifier: string;
@@ -36,13 +24,6 @@ export type EntityPrimitives = {
   type: PrimitiveObjectPropertyType.Entity;
   identifier: string;
 };
-// PropertyName,
-//   {
-//     primitiveValue: TGetFieldPrimitivesValue; // this is the recursive value
-//     identifier?: string; // This is the vo identifier, repeated for each field for some reason
-//     isStandardVO?: boolean;
-//   }
-// >;
 
 export type TArrayPropertyValue = {
   type: PrimitiveObjectPropertyType.Array;
