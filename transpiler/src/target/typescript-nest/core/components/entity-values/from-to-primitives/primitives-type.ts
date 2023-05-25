@@ -1,5 +1,6 @@
 import { PrimitivesObjectTypeGuard } from '../../../../../../ast/core/intermediate-ast/nodes/Props/primitives/type-guards.js';
 import {
+  PrimitiveType,
   TArrayPropertyValue,
   TGetFieldPrimitives,
   TGetFieldPrimitivesValue,
@@ -26,8 +27,8 @@ export class PrimitivesTypeFactory {
   static typeGuardFunctions = [
     {
       guard: PrimitivesObjectTypeGuard.isPrimitiveProperty,
-      action: (key: string, type: string): string => {
-        return `${key}: ${type};\n`;
+      action: (key: string, type: PrimitiveType): string => {
+        return `${key}: ${type.value};\n`;
       },
     },
     {
@@ -72,7 +73,7 @@ export class PrimitivesTypeFactory {
     const type = keyValue.value;
     // Primitive is the base condition
     if (PrimitivesObjectTypeGuard.isPrimitiveProperty(type)) {
-      return `${type}[]`;
+      return `${type.value}[]`;
     } else if (PrimitivesObjectTypeGuard.isValueObjectType(type)) {
       const valueObjectIdentifier = type.identifier;
       const voPrimitivesType = PrimitivesTypeFactory.getPrimitivesTypeName(valueObjectIdentifier);

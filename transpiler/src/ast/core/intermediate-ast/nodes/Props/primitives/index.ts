@@ -25,12 +25,17 @@ export class PrimitivesObject {
         type: BitloopsTypesMapping.TBitloopsPrimaryType,
         value: { type },
       });
-      const primitive: PrimitiveType = res.output;
+      const primitive: PrimitiveType = {
+        type: PrimitiveObjectPropertyType.Primitive,
+        value: res.output,
+      };
       return primitive;
     }
     if (BitloopsPrimTypeIdentifiers.isBitloopsBuiltInClass(type)) {
-      const primitive: PrimitiveType =
-        BitloopsPrimTypeIdentifiers.builtInClassToPrimitiveType(type);
+      const primitive: PrimitiveType = {
+        type: PrimitiveObjectPropertyType.Primitive,
+        value: BitloopsPrimTypeIdentifiers.builtInClassToPrimitiveType(type),
+      };
       return primitive;
     }
     if (BitloopsPrimTypeIdentifiers.isBitloopsValueObjectIdentifier(type)) {

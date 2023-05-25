@@ -1,7 +1,7 @@
 import { Domain, Either, ok } from '@bitloops/bl-boilerplate-core';
 import { TodoProps } from './todo.props';
 import { TTitleVOPrimitives, TitleVO } from './title.value-object';
-type TTodoRootEntityPrimitives = {
+export type TTodoRootEntityPrimitives = {
   id: string;
   completed: boolean;
   title: TTitleVOPrimitives;

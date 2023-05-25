@@ -11,20 +11,18 @@ export class PrimitivesObjectTypeGuard {
   static isPrimitiveProperty(
     propertyTypeValue: TGetFieldPrimitivesValue,
   ): propertyTypeValue is PrimitiveType {
-    return typeof propertyTypeValue === 'string';
+    return propertyTypeValue && propertyTypeValue.type === PrimitiveObjectPropertyType.Primitive;
   }
   static isArrayType(
     propertyTypeValue: TGetFieldPrimitivesValue,
   ): propertyTypeValue is TArrayPropertyValue {
-    return (
-      propertyTypeValue && (propertyTypeValue as any).type === PrimitiveObjectPropertyType.Array
-    );
+    return propertyTypeValue && propertyTypeValue.type === PrimitiveObjectPropertyType.Array;
   }
 
   static isValueObjectType(
     propertyTypeValue: TGetFieldPrimitivesValue,
   ): propertyTypeValue is ValueObjectPrimitives {
-    return (propertyTypeValue as any).type === PrimitiveObjectPropertyType.ValueObject;
+    return propertyTypeValue.type === PrimitiveObjectPropertyType.ValueObject;
   }
 
   static hasObjectType(type): boolean {

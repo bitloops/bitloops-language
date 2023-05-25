@@ -17,7 +17,10 @@ export enum PrimitiveObjectPropertyType {
 }
 
 type PropertyName = string;
-export type PrimitiveType = string;
+export type PrimitiveType = {
+  type: PrimitiveObjectPropertyType.Primitive;
+  value: string;
+};
 export type StandardVOType = {
   type: PrimitiveObjectPropertyType.StandardVO;
   value: ValueObjectPrimitives; // We should StandardVO just as a ValueObjects
