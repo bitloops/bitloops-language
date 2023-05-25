@@ -2,6 +2,7 @@ import { PrimitivesObjectTypeGuard } from '../../../../../../ast/core/intermedia
 import {
   EntityPrimitives,
   PrimitiveType,
+  StandardVOType,
   TArrayPropertyValue,
   TGetFieldPrimitives,
   TGetFieldPrimitivesValue,
@@ -53,6 +54,13 @@ export class PrimitivesTypeFactory {
         return `${key}: ${entityPrimitivesType};\n`;
       },
     },
+    {
+      guard: PrimitivesObjectTypeGuard.isStandardVOType,
+      action: (key: string, _type: StandardVOType): string => {
+        // We could replace this any, with an exported PrimitivesType of the StandardVO in the future
+        return `${key}: any;\n`;
+      },
+    },
     // Add more type guards and corresponding actions if necessary
   ];
 
@@ -93,6 +101,9 @@ export class PrimitivesTypeFactory {
       const entityIdentifier = type.identifier;
       const entityPrimitivesType = PrimitivesTypeFactory.getPrimitivesTypeName(entityIdentifier);
       return `${entityPrimitivesType}[]`;
+    }
+    if (PrimitivesObjectTypeGuard.isStandardVOType(type)) {
+      return 'any[]';
     }
     if (PrimitivesObjectTypeGuard.isArrayType(type)) {
       return `${this.buildTypeForArray(key, type)}[]`;

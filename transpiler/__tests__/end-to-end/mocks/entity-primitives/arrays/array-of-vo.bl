@@ -1,9 +1,9 @@
 Props DocumentProps {
     optional UUIDv4 id;
     string name;
-    StatusVO status;
     DocumentLocationVO[] locations;
     RowEntity[] rows;
+    StatusVO[][] statuses;
 }
 
 Root Entity DocumentEntity {

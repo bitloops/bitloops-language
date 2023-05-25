@@ -1,8 +1,8 @@
-import { TypeUtils } from '../../../../../../utils/TypeUtils.js';
 import {
   EntityPrimitives,
   PrimitiveObjectPropertyType,
   PrimitiveType,
+  StandardVOType,
   TArrayPropertyValue,
   TGetFieldPrimitivesValue,
   ValueObjectPrimitives,
@@ -25,14 +25,15 @@ export class PrimitivesObjectTypeGuard {
   ): propertyTypeValue is ValueObjectPrimitives {
     return propertyTypeValue.type === PrimitiveObjectPropertyType.ValueObject;
   }
+  static isStandardVOType(
+    propertyTypeValue: TGetFieldPrimitivesValue,
+  ): propertyTypeValue is StandardVOType {
+    return propertyTypeValue.type === PrimitiveObjectPropertyType.StandardVO;
+  }
 
   static isEntityType(
     propertyTypeValue: TGetFieldPrimitivesValue,
   ): propertyTypeValue is EntityPrimitives {
     return propertyTypeValue.type === PrimitiveObjectPropertyType.Entity;
-  }
-
-  static hasObjectType(type): boolean {
-    return TypeUtils.hasObjectType(type);
   }
 }

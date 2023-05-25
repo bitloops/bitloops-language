@@ -41,19 +41,11 @@ export class PrimitivesObject {
     }
     if (BitloopsPrimTypeIdentifiers.isBitloopsValueObjectIdentifier(type)) {
       const valueObjectIdentifier: TBitloopsIdentifier = type[bitloopsIdentifiersTypeKey];
-      const valueObject = tree.getValueObjectByIdentifier(type[bitloopsIdentifiersTypeKey]);
-      const propsNode = tree.getPropsNodeOfValueObject(valueObject);
-      const voFieldPrimitives = propsNode.getFieldsPrimitives(tree);
 
-      // const valueObjectIdentifier = valueObject.getIdentifierValue();
       const voPrimitivesResult: ValueObjectPrimitives = {
         type: PrimitiveObjectPropertyType.ValueObject,
         identifier: valueObjectIdentifier,
-        value: {},
       };
-      for (const [fieldPrimitiveKey, fieldPrimitiveValues] of Object.entries(voFieldPrimitives)) {
-        voPrimitivesResult.value[fieldPrimitiveKey] = fieldPrimitiveValues;
-      }
       return voPrimitivesResult;
     }
     if (BitloopsPrimTypeIdentifiers.isBitloopsEntityIdentifier(type)) {
@@ -65,22 +57,11 @@ export class PrimitivesObject {
       return entityPrimitivesResult;
     }
     if (BitloopsPrimTypeIdentifiers.isStandardValueType(type)) {
-      // Lets handle it just as value objects,
-      //   const voPrimitivesResult: ValueObjectPrimitives = {};
       const result = BitloopsPrimTypeIdentifiers.standardVOToPrimitiveType(type);
-      //   for (const [fieldPrimitiveKey, fieldPrimitiveValue] of Object.entries(result.primitive)) {
-      //     voPrimitivesResult[fieldPrimitiveKey] = {
-      //       primitiveValue: fieldPrimitiveValue as any,
-      //       identifier: result.type,
-      //     };
-      //   }
-      //   return voPrimitivesResult;
-
       return {
-        primitiveValue: result.primitive,
+        type: PrimitiveObjectPropertyType.StandardVO,
         identifier: result.type,
-        isStandardVO: true,
-      } as any; // TODO Fix
+      };
     }
     if (BitloopsPrimTypeIdentifiers.isArrayPrimType(type)) {
       const bitloopsPrimaryTypeValues = type[arrayPrimaryTypeKey];
@@ -89,7 +70,6 @@ export class PrimitivesObject {
         value: this.getPrimitiveValue(bitloopsPrimaryTypeValues, tree),
       };
     }
-    // TODO Fix
     throw new Error('Not implemented');
   }
 }

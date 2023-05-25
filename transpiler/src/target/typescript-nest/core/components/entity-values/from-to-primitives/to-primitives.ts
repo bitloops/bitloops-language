@@ -2,6 +2,7 @@ import { PrimitivesObjectTypeGuard } from '../../../../../../ast/core/intermedia
 import {
   TArrayPropertyValue,
   TGetFieldPrimitives,
+  TGetFieldPrimitivesValue,
 } from '../../../../../../ast/core/intermediate-ast/nodes/Props/primitives/types.js';
 
 const generateToPrimitives = (
@@ -20,38 +21,42 @@ const generateToPrimitives = (
 class ToPrimitivesMethod {
   static buildToPrimitives(primitivesObject: TGetFieldPrimitives, keyToPrepend = 'this'): string {
     let result = '';
-    for (const [key, keyValue] of Object.entries(primitivesObject)) {
-      if (this.isIdPrimitivesKey(key)) {
+    for (const [propertyKey, keyValue] of Object.entries(primitivesObject)) {
+      if (this.isIdPrimitivesKey(propertyKey)) {
         result += this.getToPrimitivesIdValue('id', 'id');
         continue;
       }
-      if (PrimitivesObjectTypeGuard.isArrayType(keyValue)) {
-        const updatedKeyToPrepend = `${keyToPrepend}.${key}`;
-        const arrayToPrimitives = this.buildToPrimitivesOfArray(keyValue, updatedKeyToPrepend);
-        result += `${key}: ${arrayToPrimitives},`;
-        continue;
-      }
-      if (PrimitivesObjectTypeGuard.isValueObjectType(keyValue)) {
-        const updatedKeyToPrepend = `${keyToPrepend}.${key}`;
-        result += `${key}: ${updatedKeyToPrepend}.toPrimitives(),`;
-        continue;
-      }
-      if (PrimitivesObjectTypeGuard.isPrimitiveProperty(keyValue)) {
-        result += `${key}: ${keyToPrepend}.${key},`;
-        continue;
-      }
-      if (PrimitivesObjectTypeGuard.isEntityType(keyValue)) {
-        const updatedKeyToPrepend = `${keyToPrepend}.${key}`;
-        result += `${key}: ${updatedKeyToPrepend}.toPrimitives(),`;
-        continue;
-      }
-      throw new Error(`Unknown type: ${keyValue}`);
+
+      const updatedKeyToPrepend = `${keyToPrepend}.${propertyKey}`;
+      const propValueResult = this.buildToPrimitivesForProperty(updatedKeyToPrepend, keyValue);
+      result += `${propertyKey}: ${propValueResult},`;
     }
     return result;
   }
 
   private static isIdPrimitivesKey = (primitivesKey: string): boolean => {
     return primitivesKey === 'id';
+  };
+
+  private static buildToPrimitivesForProperty = (
+    keyToPrepend: string,
+    keyValue: TGetFieldPrimitivesValue,
+  ): string => {
+    if (PrimitivesObjectTypeGuard.isPrimitiveProperty(keyValue)) {
+      return keyToPrepend;
+    }
+    if (
+      PrimitivesObjectTypeGuard.isValueObjectType(keyValue) ||
+      PrimitivesObjectTypeGuard.isEntityType(keyValue) ||
+      PrimitivesObjectTypeGuard.isStandardVOType(keyValue)
+    ) {
+      return `${keyToPrepend}.toPrimitives()`;
+    }
+    if (PrimitivesObjectTypeGuard.isArrayType(keyValue)) {
+      const arrayToPrimitives = this.buildToPrimitivesOfArray(keyValue, keyToPrepend);
+      return arrayToPrimitives;
+    }
+    throw new Error(`Unknown type: ${keyValue}`);
   };
 
   /**
@@ -65,7 +70,6 @@ class ToPrimitivesMethod {
     };
   }
    */
-  // TODO make this call buildToPrimitives if possible, to make it closed for modification(open-closed principle)
   private static buildToPrimitivesOfArray = (
     propertyValue: TArrayPropertyValue,
     keyToPrepend: string,
@@ -75,62 +79,24 @@ class ToPrimitivesMethod {
       return keyToPrepend;
     }
 
-    if (PrimitivesObjectTypeGuard.isValueObjectType(arrayValue)) {
+    if (
+      PrimitivesObjectTypeGuard.isValueObjectType(arrayValue) ||
+      PrimitivesObjectTypeGuard.isEntityType(arrayValue) ||
+      PrimitivesObjectTypeGuard.isStandardVOType(arrayValue) ||
+      PrimitivesObjectTypeGuard.isArrayType(arrayValue)
+    ) {
       const variableName = 'x';
-      return `${keyToPrepend}.map((${variableName}) => (${variableName}.toPrimitives()))`;
+      return `${keyToPrepend}.map((${variableName}) => (${this.buildToPrimitivesForProperty(
+        variableName,
+        arrayValue,
+      )}))`;
     }
-    if (PrimitivesObjectTypeGuard.isEntityType(arrayValue)) {
-      const variableName = 'x';
-      return `${keyToPrepend}.map((${variableName}) => (${variableName}.toPrimitives()))`;
-    }
-    // Probably array of arrays
     throw new Error('Unhandled array types case');
   };
 
   private static getToPrimitivesIdValue = (key: string, fullPathKey: string): string => {
     return `${key}: this.${fullPathKey}.toString(),`;
   };
-
-  // private static getBuiltInclassToPrimitivesValue = (data: {
-  //   keyToPrepend: string;
-  //   key: string;
-  //   fields: FieldNode[];
-  // }): {
-  //   builtInClassVariableValue: string;
-  //   builtInClassVariableFound: boolean;
-  // } => {
-  //   const { keyToPrepend: keyToAppend, key, fields } = data;
-  //   let builtInClassVariableValue = '';
-  //   let builtInClassVariableFound = false;
-  //   for (const fieldNode of fields) {
-  //     if (fieldNode.getIdentifierNode().getValue().identifier === key) {
-  //       if (fieldNode.getTypeNode().getBuiltInClassName() === 'UUIDv4') {
-  //         builtInClassVariableValue += `${key}: ${keyToAppend}.${key}.toString(),`;
-  //         builtInClassVariableFound = true;
-  //         continue;
-  //       }
-  //     }
-  //   }
-  //   return {
-  //     builtInClassVariableValue,
-  //     builtInClassVariableFound,
-  //   };
-  // };
 }
-
-// const buildStandardVOFieldValue = (data: {
-//   keyToAppend: string;
-//   key: string;
-//   primitivesKey: string;
-// }): string => {
-//   const { keyToAppend, key, primitivesKey } = data;
-//   let propsValue = '';
-//   if (isNestedKey(keyToAppend)) {
-//     propsValue += `${primitivesKey}: this.props.${keyToAppend}.${key},`;
-//   } else {
-//     propsValue += `${primitivesKey}: ${key}: this.props.${keyToAppend}.${key},`;
-//   }
-//   return propsValue;
-// };
 
 export { generateToPrimitives };

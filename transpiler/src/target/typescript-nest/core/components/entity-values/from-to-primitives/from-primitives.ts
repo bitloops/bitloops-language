@@ -2,6 +2,7 @@ import { PrimitivesObjectTypeGuard } from '../../../../../../ast/core/intermedia
 import {
   TArrayPropertyValue,
   TGetFieldPrimitives,
+  TGetFieldPrimitivesValue,
 } from '../../../../../../ast/core/intermediate-ast/nodes/Props/primitives/types.js';
 import { PrimitivesTypeFactory } from './primitives-type.js';
 
@@ -26,44 +27,42 @@ const generateFromPrimitives = (
 };
 
 class ValueObjectFromPrimitivesMethod {
-  // TODO Should try to refactor into something like this
-
   static buildFromPrimitives(primitivesObject: TGetFieldPrimitives, keyToPrepend = 'data'): string {
     let result = '';
-    for (const [primitivesKey, propertyValue] of Object.entries(primitivesObject)) {
-      if (isIdPrimitivesKey(primitivesKey)) {
-        result += 'id: new Domain.UUIDv4(data.id) as Domain.UUIDv4,';
-      } else {
-        if (PrimitivesObjectTypeGuard.isPrimitiveProperty(propertyValue)) {
-          result += `${primitivesKey}: ${keyToPrepend}.${primitivesKey},`;
-          result += '\n';
-          continue;
-        }
-        if (PrimitivesObjectTypeGuard.isArrayType(propertyValue)) {
-          // TODO: update this
-          const updatedKeyToPrepend = `${keyToPrepend}.${primitivesKey}`;
-          const arrayValue = this.buildArrayFromPrimitives(propertyValue, updatedKeyToPrepend);
-          result += `${primitivesKey}: ${arrayValue},`;
-          continue;
-        }
-
-        if (PrimitivesObjectTypeGuard.isValueObjectType(propertyValue)) {
-          // It is either Value Object or Entity
-          // let primitivesValue = propertyValue.primitiveValue ?? propertyValue;
-
-          const identifier = propertyValue.identifier;
-          result += `${primitivesKey}: ${identifier}.fromPrimitives(${keyToPrepend}.${primitivesKey}),`;
-          continue;
-        }
-        if (PrimitivesObjectTypeGuard.isEntityType(propertyValue)) {
-          const identifier = propertyValue.identifier;
-          result += `${primitivesKey}: ${identifier}.fromPrimitives(${keyToPrepend}.${primitivesKey}),`;
-          continue;
-        }
+    for (const [propertyKey, propertyValue] of Object.entries(primitivesObject)) {
+      if (isIdPrimitivesKey(propertyKey)) {
+        result += 'id: new Domain.UUIDv4(data.id) as Domain.UUIDv4,\n';
+        continue;
       }
+      const updatedKeyToPrepend = `${keyToPrepend}.${propertyKey}`;
+      const propResult = this.buildFromPrimitivesForProperty(updatedKeyToPrepend, propertyValue);
+      result += `${propertyKey}: ${propResult},`;
       result += '\n';
     }
     return result;
+  }
+
+  private static buildFromPrimitivesForProperty(
+    keyToPrepend: string,
+    propertyValue: TGetFieldPrimitivesValue,
+  ): string {
+    if (PrimitivesObjectTypeGuard.isPrimitiveProperty(propertyValue)) {
+      return keyToPrepend;
+    }
+    if (
+      PrimitivesObjectTypeGuard.isValueObjectType(propertyValue) ||
+      PrimitivesObjectTypeGuard.isEntityType(propertyValue) ||
+      PrimitivesObjectTypeGuard.isStandardVOType(propertyValue)
+    ) {
+      const identifier = propertyValue.identifier;
+      return `${identifier}.fromPrimitives(${keyToPrepend})`;
+    }
+
+    if (PrimitivesObjectTypeGuard.isArrayType(propertyValue)) {
+      const arrayValue = this.buildArrayFromPrimitives(propertyValue, keyToPrepend);
+      return arrayValue;
+    }
+    throw new Error(`Unhandled fromPrimitivesCase ${propertyValue}}`);
   }
 
   /**
@@ -73,69 +72,34 @@ class ValueObjectFromPrimitivesMethod {
       currency: data.currency,
       amount: AmountVO.fromPrimitives(data.amount),
       denominations: data.denominations,
-      rates: data.rates.map((rate) => RateVO.fromPrimitives(rate)),
+      rates: data.rates.map((x) => RateVO.fromPrimitives(x)),
     };
     return new MoneyVO(MoneyVOProps);
   }
    */
-  // TODO make the array method call buildFromPrimitives instead, to make it closed for modification(open-closed principle)
   private static buildArrayFromPrimitives(
     propertyValue: TArrayPropertyValue,
     keyToPrepend: string,
   ): string {
     const arrayValue = propertyValue.value;
 
+    // If array of primitives, we don't need to map
     if (PrimitivesObjectTypeGuard.isPrimitiveProperty(arrayValue)) {
       return keyToPrepend;
     }
-    if (PrimitivesObjectTypeGuard.isValueObjectType(arrayValue)) {
+    if (
+      PrimitivesObjectTypeGuard.isValueObjectType(arrayValue) ||
+      PrimitivesObjectTypeGuard.isEntityType(arrayValue) ||
+      PrimitivesObjectTypeGuard.isStandardVOType(arrayValue) ||
+      PrimitivesObjectTypeGuard.isArrayType(arrayValue) // if it's a 2d+ array, we need to map the inner array
+    ) {
       const variableName = 'x';
-      const valueObjectIdentifier = arrayValue.identifier;
       return `${keyToPrepend}.map((${variableName}) => 
-      ${valueObjectIdentifier}.fromPrimitives(${variableName})
+      ${this.buildFromPrimitivesForProperty(variableName, arrayValue)}
       )`;
     }
-    if (PrimitivesObjectTypeGuard.isEntityType(arrayValue)) {
-      const variableName = 'x';
-      const entityIdentifier = arrayValue.identifier;
-      return `${keyToPrepend}.map((${variableName}) =>
-      ${entityIdentifier}.fromPrimitives(${variableName})
-      )`;
-    }
-    // If array of primitives, we don't need to map
-    // Probably array of arrays
     throw new Error('Unhandled array types case');
   }
-
-  // private static getBuiltInClassFromPrimitivesValue = (data: {
-  //   keyToPrepend: string;
-  //   key: string;
-  //   fields: FieldNode[];
-  // }): {
-  //   builtInClassVariableValue: string;
-  //   builtInClassVariableFound: boolean;
-  // } => {
-  //   const { keyToPrepend, key, fields } = data;
-  //   let builtInClassVariableFound = false;
-  //   let builtInClassVariableValue = '';
-  //   for (const fieldNode of fields) {
-  //     if (fieldNode.getIdentifierNode().getValue().identifier === key) {
-  //       if (fieldNode.getTypeNode().getBuiltInClassName() === BitloopsBuiltInClassNames.UUIDv4) {
-  //         if (isNestedKey(keyToPrepend)) {
-  //           builtInClassVariableValue += `${key}: new Domain.UUIDv4(${keyToPrepend}.${key}) as Domain.UUIDv4`;
-  //         } else {
-  //           builtInClassVariableValue += `${key}: new Domain.UUIDv4(${key}) as Domain.UUIDv4`;
-  //         }
-  //         builtInClassVariableFound = true;
-  //         continue;
-  //       }
-  //     }
-  //   }
-  //   return {
-  //     builtInClassVariableValue,
-  //     builtInClassVariableFound,
-  //   };
-  // };
 }
 
 export { generateFromPrimitives };

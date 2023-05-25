@@ -25,14 +25,11 @@ export type PrimitiveType = {
 // TODO Fix standard VOs, they should be done just like regular VOs, calling their respective fromPrimitives & toPrimitives
 export type StandardVOType = {
   type: PrimitiveObjectPropertyType.StandardVO;
-  // Uncomment this?
-  // identifier: string;
-  value: ValueObjectPrimitives; // We should StandardVO just as a ValueObjects
+  identifier: string;
 };
 export type ValueObjectPrimitives = {
   type: PrimitiveObjectPropertyType.ValueObject;
   identifier: string;
-  value: TGetFieldPrimitives;
 };
 
 export type EntityPrimitives = {
@@ -55,6 +52,7 @@ export type TArrayPropertyValue = {
 export type TGetFieldPrimitivesValue =
   | PrimitiveType // primitive, e.g. 'string', 'number', 'boolean'
   | ValueObjectPrimitives
+  | StandardVOType
   | EntityPrimitives
   | TArrayPropertyValue;
 export type TGetFieldPrimitives = Record<PropertyName, TGetFieldPrimitivesValue>;

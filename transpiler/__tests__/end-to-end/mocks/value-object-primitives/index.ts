@@ -15,20 +15,20 @@ export const VALUE_OBJECT_PRIMITIVES_END_TO_END_TEST_CASES = [
       },
     ],
   },
-  // {
-  //   description: 'Test value object with standard vo property',
-  //   input: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/entity-primitives/standard-vo/input.bl',
-  //   ),
-  //   outputs: [
-  //     {
-  //       className: 'MoneyVO',
-  //       content: FileUtil.readFileString(
-  //         'transpiler/__tests__/end-to-end/mocks/entity-primitives/standard-vo/output.mock.ts',
-  //       ),
-  //     },
-  //   ],
-  // },
+  {
+    description: 'Test value object with standard vo property',
+    input: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/value-object-primitives/standard-vo/input.bl',
+    ),
+    outputs: [
+      {
+        className: 'MoneyVO',
+        content: FileUtil.readFileString(
+          'transpiler/__tests__/end-to-end/mocks/value-object-primitives/standard-vo/output.mock.ts',
+        ),
+      },
+    ],
+  },
   {
     description: 'Test regular value objects',
     input: FileUtil.readFileString(
