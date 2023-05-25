@@ -34,6 +34,7 @@ import {
   TToStringExpression,
   TGetClass,
   TEnvironmentVariableExpression,
+  TAnonymousFunction,
 } from './../../../../types.js';
 
 export class ExpressionTypeIdentifiers {
@@ -153,6 +154,14 @@ export class ExpressionTypeIdentifiers {
     expressionValue: TExpressionValues,
   ): expressionValue is TEnvironmentVariableExpression {
     if ('environmentVariable' in expressionValue) {
+      return true;
+    }
+    return false;
+  }
+  static isAnonymousFunctionExpression(
+    expressionValue: TExpressionValues,
+  ): expressionValue is TAnonymousFunction {
+    if ('anonymousFunction' in expressionValue) {
       return true;
     }
     return false;

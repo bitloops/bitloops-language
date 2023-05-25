@@ -39,6 +39,7 @@ import { aggregateDeclarationVisitor } from './helpers/aggregateDeclarationVisit
 import { bitloopsPrimaryTypeVisitor } from './helpers/bitloopsPrimaryType.js';
 import { entityBodyVisitor } from './helpers/entityBodyVisitor.js';
 import {
+  AnonymousExpressionVisitor,
   enviromentVariableVisitor,
   envVarWithDefaultValueExpressionVisitor,
   LiteralExpressionVisitor,
@@ -610,8 +611,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return booleanEvaluation(ctx.BooleanLiteral().getText());
   }
 
-  visitLiteralExpression(ctx: BitloopsParser.LiteralExpressionContext) {
+  visitLiteralExpression(ctx: BitloopsParser.LiteralExpressionContext): ExpressionNode {
     return LiteralExpressionVisitor(this, ctx);
+  }
+  visitAnonymousFunctionExpression(
+    ctx: BitloopsParser.AnonymousFunctionExpressionContext,
+  ): ExpressionNode {
+    return AnonymousExpressionVisitor(this, ctx);
   }
   visitNumericLiteralLabel(ctx: BitloopsParser.NumericLiteralLabelContext) {
     const actualNumericLiteral = this.visitChildren(ctx)[0];

@@ -26,6 +26,12 @@ const parameterDependencyToTargetLanguage = (
   variable: TParameter,
 ): TTargetDependenciesTypeScript => {
   const { parameter } = variable;
+  if (!parameter.type) {
+    return {
+      output: parameter.value,
+      dependencies: [],
+    };
+  }
   const mappedType = modelToTargetLanguage({
     type: BitloopsTypesMapping.TBitloopsPrimaryType,
     value: { type: parameter.type },
