@@ -59,7 +59,7 @@ export const domainEvaluationToTargetLanguage = (
   const domainName = getDomainName(evaluation);
 
   return {
-    output: `new ${domainName}(${resultDomainProps.output});`,
+    output: `new ${domainName}(${resultDomainProps.output})`,
     dependencies,
   };
 };
