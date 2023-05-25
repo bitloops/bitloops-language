@@ -19,7 +19,7 @@ Entity TodoEntity {
         const isNew = props.id != null;
         if (isNew) {
             const event = TodoAddedDomainEvent.create({ 
-                aggregateId: todo.id.toString(),
+                userId: todo.id.toString(),
                 title: todo.title.title,
                 completed: todo.completed,
             });

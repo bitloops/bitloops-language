@@ -7,6 +7,9 @@ Root Entity UserEntity {
         const userEntity = UserEntity(props);
         return userEntity;
     }
+    public isFirstTodo(): bool {
+      return this.completedTodos.counter == 1;
+  }
 }
 RepoPort NotificationTemplateReadRepoPort<NotificationTemplateReadModel> extends CRUDReadRepoPort {
   getByType(typ: string): (OK(NotificationTemplateReadModel),Errors());

@@ -1,0 +1,29 @@
+Query GetAccountQuery {
+    string id;
+}
+
+RepoPort AccountReadRepoPort<AccountReadModel> extends CRUDReadRepoPort;
+
+ReadModel AccountReadModel {
+    string id;
+}
+ApplicationError AccountNotFoundError(accountId: string)  {
+    message: `User ${accountId} not found`,
+    errorId: 'fedb1f53-6e89-429d-bc63-8f3adfc4b407',
+}
+
+QueryHandler GetAccountQueryHandler (accountRepo: AccountReadRepoPort) {
+   execute(query: GetAccountQuery): (OK(AccountReadModel), Errors(
+      ApplicationErrors.AccountNotFoundError
+      )) {
+      const requestId = query.accountId;
+      const account = this.accountRepo.getById(requestId);
+
+      if(NOT account) {
+           return ApplicationErrors.AccountNotFoundError(requestId);
+      } else {
+           return account; 
+      }
+
+  } 
+}

@@ -10,7 +10,7 @@ import {
 import { SymbolTable } from '../../../../../../semantic-analysis/type-inference/SymbolTable.js';
 import { SymbolTableManager } from '../../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { bitloopsPrimitivesObj } from '../../../../../../types.js';
-import { MissingIdentifierError } from '../../../../types.js';
+import { MissingIdentifierError, MissingMemberError } from '../../../../types.js';
 import { EventHandlerBusDependenciesNode } from '../../DomainEventHandler/EventHandlerBusDependenciesNode.js';
 import { TNodeMetadata } from '../../IntermediateASTNode.js';
 import { ExpressionNode } from '../ExpressionNode.js';
@@ -297,11 +297,25 @@ export class MemberDotExpressionNode extends ExpressionNode {
 
     if (ClassTypeGuards.isQuery(leftType)) {
       const queryNode = intermediateASTTree.getQueryByIdentifier(leftType);
-      return queryNode.getFieldNodeType(rightExpressionString);
+      const fieldType = queryNode.getFieldNodeType(rightExpressionString);
+      if (!fieldType || fieldType === SymbolTableManager.UNKNOWN_TYPE)
+        throw new MissingMemberError(
+          rightExpressionString,
+          queryNode.getIdentifier().getIdentifierName(),
+          this.getMetadata(),
+        );
+      return fieldType;
     }
     if (ClassTypeGuards.isCommand(leftType)) {
       const commandNode = intermediateASTTree.getCommandByIdentifier(leftType);
-      return commandNode.getFieldNodeType(rightExpressionString);
+      const fieldType = commandNode.getFieldNodeType(rightExpressionString);
+      if (!fieldType || fieldType === SymbolTableManager.UNKNOWN_TYPE)
+        throw new MissingMemberError(
+          rightExpressionString,
+          commandNode.getIdentifier().getIdentifierName(),
+          this.getMetadata(),
+        );
+      return fieldType;
     }
 
     if (ClassTypeGuards.isQueryHandler(leftType)) {
@@ -329,9 +343,13 @@ export class MemberDotExpressionNode extends ExpressionNode {
         const propsNode = intermediateASTTree.getPropsByIdentifier(propsIdentifier);
         const fieldTypes = propsNode.getFieldTypes();
         const fieldType = fieldTypes[rightExpressionString];
+        if (!fieldType)
+          throw new MissingMemberError(rightExpressionString, leftType, this.getMetadata());
         return fieldType.getInferredType();
       }
       // TODO if none of them typeCheck??
+      if (!publicMethodType.getInferredType())
+        throw new MissingMemberError(rightExpressionString, leftType, this.getMetadata());
       return publicMethodType.getInferredType();
     }
     if (ClassTypeGuards.isVO(leftType)) {

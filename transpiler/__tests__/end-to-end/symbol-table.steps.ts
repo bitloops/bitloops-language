@@ -24,6 +24,8 @@ import { TargetGenerator } from '../../src/target/index.js';
 import {
   SYMBOL_TABLE_ALREADY_DECLARED_TEST_CASES,
   SYMBOL_TABLE_CONSTANT_REASSIGNMENT_TEST_CASES,
+  SYMBOL_TABLE_FIND_TYPE_OF_KEYWORD_TEST_CASES,
+  SYMBOL_TABLE_MEMBER_NOT_DEFINED_TEST_CASES,
   SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES,
   SYMBOL_TABLE_TEST_CASES,
 } from './mocks/symbol-table/symbol-table.js';
@@ -209,6 +211,101 @@ describe('Validation checks table cases', () => {
         }
         expect(result.semanticErrors.map((x) => x.message)).toEqual(testCase.errorMessages);
       });
+    });
+  });
+
+  describe('Not defined members test cases', () => {
+    SYMBOL_TABLE_MEMBER_NOT_DEFINED_TEST_CASES.forEach((testCase) => {
+      const parser = new BitloopsParser();
+      const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
+      const intermediateASTModelToTargetLanguageGenerator = new TargetGenerator();
+
+      const transpiler = new Transpiler(
+        parser,
+        originalLanguageASTToIntermediateModelTransformer,
+        intermediateASTModelToTargetLanguageGenerator,
+      );
+
+      it(`${testCase.description}`, async () => {
+        // given
+        const input = {
+          core: [
+            {
+              boundedContext,
+              module,
+              fileId: 'fileId',
+              fileContents: testCase.inputCore,
+            },
+          ],
+          setup: [
+            {
+              boundedContext,
+              module,
+              fileId: 'fileId',
+              fileContents: testCase.inputSetup,
+            },
+          ],
+        };
+
+        // when
+        const result = transpiler.getSymbolTable(input);
+        if (Transpiler.isTranspilerError(result)) {
+          throw new Error('Transpiler should NOT return error');
+        }
+
+        expect(result.semanticErrors.map((x) => x.message)).toEqual(testCase.errorMessages);
+      });
+    });
+  });
+});
+
+describe('Find type of keyword test cases', () => {
+  const boundedContext = 'Hello world';
+  const module = 'demo';
+  SYMBOL_TABLE_FIND_TYPE_OF_KEYWORD_TEST_CASES.forEach((testCase) => {
+    const parser = new BitloopsParser();
+    const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
+    const intermediateASTModelToTargetLanguageGenerator = new TargetGenerator();
+
+    const transpiler = new Transpiler(
+      parser,
+      originalLanguageASTToIntermediateModelTransformer,
+      intermediateASTModelToTargetLanguageGenerator,
+    );
+
+    it(`${testCase.description}`, async () => {
+      // given
+      const input = {
+        core: [
+          {
+            boundedContext,
+            module,
+            fileId: 'fileId',
+            fileContents: testCase.inputCore,
+          },
+        ],
+        setup: [
+          {
+            boundedContext,
+            module,
+            fileId: 'fileId',
+            fileContents: testCase.inputSetup,
+          },
+        ],
+      };
+
+      // when
+      const result = transpiler.getSymbolTable(input);
+      if (Transpiler.isTranspilerError(result)) {
+        throw new Error('Transpiler should NOT return error');
+      }
+      const symbolTable = result.symbolTables[boundedContext];
+      const output = symbolTable.findTypeOfKeyword(
+        testCase.keywordInfo.name,
+        testCase.keywordInfo.position,
+      );
+
+      expect(output).toEqual(testCase.expectedOutput);
     });
   });
 });

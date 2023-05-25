@@ -118,6 +118,13 @@ export class MethodCallExpressionNode extends ExpressionNode {
 
   public addToSymbolTable(symbolTableManager: SymbolTableManager): void {
     const expression = this.getExpression();
+    const argumentList = this.getArgumentList();
+    const argumentNodes = argumentList.arguments;
+
+    for (const argument of argumentNodes) {
+      const expression = argument.getExpression();
+      expression.addToSymbolTable(symbolTableManager);
+    }
     expression.addToSymbolTable(symbolTableManager, true);
   }
 
