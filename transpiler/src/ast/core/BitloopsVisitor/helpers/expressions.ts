@@ -43,6 +43,7 @@ import { produceMetadata } from '../metadata.js';
 import { IdentifierNode } from '../../intermediate-ast/nodes/identifier/IdentifierNode.js';
 import { DefaultEnvVarValueNodeBuilder } from '../../intermediate-ast/builders/setup/DefaultEnvVarValueNodeBuilder.js';
 import { LiteralNode } from '../../intermediate-ast/nodes/Expression/Literal/LiteralNode.js';
+import { AnonymousFunctionNode } from '../../intermediate-ast/nodes/AnonymousFunctionNode.js';
 
 export const equalityExpressionVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -229,6 +230,15 @@ export const LiteralExpressionVisitor = (
   const actualLiteral = thisVisitor.visit(ctxLiteral.literal());
   const literalExpr = new LiteralBuilder().withLiteral(actualLiteral).build();
   return new ExpressionBuilder().withExpression(literalExpr).build();
+};
+
+export const AnonymousExpressionVisitor = (
+  thisVisitor: BitloopsVisitor,
+  ctxAnonymous: BitloopsParser.AnonymousFunctionExpressionContext,
+): ExpressionNode => {
+  const anonymous: AnonymousFunctionNode = thisVisitor.visit(ctxAnonymous.anonymousFunction());
+
+  return new ExpressionBuilder().withExpression(anonymous).build();
 };
 
 export const enviromentVariableVisitor = (

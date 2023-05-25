@@ -409,7 +409,8 @@ export type TExpressionValues =
   | TGetClass
   | TEnvironmentVariableExpression
   | TObjectLiteral
-  | TIfErrorExpression;
+  | TIfErrorExpression
+  | TAnonymousFunction;
 
 export type TIfErrorExpression = {
   ifErrorExpression: TExpression & Partial<TAnonymousFunction>;

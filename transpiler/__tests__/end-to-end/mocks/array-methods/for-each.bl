@@ -1,0 +1,8 @@
+DomainService MarketingNotificationDomainService () {
+  public getNotificationTemplateToBeSent(): (OK(void), Errors()) {
+        const sampleArray = [];
+        sampleArray.forEach((element) => {
+          console.log(element);
+        });
+  }
+}
