@@ -9,6 +9,7 @@ import {
 } from '../../../../../../types.js';
 import { IntermediateASTTree } from '../../../IntermediateASTTree.js';
 import {
+  EntityPrimitives,
   PrimitiveObjectPropertyType,
   PrimitiveType,
   TGetFieldPrimitivesValue,
@@ -54,6 +55,14 @@ export class PrimitivesObject {
         voPrimitivesResult.value[fieldPrimitiveKey] = fieldPrimitiveValues;
       }
       return voPrimitivesResult;
+    }
+    if (BitloopsPrimTypeIdentifiers.isBitloopsEntityIdentifier(type)) {
+      const entityIdentifier: TBitloopsIdentifier = type[bitloopsIdentifiersTypeKey];
+      const entityPrimitivesResult: EntityPrimitives = {
+        type: PrimitiveObjectPropertyType.Entity,
+        identifier: entityIdentifier,
+      };
+      return entityPrimitivesResult;
     }
     if (BitloopsPrimTypeIdentifiers.isStandardValueType(type)) {
       // Lets handle it just as value objects,

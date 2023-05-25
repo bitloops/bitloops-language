@@ -3,10 +3,23 @@ Props DocumentProps {
     string name;
     StatusVO status;
     DocumentLocationVO[] locations;
+    RowEntity[] rows;
 }
 
 Root Entity DocumentEntity {
     static create(props: DocumentProps): (OK(DocumentEntity), Errors()) { }
+}
+
+// **** Row Entity ****
+Props RowProps {
+    optional UUIDv4 id;
+    string description;
+    StatusVO status;
+    DocumentLocationVO[] locations;
+}
+
+Entity RowEntity {
+    static create(props: RowProps): (OK(RowEntity), Errors()) { }
 }
 
 // **** Document Value Objects ****

@@ -13,6 +13,7 @@ export enum PrimitiveObjectPropertyType {
   Primitive,
   StandardVO,
   ValueObject,
+  Entity,
   Array,
 }
 
@@ -21,15 +22,22 @@ export type PrimitiveType = {
   type: PrimitiveObjectPropertyType.Primitive;
   value: string;
 };
+// TODO Fix standard VOs, they should be done just like regular VOs, calling their respective fromPrimitives & toPrimitives
 export type StandardVOType = {
   type: PrimitiveObjectPropertyType.StandardVO;
+  // Uncomment this?
+  // identifier: string;
   value: ValueObjectPrimitives; // We should StandardVO just as a ValueObjects
 };
-// value object, e.g. { status: { status: { primitiveValue: 'string', identifier: 'StatusVO' }} }
 export type ValueObjectPrimitives = {
   type: PrimitiveObjectPropertyType.ValueObject;
   identifier: string;
   value: TGetFieldPrimitives;
+};
+
+export type EntityPrimitives = {
+  type: PrimitiveObjectPropertyType.Entity;
+  identifier: string;
 };
 // PropertyName,
 //   {
@@ -47,5 +55,6 @@ export type TArrayPropertyValue = {
 export type TGetFieldPrimitivesValue =
   | PrimitiveType // primitive, e.g. 'string', 'number', 'boolean'
   | ValueObjectPrimitives
-  | TArrayPropertyValue; // [TGetFieldPrimitivesValue]; // array of any of the above
+  | EntityPrimitives
+  | TArrayPropertyValue;
 export type TGetFieldPrimitives = Record<PropertyName, TGetFieldPrimitivesValue>;

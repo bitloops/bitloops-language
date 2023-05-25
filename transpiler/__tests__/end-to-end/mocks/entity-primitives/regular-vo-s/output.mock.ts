@@ -1,10 +1,12 @@
 import { Domain, Either, ok } from '@bitloops/bl-boilerplate-core';
 import { AccountProps } from './account.props';
 import { MoneyVO, TMoneyVOPrimitives } from './money.value-object';
+import { RowEntity, TRowEntityPrimitives } from './row.entity';
 import { AmountVO } from './amount.value-object';
 export type TAccountEntityPrimitives = {
   id: string;
   price: TMoneyVOPrimitives;
+  row: TRowEntityPrimitives;
 };
 export class AccountEntity extends Domain.Aggregate<AccountProps> {
   private constructor(props: AccountProps) {
@@ -19,10 +21,14 @@ export class AccountEntity extends Domain.Aggregate<AccountProps> {
   get price(): MoneyVO {
     return this.props.price;
   }
+  get row(): RowEntity {
+    return this.props.row;
+  }
   public static fromPrimitives(data: TAccountEntityPrimitives): AccountEntity {
     const AccountEntityProps = {
       id: new Domain.UUIDv4(data.id) as Domain.UUIDv4,
       price: MoneyVO.fromPrimitives(data.price),
+      row: RowEntity.fromPrimitives(data.row),
     };
     return new AccountEntity(AccountEntityProps);
   }
@@ -30,6 +36,7 @@ export class AccountEntity extends Domain.Aggregate<AccountProps> {
     return {
       id: this.id.toString(),
       price: this.price.toPrimitives(),
+      row: this.row.toPrimitives(),
     };
   }
 }

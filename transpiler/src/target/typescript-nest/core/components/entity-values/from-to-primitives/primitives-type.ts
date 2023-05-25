@@ -1,5 +1,6 @@
 import { PrimitivesObjectTypeGuard } from '../../../../../../ast/core/intermediate-ast/nodes/Props/primitives/type-guards.js';
 import {
+  EntityPrimitives,
   PrimitiveType,
   TArrayPropertyValue,
   TGetFieldPrimitives,
@@ -45,6 +46,13 @@ export class PrimitivesTypeFactory {
         return `${key}: ${arrayTypeResult};\n`;
       },
     },
+    {
+      guard: PrimitivesObjectTypeGuard.isEntityType,
+      action: (key: string, type: EntityPrimitives): string => {
+        const entityPrimitivesType = PrimitivesTypeFactory.getPrimitivesTypeName(type.identifier);
+        return `${key}: ${entityPrimitivesType};\n`;
+      },
+    },
     // Add more type guards and corresponding actions if necessary
   ];
 
@@ -74,11 +82,17 @@ export class PrimitivesTypeFactory {
     // Primitive is the base condition
     if (PrimitivesObjectTypeGuard.isPrimitiveProperty(type)) {
       return `${type.value}[]`;
-    } else if (PrimitivesObjectTypeGuard.isValueObjectType(type)) {
+    }
+    if (PrimitivesObjectTypeGuard.isValueObjectType(type)) {
       const valueObjectIdentifier = type.identifier;
       const voPrimitivesType = PrimitivesTypeFactory.getPrimitivesTypeName(valueObjectIdentifier);
 
       return `${voPrimitivesType}[]`;
+    }
+    if (PrimitivesObjectTypeGuard.isEntityType(type)) {
+      const entityIdentifier = type.identifier;
+      const entityPrimitivesType = PrimitivesTypeFactory.getPrimitivesTypeName(entityIdentifier);
+      return `${entityPrimitivesType}[]`;
     }
     if (PrimitivesObjectTypeGuard.isArrayType(type)) {
       return `${this.buildTypeForArray(key, type)}[]`;
@@ -97,20 +111,13 @@ export class PrimitivesTypeFactory {
       PrimitivesObjectTypeGuard.isValueObjectType,
     );
 
-    const valueObjectsInsideArrays: ValueObjectPrimitives[] = [];
-    Object.values(primitivesObject).forEach((valueObjectProp) => {
-      let currentArrayType = valueObjectProp;
-      while (PrimitivesObjectTypeGuard.isArrayType(currentArrayType)) {
-        currentArrayType = currentArrayType.value;
-        if (PrimitivesObjectTypeGuard.isValueObjectType(currentArrayType)) {
-          valueObjectsInsideArrays.push(currentArrayType);
-          break;
-        }
-      }
-    });
+    const valueObjectsInsideArrays: ValueObjectPrimitives[] = this.lookRecursivelyInsideArrays(
+      primitivesObject,
+      PrimitivesObjectTypeGuard.isValueObjectType,
+    );
 
     const allVoProperties = [...valueObjectProps, ...valueObjectsInsideArrays];
-    return allVoProperties.flatMap((valueObjectProp) => {
+    const voImports: TDependenciesTypeScript = allVoProperties.flatMap((valueObjectProp) => {
       const primitivesTypeName = this.getPrimitivesTypeName(valueObjectProp.identifier);
       const className = getTargetFileName(valueObjectProp.identifier, ClassTypes.ValueObject);
       return [
@@ -130,5 +137,57 @@ export class PrimitivesTypeFactory {
         },
       ];
     });
+
+    // Entity Imports
+    const entityProps = Object.values(primitivesObject).filter(
+      PrimitivesObjectTypeGuard.isEntityType,
+    );
+
+    const entitiesInsideArrays: EntityPrimitives[] = this.lookRecursivelyInsideArrays(
+      primitivesObject,
+      PrimitivesObjectTypeGuard.isEntityType,
+    );
+
+    const allEntityProperties = [...entityProps, ...entitiesInsideArrays];
+    const entityImports: TDependenciesTypeScript = allEntityProperties.flatMap((entityProp) => {
+      const primitivesTypeName = this.getPrimitivesTypeName(entityProp.identifier);
+      const className = getTargetFileName(entityProp.identifier, ClassTypes.Entity);
+      return [
+        {
+          type: 'relative',
+          default: false,
+          value: entityProp.identifier,
+          classType: ClassTypes.Entity,
+          className,
+        },
+        {
+          type: 'relative',
+          default: false,
+          value: primitivesTypeName,
+          classType: ClassTypes.Entity,
+          className,
+        },
+      ];
+    });
+
+    return [...voImports, ...entityImports];
+  }
+
+  private static lookRecursivelyInsideArrays<T extends TGetFieldPrimitivesValue>(
+    primitivesObject: TGetFieldPrimitives,
+    guard: (v: TGetFieldPrimitivesValue) => v is T,
+  ): T[] {
+    const elementsOfInterest: T[] = [];
+    Object.values(primitivesObject).forEach((valueObjectProp) => {
+      let currentArrayType = valueObjectProp;
+      while (PrimitivesObjectTypeGuard.isArrayType(currentArrayType)) {
+        currentArrayType = currentArrayType.value;
+        if (guard(currentArrayType)) {
+          elementsOfInterest.push(currentArrayType);
+          break;
+        }
+      }
+    });
+    return elementsOfInterest;
   }
 }

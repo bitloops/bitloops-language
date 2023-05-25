@@ -55,6 +55,11 @@ class ValueObjectFromPrimitivesMethod {
           result += `${primitivesKey}: ${identifier}.fromPrimitives(${keyToPrepend}.${primitivesKey}),`;
           continue;
         }
+        if (PrimitivesObjectTypeGuard.isEntityType(propertyValue)) {
+          const identifier = propertyValue.identifier;
+          result += `${primitivesKey}: ${identifier}.fromPrimitives(${keyToPrepend}.${primitivesKey}),`;
+          continue;
+        }
       }
       result += '\n';
     }
@@ -73,6 +78,7 @@ class ValueObjectFromPrimitivesMethod {
     return new MoneyVO(MoneyVOProps);
   }
    */
+  // TODO make the array method call buildFromPrimitives instead, to make it closed for modification(open-closed principle)
   private static buildArrayFromPrimitives(
     propertyValue: TArrayPropertyValue,
     keyToPrepend: string,
@@ -87,6 +93,13 @@ class ValueObjectFromPrimitivesMethod {
       const valueObjectIdentifier = arrayValue.identifier;
       return `${keyToPrepend}.map((${variableName}) => 
       ${valueObjectIdentifier}.fromPrimitives(${variableName})
+      )`;
+    }
+    if (PrimitivesObjectTypeGuard.isEntityType(arrayValue)) {
+      const variableName = 'x';
+      const entityIdentifier = arrayValue.identifier;
+      return `${keyToPrepend}.map((${variableName}) =>
+      ${entityIdentifier}.fromPrimitives(${variableName})
       )`;
     }
     // If array of primitives, we don't need to map

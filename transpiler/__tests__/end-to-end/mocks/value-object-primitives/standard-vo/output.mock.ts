@@ -1,42 +1,36 @@
 import { Domain, Either, ok } from '@bitloops/bl-boilerplate-core';
-import { AccountProps } from './account.props';
-import { MoneyVO } from './money.value-object';
-type TAccountEntityPrimitives = {
-  id: string;
-  price: {
-    currency: string;
-    amount: number;
-  };
+import { MoneyProps } from './money.props';
+import { AmountVO, TAmountVOPrimitives } from './amount.value-object';
+export type TMoneyVOPrimitives = {
+  currency: string;
+  amount: TAmountVOPrimitives;
 };
-export class AccountEntity extends Domain.Aggregate<AccountProps> {
-  private constructor(props: AccountProps) {
-    super(props, props.id);
+export class MoneyVO extends Domain.ValueObject<MoneyProps> {
+  private constructor(props: MoneyProps) {
+    super(props);
   }
-  public static create(props: AccountProps): Either<AccountEntity, never> {
-    return ok(new AccountEntity(props));
+  public static create(props: MoneyProps): Either<MoneyVO, never> {
+    return ok(new MoneyVO(props));
   }
-  get id() {
-    return this._id;
+  get currency(): Domain.StandardVO.Currency.Value {
+    return this.props.currency;
   }
-  get price(): MoneyVO {
-    return this.props.price;
+  get amount(): AmountVO {
+    return this.props.amount;
   }
-  public static fromPrimitives(data: TAccountEntityPrimitives): AccountEntity {
-    const AccountEntityProps = {
-      id: new Domain.UUIDv4(data.id) as Domain.UUIDv4,
-      price: MoneyVO.create({
-        currency: Domain.StandardVO.Currency.Value.create({
-          currencyCode: data.price.currency,
-        }).value as Domain.StandardVO.Currency.Value,
-        amount: data.price.amount,
-      }).value as MoneyVO,
+  public static fromPrimitives(data: TMoneyVOPrimitives): MoneyVO {
+    const MoneyVOProps = {
+      currency: Domain.StandardVO.Currency.Value.create({
+        currencyCode: data.currency,
+      }).value as Domain.StandardVO.Currency.Value,
+      amount: AmountVO.fromPrimitives(data.amount),
     };
-    return new AccountEntity(AccountEntityProps);
+    return new MoneyVO(MoneyVOProps);
   }
-  public toPrimitives(): TAccountEntityPrimitives {
+  public toPrimitives(): TMoneyVOPrimitives {
     return {
-      id: this.id.toString(),
-      price: { currency: this.props.price.currency.currencyCode, amount: this.props.price.amount },
+      currency: this.currency.currencyCode,
+      amount: this.amount.toPrimitives(),
     };
   }
 }

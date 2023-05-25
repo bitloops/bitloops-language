@@ -66,6 +66,17 @@ export class BitloopsPrimTypeIdentifiers {
     }
     return false;
   }
+  static isBitloopsEntityIdentifier(
+    primaryType: TBitloopsPrimaryTypeValues,
+  ): primaryType is TBitloopsIdentifierObject {
+    if (bitloopsIdentifiersTypeKey in primaryType) {
+      return (
+        typeof primaryType[bitloopsIdentifiersTypeKey] === 'string' &&
+        primaryType[bitloopsIdentifiersTypeKey].endsWith('Entity')
+      );
+    }
+    return false;
+  }
 
   static builtInClassToPrimitiveType = (
     type: TBitloopsBuiltInClassesObject,

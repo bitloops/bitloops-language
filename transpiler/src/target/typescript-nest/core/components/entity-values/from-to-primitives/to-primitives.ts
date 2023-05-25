@@ -38,7 +38,11 @@ class ToPrimitivesMethod {
       }
       if (PrimitivesObjectTypeGuard.isPrimitiveProperty(keyValue)) {
         result += `${key}: ${keyToPrepend}.${key},`;
-
+        continue;
+      }
+      if (PrimitivesObjectTypeGuard.isEntityType(keyValue)) {
+        const updatedKeyToPrepend = `${keyToPrepend}.${key}`;
+        result += `${key}: ${updatedKeyToPrepend}.toPrimitives(),`;
         continue;
       }
       throw new Error(`Unknown type: ${keyValue}`);
@@ -61,6 +65,7 @@ class ToPrimitivesMethod {
     };
   }
    */
+  // TODO make this call buildToPrimitives if possible, to make it closed for modification(open-closed principle)
   private static buildToPrimitivesOfArray = (
     propertyValue: TArrayPropertyValue,
     keyToPrepend: string,
@@ -71,6 +76,10 @@ class ToPrimitivesMethod {
     }
 
     if (PrimitivesObjectTypeGuard.isValueObjectType(arrayValue)) {
+      const variableName = 'x';
+      return `${keyToPrepend}.map((${variableName}) => (${variableName}.toPrimitives()))`;
+    }
+    if (PrimitivesObjectTypeGuard.isEntityType(arrayValue)) {
       const variableName = 'x';
       return `${keyToPrepend}.map((${variableName}) => (${variableName}.toPrimitives()))`;
     }

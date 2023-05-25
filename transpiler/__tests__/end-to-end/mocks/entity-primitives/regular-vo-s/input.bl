@@ -19,8 +19,19 @@ ValueObject AmountVO {
 Props AccountProps {
     optional UUIDv4 id;
     MoneyVO price;
+    RowEntity row;
 }
 
 Root Entity AccountEntity {
     static create(props: AccountProps): (OK(AccountEntity), Errors()) { }
+}
+
+// **** Row Entity ****
+Props RowProps {
+    optional UUIDv4 id;
+    string description;
+}
+
+Entity RowEntity {
+    static create(props: RowProps): (OK(RowEntity), Errors()) { }
 }
