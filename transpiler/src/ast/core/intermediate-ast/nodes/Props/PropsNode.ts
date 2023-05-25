@@ -1,7 +1,4 @@
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
-import { modelToTargetLanguage } from '../../../../../target/typescript-nest/core/modelToTargetLanguage.js';
-import { BitloopsPrimTypeIdentifiers } from '../../../../../target/typescript-nest/core/type-identifiers/bitloopsPrimType.js';
-import { bitloopsIdentifiersTypeKey } from '../../../../../types.js';
 import { IntermediateASTTree } from '../../IntermediateASTTree.js';
 import { TBitloopsPrimitives, TValueObjectIdentifier } from '../../../../../types.js';
 import { ClassTypeNode } from '../ClassTypeNode.js';
@@ -9,16 +6,8 @@ import { FieldListNode } from '../FieldList/FieldListNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { PropsIdentifierNode } from './PropsIdentifierNode.js';
 import { BitloopsPrimaryTypeNode } from '../BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
-
-type TGetFieldPrimitives = Record<
-  string,
-  | {
-      primitiveValue: string;
-      identifier?: string;
-      isStandardVO?: boolean;
-    }
-  | string
->;
+import { TGetFieldPrimitives } from './primitives/types.js';
+import { PrimitivesObject } from './primitives/index.js';
 
 export class PropsNode extends ClassTypeNode {
   private static classType = ClassTypes.Props;
@@ -70,42 +59,14 @@ export class PropsNode extends ClassTypeNode {
   public getFieldsPrimitives(tree: IntermediateASTTree): TGetFieldPrimitives {
     const fieldNodes = this.getFieldListNode().getFieldNodes();
     const primitivesValues = {};
-    fieldNodes.forEach((fieldNode) => {
+    for (const fieldNode of fieldNodes) {
       const identifier = fieldNode.getIdentifierValue();
       const type = fieldNode.getTypeValue();
 
-      let typeTarget;
-      if (BitloopsPrimTypeIdentifiers.isBitloopsPrimitive(type)) {
-        const res = modelToTargetLanguage({
-          type: BitloopsTypesMapping.TBitloopsPrimaryType,
-          value: { type },
-        });
-        typeTarget = res.output;
-        primitivesValues[identifier] = typeTarget;
-      } else if (BitloopsPrimTypeIdentifiers.isBitloopsBuiltInClass(type)) {
-        typeTarget = BitloopsPrimTypeIdentifiers.builtInClassToPrimitiveType(type);
-        primitivesValues[identifier] = typeTarget;
-      } else if (BitloopsPrimTypeIdentifiers.isBitloopsValueObjectIdentifier(type)) {
-        const valueObject = tree.getValueObjectByIdentifier(type[bitloopsIdentifiersTypeKey]);
-        const propsNode = tree.getPropsNodeOfValueObject(valueObject);
-        const fieldPrimitives = propsNode.getFieldsPrimitives(tree);
-        primitivesValues[identifier] = {};
-        const valueObjectIdentifier = valueObject.getIdentifierValue();
-        for (const [fieldPrimitiveKey, fieldPrimitiveValue] of Object.entries(fieldPrimitives)) {
-          primitivesValues[identifier][fieldPrimitiveKey] = {
-            primitiveValue: fieldPrimitiveValue,
-            identifier: valueObjectIdentifier,
-          };
-        }
-      } else if (BitloopsPrimTypeIdentifiers.isStandardValueType(type)) {
-        const result = BitloopsPrimTypeIdentifiers.standardVOToPrimitiveType(type);
-        primitivesValues[identifier] = {
-          primitiveValue: result.primitive,
-          identifier: result.type,
-          isStandardVO: true,
-        };
-      }
-    });
+      const propertyValue = PrimitivesObject.getPrimitiveValue(type, tree);
+      primitivesValues[identifier] = propertyValue;
+    }
+
     return primitivesValues;
   }
 

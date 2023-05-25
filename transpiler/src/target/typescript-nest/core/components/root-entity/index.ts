@@ -28,12 +28,13 @@ import { getParentDependencies } from './../../dependencies.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
 import { domainMethods } from '../domain/domainMethods.js';
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
-import { getEntityPrimitivesObject } from '../entity-values/index.js';
+import { getPrimitivesObject } from '../entity-values/from-to-primitives/primitives-object.js';
 import {
-  generateFromPrimitives,
-  generateToPrimitives,
+  PrimitivesTypeFactory,
   getPrimitivesType,
-} from '../entity-values/fromToPrimitives.js';
+} from '../entity-values/from-to-primitives/primitives-type.js';
+import { generateFromPrimitives } from '../entity-values/from-to-primitives/from-primitives.js';
+import { generateToPrimitives } from '../entity-values/from-to-primitives/to-primitives.js';
 
 const ROOT_ENTITY_DEPENDENCIES: () => TDependenciesTypeScript = () => [
   {
@@ -75,10 +76,13 @@ export const rootEntityToTargetLanguage = (params: {
     rootEntity[RootEntityKey].entityValues;
 
   const propsNameType = create.parameter.type;
-  const primitivesObject = getEntityPrimitivesObject(model, rootEntityName);
+  const primitivesObject = getPrimitivesObject(model, rootEntityName);
 
   const primitivesType = getPrimitivesType(primitivesObject, rootEntityName);
   output += primitivesType + '\n';
+
+  const toBeImportedPrimitiveTypes =
+    PrimitivesTypeFactory.getPrimitiveTypesThatNeedToBeImported(primitivesObject);
 
   const { output: propsName, dependencies: rootEntityPropsTypeDependencies } =
     modelToTargetLanguage({
@@ -86,7 +90,7 @@ export const rootEntityToTargetLanguage = (params: {
       value: { type: propsNameType },
     });
 
-  dependencies.push(...rootEntityPropsTypeDependencies);
+  dependencies.push(...rootEntityPropsTypeDependencies, ...toBeImportedPrimitiveTypes);
 
   if (constants) {
     const constantVariablesModel = constantVariables(constants);
@@ -116,10 +120,10 @@ export const rootEntityToTargetLanguage = (params: {
   output += entityMethodsModel.output;
   dependencies.push(...entityMethodsModel.dependencies);
 
-  const fromPrimitives = generateFromPrimitives(primitivesObject, rootEntityName, model);
+  const fromPrimitives = generateFromPrimitives(primitivesObject, rootEntityName);
   output += fromPrimitives + '\n';
 
-  const toPrimitives = generateToPrimitives(primitivesObject, rootEntityName, model);
+  const toPrimitives = generateToPrimitives(primitivesObject, rootEntityName);
   output += toPrimitives + '\n';
 
   output += '}';

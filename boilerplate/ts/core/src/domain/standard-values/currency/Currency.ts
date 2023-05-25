@@ -49,6 +49,11 @@ interface CurrencyProps {
 
 export type ErrorTypes = CurrencyStandardDoesNotExistError | CurrencyCodeDoesNotExistError;
 
+export type TCurrencyVOPrimitives = {
+  currencyCode: string;
+  standard?: string;
+};
+
 export class CurrencyVO extends ValueObject<CurrencyProps> {
   private code: string;
   private ISO4217CurrencyCodes: ISO4217CurrencyCodesType;
@@ -90,5 +95,16 @@ export class CurrencyVO extends ValueObject<CurrencyProps> {
     const res = applyRules(rules);
     if (res) return fail(res);
     return ok(new CurrencyVO(props));
+  }
+
+  toPrimitives(): TCurrencyVOPrimitives {
+    return {
+      currencyCode: this.currencyCode,
+      standard: this.standard,
+    };
+  }
+
+  public static fromPrimitives(props: TCurrencyVOPrimitives): CurrencyVO {
+    return new CurrencyVO(props);
   }
 }

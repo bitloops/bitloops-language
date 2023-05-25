@@ -187,6 +187,13 @@ export class IntermediateASTTree {
   public getClassTypeNodes(): ClassTypeNode[] {
     return this.getRootNode().getChildren() as ClassTypeNode[];
   }
+  public getClassTypeByIdentifier(identifier: string): ClassTypeNode | null {
+    const classTypeNodes = this.getClassTypeNodes();
+    return (
+      classTypeNodes.find((classTypeNode) => classTypeNode.getClassName() === identifier) || null
+    );
+  }
+
   public getAggregateIdentifier(identifier: string): EntityIdentifierNode | null {
     return this.getNodeWithPolicy(
       this.rootNode,

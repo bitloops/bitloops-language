@@ -1,0 +1,43 @@
+Props DocumentProps {
+    optional UUIDv4 id;
+    string name;
+    DocumentLocationVO[] locations;
+    RowEntity[] rows;
+    StatusVO[][] statuses;
+}
+
+Root Entity DocumentEntity {
+    static create(props: DocumentProps): (OK(DocumentEntity), Errors()) { }
+}
+
+// **** Row Entity ****
+Props RowProps {
+    optional UUIDv4 id;
+    string description;
+    StatusVO status;
+    DocumentLocationVO[] locations;
+}
+
+Entity RowEntity {
+    static create(props: RowProps): (OK(RowEntity), Errors()) { }
+}
+
+// **** Document Value Objects ****
+
+// **** Status Value Object ****
+Props StatusProps {
+    string status;
+}
+
+ValueObject StatusVO {
+    static create(props: StatusProps): (OK(StatusVO), Errors()) { }
+}
+
+// **** Document Location Value Object ****
+Props DocumentLocationProps {
+    string path;
+}
+
+ValueObject DocumentLocationVO {
+    static create(props: DocumentLocationProps): (OK(DocumentLocationVO), Errors()) { }
+}

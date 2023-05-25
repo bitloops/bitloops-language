@@ -29,8 +29,6 @@ import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { domainMethods } from '../domain/domainMethods.js';
 import { constantVariables, generateGetters } from '../domain/index.js';
 import { IntermediateASTTree } from '../../../../../ast/core/intermediate-ast/IntermediateASTTree.js';
-import { EntityDeclarationNode } from '../../../../../ast/core/intermediate-ast/nodes/Entity/EntityDeclarationNode.js';
-import { RootEntityDeclarationNode } from '../../../../../ast/core/intermediate-ast/nodes/RootEntity/RootEntityDeclarationNode.js';
 
 const entityMethods = (
   privateMethods: TPrivateMethods,
@@ -96,19 +94,4 @@ const entityValuesToTargetLanguage = (params: {
   return { output: result, dependencies };
 };
 
-const getEntityPrimitivesObject = (
-  model: IntermediateASTTree,
-  entityIdentifier: string,
-): Record<string, any> => {
-  let entityNode: EntityDeclarationNode | RootEntityDeclarationNode;
-  entityNode = model.getEntityByIdentifier(entityIdentifier) as EntityDeclarationNode;
-  if (entityNode === null) {
-    entityNode = model.getRootEntityByIdentifier(entityIdentifier) as RootEntityDeclarationNode;
-  }
-
-  const propsNode = model.getPropsNodeOfEntity(entityNode);
-  const fieldPrimitives = propsNode.getFieldsPrimitives(model);
-  return fieldPrimitives;
-};
-
-export { getEntityPrimitivesObject, entityValuesToTargetLanguage };
+export { entityValuesToTargetLanguage };
