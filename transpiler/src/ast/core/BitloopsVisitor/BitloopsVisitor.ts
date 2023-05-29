@@ -247,6 +247,7 @@ import { domainServiceEvaluationVisitor } from './helpers/expression/evaluation/
 import { IntegrationEventHandlerHandleMethodNode } from '../intermediate-ast/nodes/integration-event/IntegrationEventHandlerHandleMethodNode.js';
 import { anonymousFunctionVisitor } from './helpers/anonymousFunctionVisitor.js';
 import { arrowFunctionBodyVisitor } from './helpers/arrowFunctionBodyVisitor.js';
+import { valueObjectConstructorEvaluationVisitor } from './helpers/expression/evaluation/valueObejctConstructorEvaluation.js';
 
 export type TContextInfo = {
   boundedContextName: string;
@@ -691,6 +692,12 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
   visitEntityConstructorEvaluation(ctx: BitloopsParser.EntityConstructorEvaluationContext): any {
     return entityConstructorEvaluationVisitor(this, ctx);
+  }
+
+  visitValueObjectConstructorEvaluation(
+    ctx: BitloopsParser.ValueObjectConstructorEvaluationContext,
+  ): any {
+    return valueObjectConstructorEvaluationVisitor(this, ctx);
   }
 
   visitDomainEvaluationInputFieldList(ctx: BitloopsParser.DomainEvaluationInputFieldListContext) {

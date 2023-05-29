@@ -222,6 +222,7 @@ const BitloopsTypesMapping = {
   TIfErrorExpression: 'TIfErrorExpression',
   TAnonymousFunction: 'TAnonymousFunction',
   TArrowFunctionBody: 'TArrowFunctionBody',
+  TValueObjectConstructorEvaluation: 'TValueObjectConstructorEvaluation',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
