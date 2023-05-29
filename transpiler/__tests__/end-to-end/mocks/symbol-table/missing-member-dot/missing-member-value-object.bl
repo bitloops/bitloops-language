@@ -11,7 +11,7 @@ Props TitleProps {
 CommandHandler AddTodoCommandHandler (todoRepo: TodoWriteRepoPort){
 execute (command: AddTodoCommand): (OK(string),Errors(DomainErrors.TitleOutOfBoundsError))
 {
-    const title = TitleVO.create({ title: command.title })
+    const title = TitleVO.create({ title: command.title }).ifError()
     title.test()
     return title;
 }

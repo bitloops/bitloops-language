@@ -28,8 +28,9 @@ CommandHandler WithdrawMoneyCommandHandler (accountRepo: AccountWriteRepoPort) {
        )) {
        
        const accountId = UUIDv4(command.accountId);
-       const accountEntity = this.accountRepo.getById().ifError();       ;
-
+    //    const accountEntity = this.accountRepo.getById().ifError();       ;
+    // const accountEntity = this.accountRepo.getById();
+    const accountEntity = AccountEntity.create({ accountId: command.accountId, balance: 0 }).ifError();
        if(NOT accountEntity) {
            const result = "Account not found";
            return ApplicationErrors.AccountNotFoundError(command.accountId);

@@ -74,10 +74,10 @@ export class EvaluationNode extends ExpressionNode {
     return argumentList;
   }
 
-  public getInferredType(): TInferredTypes {
+  public getInferredType(symbolTableManager: SymbolTableManager): TInferredTypes {
     for (const child of this.getChildren()) {
       if (child instanceof EvaluationNode) {
-        return child.getInferredType();
+        return child.getInferredType(symbolTableManager);
       }
     }
     throw new Error('No evaluation found to infer type');
@@ -91,6 +91,13 @@ export class EvaluationNode extends ExpressionNode {
     const argumentList = this.getArgumentList();
     if (argumentList) {
       argumentList.addToSymbolTable(symbolTableManager);
+    }
+    for (const child of this.getChildren()) {
+      if (child instanceof EvaluationNode) {
+        const symbolTable = symbolTableManager.getSymbolTable();
+        child.typeCheck(symbolTable);
+        return child.addToSymbolTable(symbolTableManager);
+      }
     }
   }
 }

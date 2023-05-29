@@ -1,7 +1,9 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
+import { BitloopsPrimaryTypeNode } from '../BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
 import { ParameterNode } from '../ParameterList/ParameterNode.js';
+import { ReturnOkErrorTypeNode } from '../returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { StatementNode } from '../statements/Statement.js';
 import { StatementListNode } from '../statements/StatementList.js';
 
@@ -31,6 +33,20 @@ export class DomainCreateNode extends IntermediateASTNode {
     const parameterNode = this.getParameterNode();
     if (!parameterNode) return [];
     return [parameterNode];
+  }
+
+  public getBitloopsPrimaryType(): BitloopsPrimaryTypeNode | null {
+    return this.getChildNodeByType<BitloopsPrimaryTypeNode>(
+      BitloopsTypesMapping.TBitloopsPrimaryType,
+    );
+  }
+
+  public getReturnOkErrorType(): ReturnOkErrorTypeNode | null {
+    return this.getChildNodeByType<ReturnOkErrorTypeNode>(BitloopsTypesMapping.TOkErrorReturnType);
+  }
+
+  public getReturnType(): ReturnOkErrorTypeNode | BitloopsPrimaryTypeNode {
+    return this.getReturnOkErrorType() ?? this.getBitloopsPrimaryType();
   }
 
   addToSymbolTable(symbolTableManager: SymbolTableManager): void {
