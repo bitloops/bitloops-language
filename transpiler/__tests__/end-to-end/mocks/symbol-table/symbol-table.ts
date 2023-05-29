@@ -41,232 +41,232 @@ type SymbolTableTestCase = {
 const SCOPE_NAMES = SymbolTableManager.SCOPE_NAMES;
 
 export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
-  // {
-  //   description: 'Should create symbol table for command handler',
-  //   inputCore: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/symbol-table/command-handler-if.bl',
-  //   ),
-  //   inputSetup: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-  //   ),
-  //   expectedSymbolTable: new SymbolTableBuilder()
-  //     .insertChildScope(
-  //       'WithdrawMoneyCommandHandler',
-  //       new SymbolTableBuilder()
-  //         .insert('this', new ClassTypeThisSymbolEntry('WithdrawMoneyCommandHandler'))
-  //         .insert(
-  //           'this.integrationEventBus',
-  //           new ClassTypeParameterSymbolEntry('IntegrationEventBusPort'),
-  //         )
-  //         .insert('this.accountRepo', new ClassTypeParameterSymbolEntry('AccountWriteRepoPort'))
-  //         .insertChildScope(
-  //           'execute',
-  //           new SymbolTableBuilder()
-  //             .insert('command', new ParameterSymbolEntry('WithdrawMoneyCommand'))
-  //             .insert('command.accountId', new MemberDotSymbolEntry('string'))
-  //             .insert('command.amount', new MemberDotSymbolEntry('int32'))
-  //             .insertVariableSymbolEntry('accountId', 'UUIDv4', true)
-  //             .insert(
-  //               'this.accountRepo.getById()',
-  //               new MethodCallSymbolEntry('(OK(AccountEntity), Errors(UnexpectedError))'),
-  //             )
-  //             .insert(
-  //               'this.accountRepo.getById().ifError()',
-  //               new MethodCallSymbolEntry('AccountEntity'),
-  //             )
-  //             .insertChildScope('ifError0', new SymbolTableBuilder())
-  //             .insertVariableSymbolEntry('accountEntity', 'AccountEntity', true)
-  //             .insertChildScope(
-  //               'if0',
-  //               new SymbolTableBuilder().insertVariableSymbolEntry('result', 'string', true),
-  //             )
-  //             .insertVariableSymbolEntry('result', 'string', true)
-  //             .insert(
-  //               'accountEntity.withdrawAmount()',
-  //               new MethodCallSymbolEntry(
-  //                 '(OK(void), Errors(DomainErrors.InvalidMonetaryValueError))',
-  //               ),
-  //             )
-  //             .insert(
-  //               'this.accountRepo.update()',
-  //               new MethodCallSymbolEntry('(OK(void), Errors(UnexpectedError))'),
-  //             )
-  //             .insert('this.accountRepo.update().ifError()', new MethodCallSymbolEntry('void'))
-  //             .insertChildScope(
-  //               'ifError1',
-  //               new SymbolTableBuilder().insert('err', new ParameterSymbolEntry('UnexpectedError')),
-  //             ),
-  //         ),
-  //     )
-  //     .insertChildScope('AccountWriteRepoPort', new SymbolTableBuilder())
-  //     .insertChildScope('AccountProps', new SymbolTableBuilder())
-  //     .insertChildScope('WithdrawMoneyCommand', new SymbolTableBuilder())
-  //     .insertChildScope(
-  //       'AccountEntity',
-  //       new SymbolTableBuilder()
-  //         .insert('this', new ClassTypeThisSymbolEntry('AccountEntity'))
-  //         .insertChildScope(
-  //           SCOPE_NAMES.DOMAIN_CREATE,
-  //           new SymbolTableBuilder().insert('props', new ParameterSymbolEntry('AccountProps')),
-  //         )
-  //         .insertChildScope(
-  //           'withdrawAmount',
-  //           new SymbolTableBuilder().insert('amount', new ParameterSymbolEntry('int32')),
-  //         ),
-  //     )
-  //     .build(),
-  // },
-  // {
-  //   description: 'Should create symbol table for command handler with 2 ifs',
-  //   inputCore: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/symbol-table/command-handler-two-if.bl',
-  //   ),
-  //   inputSetup: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-  //   ),
-  //   expectedSymbolTable: new SymbolTableBuilder()
-  //     .insertChildScope(
-  //       'WithdrawMoneyCommandHandler',
-  //       new SymbolTableBuilder()
-  //         .insert('this', new ClassTypeThisSymbolEntry('WithdrawMoneyCommandHandler'))
-  //         .insert(
-  //           'this.integrationEventBus',
-  //           new ClassTypeParameterSymbolEntry('IntegrationEventBusPort'),
-  //         )
-  //         .insert('this.accountRepo', new ClassTypeParameterSymbolEntry('AccountWriteRepoPort'))
-  //         .insertChildScope(
-  //           'execute',
-  //           new SymbolTableBuilder()
-  //             .insert('command', new ParameterSymbolEntry('WithdrawMoneyCommand'))
-  //             .insert('command.accountId', new MemberDotSymbolEntry('string'))
-  //             .insert('command.amount', new MemberDotSymbolEntry('int32'))
-  //             .insertVariableSymbolEntry('accountId', 'UUIDv4', true)
-  //             .insert(
-  //               'this.accountRepo.getById()',
-  //               new MethodCallSymbolEntry('(OK(AccountEntity), Errors(UnexpectedError))'),
-  //             )
-  //             .insert(
-  //               'this.accountRepo.getById().ifError()',
-  //               new MethodCallSymbolEntry('AccountEntity'),
-  //             )
-  //             .insertChildScope(
-  //               'ifError0',
-  //               new SymbolTableBuilder().insert('err', new ParameterSymbolEntry('UnexpectedError')),
-  //             )
-  //             .insertVariableSymbolEntry('accountEntity', 'AccountEntity', true)
-  //             .insertChildScope(
-  //               'if0',
-  //               new SymbolTableBuilder().insertVariableSymbolEntry('result', 'string', true),
-  //             )
-  //             .insertChildScope(
-  //               'if1',
-  //               new SymbolTableBuilder().insertVariableSymbolEntry('message', 'string', true),
-  //             )
-  //             .insertVariableSymbolEntry('result', 'string', true)
-  //             .insert(
-  //               'accountEntity.withdrawAmount()',
-  //               new MethodCallSymbolEntry(
-  //                 '(OK(void), Errors(DomainErrors.InvalidMonetaryValueError))',
-  //               ),
-  //             )
-  //             .insert(
-  //               'this.accountRepo.update()',
-  //               new MethodCallSymbolEntry('(OK(void), Errors(UnexpectedError))'),
-  //             )
-  //             .insert('this.accountRepo.update().ifError()', new MethodCallSymbolEntry('void'))
-  //             .insertChildScope('ifError1', new SymbolTableBuilder()),
-  //         ),
-  //     )
-  //     .insertChildScope('AccountWriteRepoPort', new SymbolTableBuilder())
-  //     .insertChildScope('AccountProps', new SymbolTableBuilder())
-  //     .insertChildScope('WithdrawMoneyCommand', new SymbolTableBuilder())
-  //     .insertChildScope(
-  //       'AccountEntity',
-  //       new SymbolTableBuilder()
-  //         .insert('this', new ClassTypeThisSymbolEntry('AccountEntity'))
-  //         .insertChildScope(
-  //           SCOPE_NAMES.DOMAIN_CREATE,
-  //           new SymbolTableBuilder().insert('props', new ParameterSymbolEntry('AccountProps')),
-  //         )
-  //         .insertChildScope(
-  //           'withdrawAmount',
-  //           new SymbolTableBuilder().insert('amount', new ParameterSymbolEntry('int32')),
-  //         ),
-  //     )
-  //     .build(),
-  // },
-  // {
-  //   description: 'Should create symbol table for command handler with switch',
-  //   inputCore: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/symbol-table/command-handler-switch.bl',
-  //   ),
-  //   inputSetup: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-  //   ),
-  //   expectedSymbolTable: new SymbolTableBuilder()
-  //     .insertChildScope(
-  //       'WithdrawMoneyCommandHandler',
-  //       new SymbolTableBuilder()
-  //         .insert('this', new ClassTypeThisSymbolEntry('WithdrawMoneyCommandHandler'))
-  //         .insert(
-  //           'this.integrationEventBus',
-  //           new ClassTypeParameterSymbolEntry('IntegrationEventBusPort'),
-  //         )
-  //         .insert('this.accountRepo', new ClassTypeParameterSymbolEntry('AccountWriteRepoPort'))
-  //         .insertChildScope(
-  //           'execute',
-  //           new SymbolTableBuilder()
-  //             .insert('command', new ParameterSymbolEntry('WithdrawMoneyCommand'))
-  //             .insert('command.accountId', new MemberDotSymbolEntry('string'))
-  //             .insert('command.amount', new MemberDotSymbolEntry('int32'))
-  //             .insertVariableSymbolEntry('accountId', 'UUIDv4', true)
-  //             .insert(
-  //               'this.accountRepo.getById()',
-  //               new MethodCallSymbolEntry('(OK(AccountEntity), Errors(UnexpectedError))'),
-  //             )
-  //             .insert(
-  //               'this.accountRepo.getById().ifError()',
-  //               new MethodCallSymbolEntry('AccountEntity'),
-  //             )
-  //             .insertChildScope('ifError0', new SymbolTableBuilder())
-  //             .insertVariableSymbolEntry('accountEntity', 'AccountEntity', true)
-  //             .insertChildScope(
-  //               'if0',
-  //               new SymbolTableBuilder().insertVariableSymbolEntry('result', 'string', true),
-  //             )
-  //             .insertVariableSymbolEntry('animal', 'string', true)
-  //             .insertChildScope(
-  //               'switch0',
-  //               new SymbolTableBuilder()
-  //                 .insertChildScope('case0', new SymbolTableBuilder())
-  //                 .insertChildScope('default', new SymbolTableBuilder()),
-  //             )
-  //             .insert(
-  //               'accountEntity.withdrawAmount()',
-  //               new MethodCallSymbolEntry(
-  //                 '(OK(void), Errors(DomainErrors.InvalidMonetaryValueError))',
-  //               ),
-  //             ),
-  //         ),
-  //     )
-  //     .insertChildScope('AccountWriteRepoPort', new SymbolTableBuilder())
-  //     .insertChildScope('AccountProps', new SymbolTableBuilder())
-  //     .insertChildScope('WithdrawMoneyCommand', new SymbolTableBuilder())
-  //     .insertChildScope(
-  //       'AccountEntity',
-  //       new SymbolTableBuilder()
-  //         .insert('this', new ClassTypeThisSymbolEntry('AccountEntity'))
-  //         .insertChildScope(
-  //           SCOPE_NAMES.DOMAIN_CREATE,
-  //           new SymbolTableBuilder().insert('props', new ParameterSymbolEntry('AccountProps')),
-  //         )
-  //         .insertChildScope(
-  //           'withdrawAmount',
-  //           new SymbolTableBuilder().insert('amount', new ParameterSymbolEntry('int32')),
-  //         ),
-  //     )
-  //     .build(),
-  // },
+  {
+    description: 'Should create symbol table for command handler',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/command-handler-if.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    expectedSymbolTable: new SymbolTableBuilder()
+      .insertChildScope(
+        'WithdrawMoneyCommandHandler',
+        new SymbolTableBuilder()
+          .insert('this', new ClassTypeThisSymbolEntry('WithdrawMoneyCommandHandler'))
+          .insert(
+            'this.integrationEventBus',
+            new ClassTypeParameterSymbolEntry('IntegrationEventBusPort'),
+          )
+          .insert('this.accountRepo', new ClassTypeParameterSymbolEntry('AccountWriteRepoPort'))
+          .insertChildScope(
+            'execute',
+            new SymbolTableBuilder()
+              .insert('command', new ParameterSymbolEntry('WithdrawMoneyCommand'))
+              .insert('command.accountId', new MemberDotSymbolEntry('string'))
+              .insert('command.amount', new MemberDotSymbolEntry('int32'))
+              .insertVariableSymbolEntry('accountId', 'UUIDv4', true)
+              .insert(
+                'this.accountRepo.getById()',
+                new MethodCallSymbolEntry('(OK(AccountEntity), Errors(UnexpectedError))'),
+              )
+              .insert(
+                'this.accountRepo.getById().ifError()',
+                new MethodCallSymbolEntry('AccountEntity'),
+              )
+              .insertChildScope('ifError0', new SymbolTableBuilder())
+              .insertVariableSymbolEntry('accountEntity', 'AccountEntity', true)
+              .insertChildScope(
+                'if0',
+                new SymbolTableBuilder().insertVariableSymbolEntry('result', 'string', true),
+              )
+              .insertVariableSymbolEntry('result', 'string', true)
+              .insert(
+                'accountEntity.withdrawAmount()',
+                new MethodCallSymbolEntry(
+                  '(OK(void), Errors(DomainErrors.InvalidMonetaryValueError))',
+                ),
+              )
+              .insert(
+                'this.accountRepo.update()',
+                new MethodCallSymbolEntry('(OK(void), Errors(UnexpectedError))'),
+              )
+              .insert('this.accountRepo.update().ifError()', new MethodCallSymbolEntry('void'))
+              .insertChildScope(
+                'ifError1',
+                new SymbolTableBuilder().insert('err', new ParameterSymbolEntry('UnexpectedError')),
+              ),
+          ),
+      )
+      .insertChildScope('AccountWriteRepoPort', new SymbolTableBuilder())
+      .insertChildScope('AccountProps', new SymbolTableBuilder())
+      .insertChildScope('WithdrawMoneyCommand', new SymbolTableBuilder())
+      .insertChildScope(
+        'AccountEntity',
+        new SymbolTableBuilder()
+          .insert('this', new ClassTypeThisSymbolEntry('AccountEntity'))
+          .insertChildScope(
+            SCOPE_NAMES.DOMAIN_CREATE,
+            new SymbolTableBuilder().insert('props', new ParameterSymbolEntry('AccountProps')),
+          )
+          .insertChildScope(
+            'withdrawAmount',
+            new SymbolTableBuilder().insert('amount', new ParameterSymbolEntry('int32')),
+          ),
+      )
+      .build(),
+  },
+  {
+    description: 'Should create symbol table for command handler with 2 ifs',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/command-handler-two-if.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    expectedSymbolTable: new SymbolTableBuilder()
+      .insertChildScope(
+        'WithdrawMoneyCommandHandler',
+        new SymbolTableBuilder()
+          .insert('this', new ClassTypeThisSymbolEntry('WithdrawMoneyCommandHandler'))
+          .insert(
+            'this.integrationEventBus',
+            new ClassTypeParameterSymbolEntry('IntegrationEventBusPort'),
+          )
+          .insert('this.accountRepo', new ClassTypeParameterSymbolEntry('AccountWriteRepoPort'))
+          .insertChildScope(
+            'execute',
+            new SymbolTableBuilder()
+              .insert('command', new ParameterSymbolEntry('WithdrawMoneyCommand'))
+              .insert('command.accountId', new MemberDotSymbolEntry('string'))
+              .insert('command.amount', new MemberDotSymbolEntry('int32'))
+              .insertVariableSymbolEntry('accountId', 'UUIDv4', true)
+              .insert(
+                'this.accountRepo.getById()',
+                new MethodCallSymbolEntry('(OK(AccountEntity), Errors(UnexpectedError))'),
+              )
+              .insert(
+                'this.accountRepo.getById().ifError()',
+                new MethodCallSymbolEntry('AccountEntity'),
+              )
+              .insertChildScope(
+                'ifError0',
+                new SymbolTableBuilder().insert('err', new ParameterSymbolEntry('UnexpectedError')),
+              )
+              .insertVariableSymbolEntry('accountEntity', 'AccountEntity', true)
+              .insertChildScope(
+                'if0',
+                new SymbolTableBuilder().insertVariableSymbolEntry('result', 'string', true),
+              )
+              .insertChildScope(
+                'if1',
+                new SymbolTableBuilder().insertVariableSymbolEntry('message', 'string', true),
+              )
+              .insertVariableSymbolEntry('result', 'string', true)
+              .insert(
+                'accountEntity.withdrawAmount()',
+                new MethodCallSymbolEntry(
+                  '(OK(void), Errors(DomainErrors.InvalidMonetaryValueError))',
+                ),
+              )
+              .insert(
+                'this.accountRepo.update()',
+                new MethodCallSymbolEntry('(OK(void), Errors(UnexpectedError))'),
+              )
+              .insert('this.accountRepo.update().ifError()', new MethodCallSymbolEntry('void'))
+              .insertChildScope('ifError1', new SymbolTableBuilder()),
+          ),
+      )
+      .insertChildScope('AccountWriteRepoPort', new SymbolTableBuilder())
+      .insertChildScope('AccountProps', new SymbolTableBuilder())
+      .insertChildScope('WithdrawMoneyCommand', new SymbolTableBuilder())
+      .insertChildScope(
+        'AccountEntity',
+        new SymbolTableBuilder()
+          .insert('this', new ClassTypeThisSymbolEntry('AccountEntity'))
+          .insertChildScope(
+            SCOPE_NAMES.DOMAIN_CREATE,
+            new SymbolTableBuilder().insert('props', new ParameterSymbolEntry('AccountProps')),
+          )
+          .insertChildScope(
+            'withdrawAmount',
+            new SymbolTableBuilder().insert('amount', new ParameterSymbolEntry('int32')),
+          ),
+      )
+      .build(),
+  },
+  {
+    description: 'Should create symbol table for command handler with switch',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/command-handler-switch.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    expectedSymbolTable: new SymbolTableBuilder()
+      .insertChildScope(
+        'WithdrawMoneyCommandHandler',
+        new SymbolTableBuilder()
+          .insert('this', new ClassTypeThisSymbolEntry('WithdrawMoneyCommandHandler'))
+          .insert(
+            'this.integrationEventBus',
+            new ClassTypeParameterSymbolEntry('IntegrationEventBusPort'),
+          )
+          .insert('this.accountRepo', new ClassTypeParameterSymbolEntry('AccountWriteRepoPort'))
+          .insertChildScope(
+            'execute',
+            new SymbolTableBuilder()
+              .insert('command', new ParameterSymbolEntry('WithdrawMoneyCommand'))
+              .insert('command.accountId', new MemberDotSymbolEntry('string'))
+              .insert('command.amount', new MemberDotSymbolEntry('int32'))
+              .insertVariableSymbolEntry('accountId', 'UUIDv4', true)
+              .insert(
+                'this.accountRepo.getById()',
+                new MethodCallSymbolEntry('(OK(AccountEntity), Errors(UnexpectedError))'),
+              )
+              .insert(
+                'this.accountRepo.getById().ifError()',
+                new MethodCallSymbolEntry('AccountEntity'),
+              )
+              .insertChildScope('ifError0', new SymbolTableBuilder())
+              .insertVariableSymbolEntry('accountEntity', 'AccountEntity', true)
+              .insertChildScope(
+                'if0',
+                new SymbolTableBuilder().insertVariableSymbolEntry('result', 'string', true),
+              )
+              .insertVariableSymbolEntry('animal', 'string', true)
+              .insertChildScope(
+                'switch0',
+                new SymbolTableBuilder()
+                  .insertChildScope('case0', new SymbolTableBuilder())
+                  .insertChildScope('default', new SymbolTableBuilder()),
+              )
+              .insert(
+                'accountEntity.withdrawAmount()',
+                new MethodCallSymbolEntry(
+                  '(OK(void), Errors(DomainErrors.InvalidMonetaryValueError))',
+                ),
+              ),
+          ),
+      )
+      .insertChildScope('AccountWriteRepoPort', new SymbolTableBuilder())
+      .insertChildScope('AccountProps', new SymbolTableBuilder())
+      .insertChildScope('WithdrawMoneyCommand', new SymbolTableBuilder())
+      .insertChildScope(
+        'AccountEntity',
+        new SymbolTableBuilder()
+          .insert('this', new ClassTypeThisSymbolEntry('AccountEntity'))
+          .insertChildScope(
+            SCOPE_NAMES.DOMAIN_CREATE,
+            new SymbolTableBuilder().insert('props', new ParameterSymbolEntry('AccountProps')),
+          )
+          .insertChildScope(
+            'withdrawAmount',
+            new SymbolTableBuilder().insert('amount', new ParameterSymbolEntry('int32')),
+          ),
+      )
+      .build(),
+  },
   {
     description: 'Should create symbol table for query handler with if/else',
     inputCore: FileUtil.readFileString(
@@ -869,6 +869,103 @@ export const SYMBOL_TABLE_MEMBER_NOT_DEFINED_TEST_CASES: SymbolTableErrorTestCas
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
     errorMessages: ['Member accountId not defined in GetAccountQuery.'],
+  },
+  {
+    description: 'Should return error that member is not defined for query handler',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-member-dot/missing-member-query-handler.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    errorMessages: ['Member accountRepo not defined in GetAccountQueryHandler.'],
+  },
+  {
+    description: 'Should return error that member is not defined for repo port',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-member-dot/missing-member-repo-port.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    errorMessages: ['Member getByType not defined in AccountReadRepoPort.'],
+  },
+  {
+    description: 'Should return error that member is not defined for domain event',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-member-dot/missing-member-domain-event.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    errorMessages: [
+      'Identifier TodoEntity not found: from 1:36 to 1:46 of file fileId',
+      'Member test not defined in TodoAddedDomainEvent.',
+    ],
+  },
+  {
+    description: 'Should return error that member is not defined for props',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-member-dot/missing-member-props.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    errorMessages: ['Member error not defined in TitleProps.'],
+  },
+  {
+    description: 'Should return error that member is not defined for integration event',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-member-dot/missing-member-integration-event.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    errorMessages: [
+      'Identifier MoneyDepositedDomainEvent not found: from 19:56 to 19:81 of file fileId',
+      'Member account not defined in IntegrationMoneyDepositedSchemaV1.',
+    ],
+  },
+  {
+    description: 'Should return error that member is not defined for value object',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-member-dot/missing-member-value-object.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    errorMessages: [
+      'Identifier DomainErrors.TitleOutOfBoundsError not found: from 2:60 to 2:94 of file fileId',
+      'Identifier TitleOutOfBoundsRule not found: from 3:20 to 3:40 of file fileId',
+      'Identifier DomainErrors.TitleOutOfBoundsError not found: from 12:55 to 12:89 of file fileId',
+      'Identifier AddTodoCommand not found: from 12:19 to 12:33 of file fileId',
+      'Identifier TodoWriteRepoPort not found: from 11:49 to 11:66 of file fileId',
+      'Member test not defined in TitleVO.',
+    ],
+  },
+  {
+    description: 'Should return error that member is not defined for command bus port',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-member-dot/missing-member-command-bus-port.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    errorMessages: [
+      'Identifier AccountEntity not found: from 1:44 to 1:57 of file fileId',
+      'Identifier CustomerServicePort not found: from 6:84 to 6:103 of file fileId',
+      'Member test not defined in CommandBus.',
+    ],
+  },
+  {
+    description: 'Should return error that member is not defined for regex',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-member-dot/missing-member-regex.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    errorMessages: ['Member fail not defined in regex.'],
   },
 ];
 

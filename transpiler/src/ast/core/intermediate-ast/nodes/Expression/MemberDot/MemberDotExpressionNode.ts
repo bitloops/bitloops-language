@@ -320,7 +320,14 @@ export class MemberDotExpressionNode extends ExpressionNode {
 
     if (ClassTypeGuards.isQueryHandler(leftType)) {
       const queryHandlerNode = intermediateASTTree.getQueryHandlerByIdentifier(leftType);
-      return queryHandlerNode.getFieldNodeType(rightExpressionString);
+      const fieldType = queryHandlerNode.getFieldNodeType(rightExpressionString);
+      if (!fieldType || fieldType === SymbolTableManager.UNKNOWN_TYPE)
+        throw new MissingMemberError(
+          rightExpressionString,
+          queryHandlerNode.getIdentifier().getIdentifierName(),
+          this.getMetadata(),
+        );
+      return fieldType;
     }
 
     if (ClassTypeGuards.isRepoPort(leftType)) {
@@ -328,6 +335,12 @@ export class MemberDotExpressionNode extends ExpressionNode {
       const methodDefinitionTypes =
         intermediateASTTree.getMethodDefinitionTypesOfRepoPort(repoPortNode);
       const methodDefinitionType = methodDefinitionTypes[rightExpressionString];
+      if (!methodDefinitionType)
+        throw new MissingMemberError(
+          rightExpressionString,
+          repoPortNode.getIdentifier().getIdentifierName(),
+          this.getMetadata(),
+        );
       return methodDefinitionType.getInferredType();
     }
     if (ClassTypeGuards.isEntity(leftType)) {
@@ -348,9 +361,10 @@ export class MemberDotExpressionNode extends ExpressionNode {
         return fieldType.getInferredType();
       }
       // TODO if none of them typeCheck??
-      if (!publicMethodType.getInferredType())
+      const publicMethodInferredType = publicMethodType.getInferredType();
+      if (!publicMethodInferredType)
         throw new MissingMemberError(rightExpressionString, leftType, this.getMetadata());
-      return publicMethodType.getInferredType();
+      return publicMethodInferredType;
     }
     if (ClassTypeGuards.isVO(leftType)) {
       // same with entity fields
@@ -359,15 +373,30 @@ export class MemberDotExpressionNode extends ExpressionNode {
       const propsNode = intermediateASTTree.getPropsByIdentifier(propsIdentifier);
       const fieldTypes = propsNode.getFieldTypes();
       const fieldType = fieldTypes[rightExpressionString];
+      if (!fieldType)
+        throw new MissingMemberError(rightExpressionString, leftType, this.getMetadata());
       return fieldType.getInferredType();
     }
     if (ClassTypeGuards.isDomainEvent(leftType)) {
       const domainEventNode = intermediateASTTree.getDomainEventByIdentifier(leftType);
-      return domainEventNode.getFieldNodeType(rightExpressionString);
+      const fieldType = domainEventNode.getFieldNodeType(rightExpressionString);
+      if (!fieldType || fieldType === SymbolTableManager.UNKNOWN_TYPE)
+        throw new MissingMemberError(
+          rightExpressionString,
+          domainEventNode.getIdentifier().getIdentifierName(),
+          this.getMetadata(),
+        );
+      return fieldType;
     }
     if (ClassTypeGuards.isCommandBusPort(leftType)) {
       const commandBusMethodType = EventHandlerBusDependenciesNode.getCommandBusMethodType();
       const typeNode = commandBusMethodType[rightExpressionString];
+      if (!typeNode)
+        throw new MissingMemberError(
+          rightExpressionString,
+          leftType.replace('Port', ''),
+          this.getMetadata(),
+        );
       return typeNode.getInferredType();
     }
     if (ClassTypeGuards.isIntegrationEvent(leftType)) {
@@ -380,15 +409,26 @@ export class MemberDotExpressionNode extends ExpressionNode {
       const schemaNode = ASTTree.getStructByIdentifier(schemaType.getIdentifierName());
       const fieldTypes = schemaNode.getFieldTypes();
       const fieldType = fieldTypes[rightExpressionString];
+      if (!fieldType)
+        throw new MissingMemberError(
+          rightExpressionString,
+          schemaNode.getIdentifier().getIdentifierName(),
+          this.getMetadata(),
+        );
       return fieldType.getInferredType();
     }
     if (ClassTypeGuards.isProps(leftType)) {
       const propsNode = intermediateASTTree.getPropsByIdentifier(leftType);
-      return propsNode.getFieldNodeType(rightExpressionString);
+      const fieldType = propsNode.getFieldNodeType(rightExpressionString);
+      if (!fieldType || fieldType === SymbolTableManager.UNKNOWN_TYPE)
+        throw new MissingMemberError(rightExpressionString, leftType, this.getMetadata());
+      return fieldType;
     }
 
     if (ClassTypeGuards.isRegex(leftType)) {
       const regexType = RegexLiteralNode.getLiteralType(rightExpressionString);
+      if (!regexType)
+        throw new MissingMemberError(rightExpressionString, leftType, this.getMetadata());
       return regexType;
     }
 

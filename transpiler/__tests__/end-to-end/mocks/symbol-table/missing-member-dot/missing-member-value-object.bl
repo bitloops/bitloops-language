@@ -1,0 +1,18 @@
+ValueObject TitleVO {
+    static create(props: TitleProps): (OK(TitleVO), Errors(DomainErrors.TitleOutOfBoundsError)) {
+        applyRules(TitleOutOfBoundsRule(props.title));
+    }
+
+}
+Props TitleProps {
+    string title;
+}
+
+CommandHandler AddTodoCommandHandler (todoRepo: TodoWriteRepoPort){
+execute (command: AddTodoCommand): (OK(string),Errors(DomainErrors.TitleOutOfBoundsError))
+{
+    const title = TitleVO.create({ title: command.title })
+    title.test()
+    return title;
+}
+}

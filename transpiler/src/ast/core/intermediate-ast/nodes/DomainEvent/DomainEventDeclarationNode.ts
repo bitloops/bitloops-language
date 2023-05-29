@@ -51,6 +51,7 @@ export class DomainEventDeclarationNode extends ClassTypeNode {
   public getFieldNodeType(fieldIdentifier: string): string {
     const fieldTypes = this.getFieldTypes();
     const fieldType = fieldTypes[fieldIdentifier];
+    if (!fieldType) return null;
     return fieldType.getInferredType();
   }
 }

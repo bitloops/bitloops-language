@@ -1,0 +1,11 @@
+DomainEvent DepositsIncrementedDomainEvent<AccountEntity> {
+    string customerId;
+    float amount;
+}
+
+DomainEventHandler SendEmailAfterMoneyDepositedDomainEventHandler(customerService: CustomerServicePort) {
+    handle(event: DepositsIncrementedDomainEvent): (OK(void), Errors()){
+        const command = SendEmailCommand.create({ customerId: event.customerId, amount: event.amount});
+        this.commandBus.test(command);
+    }
+  }

@@ -1,0 +1,23 @@
+IntegrationEventHandler MoneyDepositedIntegrationEventHandler() {
+    
+    eventVersion: 'v1';
+    
+    handle(event: [Hello world][demo]MoneyDepositedIntegrationEvent): (OK(void), Errors()) {
+      const accountId = event.account;
+
+      const command = IncrementDepositsCommand.create({
+        accountId: accountId,
+      })
+      this.commandBus.send(command);
+    }
+}
+
+Struct IntegrationMoneyDepositedSchemaV1 {
+  string accountId;
+}
+
+IntegrationEvent MoneyDepositedIntegrationEvent(event: MoneyDepositedDomainEvent) {  
+  'v1' : IntegrationMoneyDepositedSchemaV1 {
+    return 'v1'
+  }
+}

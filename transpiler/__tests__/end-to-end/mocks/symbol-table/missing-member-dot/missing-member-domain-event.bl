@@ -1,0 +1,14 @@
+  DomainEvent TodoAddedDomainEvent<TodoEntity> {
+    string userId;
+    string title;
+}
+
+DomainEventHandler TodoAddedPublishPubSubIntegrationDomainEventHandler() {
+
+    handle(event: TodoAddedDomainEvent): (OK(void),Errors()) {
+      const events = TodoAddedIntegrationEvent.create(event)
+      const test = event.test
+      this.pubSubIntegrationEventBus.publish(events)
+    }
+}
+

@@ -252,7 +252,6 @@ describe('Validation checks table cases', () => {
         if (Transpiler.isTranspilerError(result)) {
           throw new Error('Transpiler should NOT return error');
         }
-
         expect(result.semanticErrors.map((x) => x.message)).toEqual(testCase.errorMessages);
       });
     });

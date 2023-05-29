@@ -64,7 +64,7 @@ export class ConstVariableReassingedError extends ValidationError {
 
 export class MissingMemberError extends ValidationError {
   constructor(member: string, dotExpression: string, metadata: TNodeMetadata) {
-    super(`Member ${member} not defined in ${dotExpression}.`, metadata); //in rightSide too
+    super(`Member ${member} not defined in ${dotExpression}.`, metadata);
   }
 }
 
