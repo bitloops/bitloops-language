@@ -107,6 +107,16 @@ export const validEvaluationTestCases: Array<TestCase> = [
     }),
   },
   {
+    description: 'Valid value object constructor evaluation',
+    fileId: 'testFile.bl',
+    inputBLString: "JestTestEvaluation { NameVO({ message: 'Hello, World!' })}",
+    evaluation: new EvaluationBuilderDirector().buildValueObjectonstructorEvaluation('NameVO', {
+      fields: [
+        new EvaluationFieldBuilderDirector().buildStringEvaluationField('message', 'Hello, World!'),
+      ],
+    }),
+  },
+  {
     description: 'valid Domain Event Evaluation',
     fileId: 'testFile.bl',
     inputBLString: "JestTestEvaluation { UserCreatedDomainEvent.create({ email: 'john@doe.com' })}",

@@ -265,6 +265,7 @@ evaluation
     | valueObjectEvaluation
     | entityEvaluation
     | entityConstructorEvaluation
+    | valueObjectConstructorEvaluation
     | propsEvaluation
     | structEvaluation
     | commandEvaluation
@@ -617,6 +618,10 @@ entityEvaluation
 
 entityConstructorEvaluation
     : entityIdentifier domainEvaluationInput
+    ;
+
+valueObjectConstructorEvaluation
+    : valueObjectIdentifier domainEvaluationInput
     ;
 
 commandEvaluation

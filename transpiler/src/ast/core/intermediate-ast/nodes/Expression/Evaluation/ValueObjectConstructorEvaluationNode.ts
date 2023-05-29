@@ -18,31 +18,32 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
-import { EntityIdentifierNode } from '../../Entity/EntityIdentifierNode.js';
 import { TNodeMetadata } from '../../IntermediateASTNode.js';
+import { ValueObjectIdentifierNode } from '../../valueObject/ValueObjectIdentifierNode.js';
 import { DomainEvaluationNode } from './DomainEvaluation/DomainEvaluation.js';
 import { EvaluationNode } from './EvaluationNode.js';
 
-export class EntityConstructorEvaluationNode extends EvaluationNode {
-  private static nodeName = 'entityConstructor';
+export class ValueObjectConstructorEvaluationNode extends EvaluationNode {
+  private static nodeName = 'valueObjectConstructor';
 
   constructor(metadata?: TNodeMetadata) {
     super(metadata);
-    this.nodeType = BitloopsTypesMapping.TEntityConstructorEvaluation;
-    this.classNodeName = EntityConstructorEvaluationNode.nodeName;
+    this.nodeType = BitloopsTypesMapping.TValueObjectConstructorEvaluation;
+    this.classNodeName = ValueObjectConstructorEvaluationNode.nodeName;
   }
-  public override getIdentifierNode(): EntityIdentifierNode {
+  public override getIdentifierNode(): ValueObjectIdentifierNode {
     const domainEvaluationNode = this.getChildNodeByType<DomainEvaluationNode>(
       BitloopsTypesMapping.TDomainEvaluation,
     );
     const identifier = domainEvaluationNode.getChildren().find((child) => {
-      return child.getNodeType() === BitloopsTypesMapping.TEntityIdentifier;
-    }) as EntityIdentifierNode;
+      return child.getNodeType() === BitloopsTypesMapping.TValueObjectIdentifier;
+    }) as ValueObjectIdentifierNode;
     return identifier;
   }
 
   public getInferredType(): string {
-    const entityEvaluationIdentifier = this.getIdentifierNode().getValue().entityIdentifier;
-    return entityEvaluationIdentifier;
+    const valueObjectEvaluationIdentifier =
+      this.getIdentifierNode().getValue().valueObjectIdentifier;
+    return valueObjectEvaluationIdentifier;
   }
 }

@@ -20,19 +20,20 @@
 
 import {
   TDomainEvaluation,
-  TEntityConstructorEvaluation,
+  TValueObjectConstructorEvaluation,
   TTargetDependenciesTypeScript,
 } from '../../../../../../../types.js';
 import { BitloopsTypesMapping } from '../../../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../../../modelToTargetLanguage.js';
 import { DomainEvaluationPropsTypeIdentifiers } from '../../../../type-identifiers/domainEvaluationProps.js';
+import { getDomainName } from './entityConstructorEvaluation.js';
 
-export const entityConstructorEvaluationToTargetLanguage = (
-  evaluation: TEntityConstructorEvaluation,
+export const valueObjectConstructorEvaluationToTargetLanguage = (
+  evaluation: TValueObjectConstructorEvaluation,
 ): TTargetDependenciesTypeScript => {
-  const entityEvaluation = evaluation.entityConstructor;
+  const valueObjectEvaluation = evaluation.valueObjectConstructor;
 
-  const result = domainEvaluationToTargetLanguage(entityEvaluation);
+  const result = domainEvaluationToTargetLanguage(valueObjectEvaluation);
 
   return result;
 };
@@ -62,15 +63,4 @@ export const domainEvaluationToTargetLanguage = (
     output: `new ${domainName}(${resultDomainProps.output})`,
     dependencies,
   };
-};
-
-export const getDomainName = (evaluation: TDomainEvaluation): string => {
-  const domainEvaluation = evaluation.domainEvaluation;
-  let domainName;
-  if ('entityIdentifier' in domainEvaluation) domainName = domainEvaluation.entityIdentifier;
-  else if ('valueObjectIdentifier' in domainEvaluation)
-    domainName = domainEvaluation.valueObjectIdentifier;
-  else if ('readModelIdentifier' in domainEvaluation)
-    domainName = domainEvaluation.readModelIdentifier;
-  return domainName;
 };
