@@ -8,8 +8,8 @@ import { AuthEnvironmentVariables } from '@src/config/auth.configuration';
 import { ConfigService } from '@nestjs/config';
 import {
   Application,
-  asyncLocalStorage,
   Either,
+  asyncLocalStorage,
   ok,
 } from '@bitloops/bl-boilerplate-core';
 
@@ -18,7 +18,8 @@ export class MongoDriverAvailabilityReadRepository
   implements DriverAvailabilityReadRepoPort
 {
   private collectionName =
-    process.env.MONGO_DB_TODO_COLLECTION || 'driverAvailability';
+    process.env.MONGO_DB_DRIVER_AVAILABILITY_COLLECTION ||
+    'driverAvailability';
   private dbName = process.env.MONGO_DB_DATABASE || 'driver';
   private collection: Collection;
   private JWT_SECRET: string;
@@ -30,40 +31,6 @@ export class MongoDriverAvailabilityReadRepository
       .db(this.dbName)
       .collection(this.collectionName);
     this.JWT_SECRET = this.configService.get('jwtSecret', { infer: true });
-  }
-
-  @Application.Repo.Decorators.ReturnUnexpectedError()
-  async getAll(): Promise<
-    Either<
-      DriverAvailabilityReadModel[],
-      Application.Repo.Errors.Unexpected
-    >
-  > {
-    const ctx = asyncLocalStorage.getStore()?.get('context');
-    const { jwt } = ctx;
-    let jwtPayload: null | any = null;
-    try {
-      jwtPayload = jwtwebtoken.verify(jwt, this.JWT_SECRET);
-    } catch (err) {
-      throw new Error('Invalid JWT!');
-    }
-    const userId = jwtPayload.sub;
-    if (!userId) {
-      throw new Error('Invalid userId');
-    }
-    const results = await this.collection
-      .find({ userId: { id: userId } })
-      .toArray();
-
-    return ok(
-      results.map((result) => {
-        const { _id, ...todo } = result as any;
-        return DriverAvailabilityReadModel.fromPrimitives({
-          ...todo,
-          id: _id.toString(),
-        });
-      }),
-    );
   }
 
   @Application.Repo.Decorators.ReturnUnexpectedError()
@@ -91,7 +58,7 @@ export class MongoDriverAvailabilityReadRepository
       return ok(null);
     }
 
-    if (result.userId !== jwtPayload.sub) {
+    if (result.driverId !== jwtPayload.sub) {
       throw new Error('Invalid userId');
     }
 
@@ -100,6 +67,40 @@ export class MongoDriverAvailabilityReadRepository
       DriverAvailabilityReadModel.fromPrimitives({
         ...todo,
         id: _id.toString(),
+      }),
+    );
+  }
+
+  @Application.Repo.Decorators.ReturnUnexpectedError()
+  async getAll(): Promise<
+    Either<
+      DriverAvailabilityReadModel[],
+      Application.Repo.Errors.Unexpected
+    >
+  > {
+    const ctx = asyncLocalStorage.getStore()?.get('context');
+    const { jwt } = ctx;
+    let jwtPayload: null | any = null;
+    try {
+      jwtPayload = jwtwebtoken.verify(jwt, this.JWT_SECRET);
+    } catch (err) {
+      throw new Error('Invalid JWT!');
+    }
+    const driverId = jwtPayload.sub;
+    if (!driverId) {
+      throw new Error('Invalid driverId');
+    }
+    const results = await this.collection
+      .find({ driverId: driverId })
+      .toArray();
+
+    return ok(
+      results.map((result) => {
+        const { _id, ...todo } = result as any;
+        return DriverAvailabilityReadModel.fromPrimitives({
+          ...todo,
+          id: _id.toString(),
+        });
       }),
     );
   }

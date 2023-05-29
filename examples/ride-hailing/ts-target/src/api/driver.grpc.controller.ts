@@ -27,14 +27,18 @@
   import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
   
 import { Application } from '@bitloops/bl-boilerplate-core';
-import { ApplicationErrors } from '@lib/bounded-contexts/driver/driver-availability/errors';
-import { BecomeUnavailableCommand } from '@lib/bounded-contexts/driver/driver-availability/commands/become-unavailable.command';
-import { Inject } from '@nestjs/common';
+import { GetDriverAvailabilityQuery } from '@lib/bounded-contexts/driver/driver-availability/queries/get-driver-availability.query';
 import { driver } from '../proto/generated/driver';
 
+import { BecomeUnavailableCommand } from '@lib/bounded-contexts/driver/driver-availability/commands/become-unavailable.command';
+import { ApplicationErrors } from '@lib/bounded-contexts/driver/driver-availability/application/errors';
+import { Inject } from '@nestjs/common';
+import { DriverAvailabilityWriteRepoPortToken } from '@lib/bounded-contexts/driver/driver-availability/constants';
+import { DriverAvailabilityWriteRepoPort } from '@lib/bounded-contexts/driver/driver-availability/ports/driver-availability-write.repo-port';
+import { Either } from '@bitloops/bl-boilerplate-core';
+import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
+import { BecomeAvailableCommand } from '@lib/bounded-contexts/driver/driver-availability/commands/become-available.command';
 import { DomainErrors } from '@lib/bounded-contexts/driver/driver-availability/domain/errors';
-import { BecomeAvailableCommand } from '@lib/bounded-contexts/driver/driver-availability/core-module/commands/become-available.command';
-import { GetDriverAvailabilityQuery } from '@lib/bounded-contexts/driver/driver-availability/queries/get-driver-availability.query';
 
 
     
@@ -79,6 +83,64 @@ export class DriverGrpcController {
 
 
     
+  @GrpcMethod('DriverService', 'GetDriverAvailability')
+  @Traceable({
+    operation: 'GetDriverAvailabilityController',
+    serviceName: 'API',
+  })
+  async getDriverAvailability(
+    data: driver.GetDriverAvailabilityRequest,
+  ): Promise<driver.GetDriverAvailabilityResponse> {
+    const result = await this.queryBus.request(
+      new GetDriverAvailabilityQuery({ id: data.id }),
+    );
+    if (result.isOk) {
+      const driverAvailability = result.data;
+      return new driver.GetDriverAvailabilityResponse({
+        ok: new driver.GetDriverAvailabilityOKResponse({
+          driverAvailability: new driver.DriverAvailability({
+            id: driverAvailability.id,
+            accountStatus: new driver.AccountStatus({
+              isActive: driverAvailability.accountStatus.isActive,
+              isVerified: driverAvailability.accountStatus.isVerified,
+            }),
+            availabilityStatus: new driver.AvailabilityStatus({
+              isAvailable: driverAvailability.availabilityStatus.isAvailable,
+              lastChangedAt: driverAvailability.availabilityStatus.lastChangedAt,
+            }),
+            blockReason: new driver.BlockReason({
+              reason: driverAvailability.blockReason.reason,
+              blockedAt: driverAvailability.blockReason.blockedAt,
+            }),
+          }),
+        }),
+      });
+    }
+    const error = result.error;
+    switch (error.errorId) {
+      case 'DRIVER_NOT_FOUND_ERROR': {
+        return new driver.GetDriverAvailabilityResponse({
+          error: new driver.GetDriverAvailabilityErrorResponse({
+            driverNotFoundError: new driver.ErrorResponse({
+              code: error.errorId,
+              message: error.message,
+            }),
+          }),
+        });
+      }
+      default: {
+        return new driver.GetDriverAvailabilityResponse({
+          error: new driver.GetDriverAvailabilityErrorResponse({
+            unexpectedError: new driver.ErrorResponse({
+              code: error.errorId,
+              message: error.message,
+            }),
+          }),
+        });
+      }
+    }
+  }
+  
   @GrpcMethod('DriverService', 'BecomeUnavailable')
   @Traceable({
     operation: 'BecomeUnavailableController',
@@ -135,14 +197,16 @@ export class DriverGrpcController {
     operation: 'BecomeAvailableController',
     serviceName: 'API',
   })
-  async becomeAvailable(data: driver.BecomeAvailableRequest): Promise<driver.BecomeAvailableResponse> {
+  async becomeAvailable(
+    data: driver.BecomeAvailableRequest,
+  ): Promise<driver.BecomeAvailableResponse> {
     const command = new BecomeAvailableCommand({ id: data.id });
     const result = await this.commandBus.request(command);
     if (result.isOk) {
       return new driver.BecomeAvailableResponse({
         ok: new driver.BecomeAvailableOKResponse({}),
       });
-    } 
+    }
     const error = result.error;
     switch (error.errorId) {
       case DomainErrors.AccountIsBlockedError.errorId: {
@@ -188,65 +252,5 @@ export class DriverGrpcController {
     }
   }
 
-  
-  @GrpcMethod('DriverService', 'GetDriverAvailability')
-  @Traceable({
-    operation: 'GetDriverAvailabilityController',
-    serviceName: 'API',
-  })
-  async getDriverAvailability(
-    data: driver.GetDriverAvailabilityRequest,
-  ): Promise<driver.GetDriverAvailabilityResponse> {
-    const result = await this.queryBus.request(
-      new GetDriverAvailabilityQuery({ id: data.id }),
-    );
-    if (result.isOk) {
-      const driverAvailability = result.data;
-      const accountStatus = {
-        isActive: driverAvailability.isActive,
-        isBlocked: driverAvailability.isBlocked,
-      };
-      const availabilityStatus = {
-        isAvailable: driverAvailability.isAvailable,
-      };
-      const blockReason = {
-        reason: driverAvailability.blockReason,
-      };
-      const driverAvailabilityResponse = new driver.DriverAvailability({
-        id: driverAvailability.id,
-        accountStatus: new driver.AccountStatus(accountStatus),
-        availabilityStatus: new driver.AvailabilityStatus(availabilityStatus),
-        blockReason: new driver.BlockReason(blockReason),
-      });
-      return new driver.GetDriverAvailabilityResponse({
-        ok: new driver.GetDriverAvailabilityOKResponse({
-          driverAvailability: driverAvailabilityResponse,
-        }),
-      });
-    }
-    const error = result.error;
-    switch (error.errorId) {
-      case 'DriverNotFoundError': {
-        return new driver.GetDriverAvailabilityResponse({
-          error: new driver.GetDriverAvailabilityErrorResponse({
-            driverNotFoundError: new driver.ErrorResponse({
-              code: error.errorId,
-              message: error.message,
-            }),
-          }),
-        });
-      }
-      default: {
-        return new driver.GetDriverAvailabilityResponse({
-          error: new driver.GetDriverAvailabilityErrorResponse({
-            unexpectedError: new driver.ErrorResponse({
-              code: error.errorId,
-              message: error.message,
-            }),
-          }),
-        });
-      }
-    }
-  }
   
   }

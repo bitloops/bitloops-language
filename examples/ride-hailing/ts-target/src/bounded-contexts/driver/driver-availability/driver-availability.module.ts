@@ -23,8 +23,8 @@ import {
   StreamingDomainEventBusToken,
   StreamingIntegrationEventBusToken,
 } from '@lib/bounded-contexts/driver/driver-availability/constants';
-import { MongoDriverAvailabilityReadRepository } from './repositories/mongo-driver-availability-read.repository';
 import { MongoDriverAvailabilityWriteRepository } from './repositories/mongo-driver-availability-write.repository';
+import { MongoDriverAvailabilityReadRepository } from './repositories/mongo-driver-availability-read.repository';
 
 const providers = [
   {
