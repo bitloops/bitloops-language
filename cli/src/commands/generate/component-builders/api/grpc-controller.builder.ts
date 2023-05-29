@@ -1,3 +1,4 @@
+import { CasingUtils } from '../../../../utils/casing.js';
 import { CodeSnippets } from '../../data-sets/common/code-snippets.js';
 import { getPubSubHandlerNameFromIntegrationEvent } from '../../data-sets/common/names.js';
 
@@ -7,8 +8,20 @@ import { getPubSubHandlerNameFromIntegrationEvent } from '../../data-sets/common
 export class GrpcControllerBuilder {
   static IMPORTS_METHODS_SEPARATOR = '---';
 
-  static assemble(inputs: string[], packageName: string, integrationEvents: string[]): string {
-    const [imports, methods] = inputs.reduce(
+  static getControllerClassName(packageName: string): string {
+    const pascalPackage = CasingUtils.anyCaseToPascalCase(packageName);
+    return `${pascalPackage}GrpcController`;
+  }
+
+  static assemble(
+    inputs: string[],
+    packageName: string,
+    grpcServiceName: string,
+    integrationEvents: string[],
+  ): string {
+    const controllerClassName = this.getControllerClassName(packageName);
+    // Every input contains imports and methods
+    const [importsForMethods, methods] = inputs.reduce(
       (acc, input) => {
         const sanitizedInput = CodeSnippets.sanitizeTypescript(input);
         const [imports, methods] = sanitizedInput.split(
@@ -20,15 +33,29 @@ export class GrpcControllerBuilder {
       },
       ['', ''],
     );
-    return `
-      ${this.createImports(imports, packageName)}
-      ${this.methodsWrapper(methods, integrationEvents)}
-        `;
+    const imports = this.createImports(importsForMethods, packageName);
+    const controllerClass = this.methodsWrapper(
+      methods,
+      integrationEvents,
+      packageName,
+      grpcServiceName,
+      controllerClassName,
+    );
+    return imports + controllerClass;
   }
 
-  private static createImports(imports: string, packageName: string): string {
+  private static createImports(importsForMethods: string, packageName: string): string {
+    // Imports for methods may contain duplicates, so we need to remove them
+    // This will only work on exact duplicates for now
+    const imports = importsForMethods
+      .split('\n')
+      .filter((value, index, self) => self.indexOf(value) === index)
+      .map((x) => x.trim())
+      .join('\n');
+
+    const packageImport = `import { ${packageName} } from '../proto/generated/${packageName}'`;
     return `
-  import { ${packageName} } from '../proto/generated/${packageName}';
+    ${imports.includes(packageImport) ? '' : packageImport}
 
   import {
     Controller,
@@ -83,82 +110,104 @@ export class GrpcControllerBuilder {
     `;
   }
 
-  private static methodsWrapper(methods: string, integrationEvents: string[]): string {
-    return `
-export type Subscribers = {
-  [subscriberId: string]: {
-    timestamp: number;
-    call?: ServerWritableStream<any, todo.Todo>;
-    authToken: string;
-    userId: string;
-  };
-};
-const subscribers: Subscribers = {};
+  /**
+   *
+   * @param methods
+   * @param integrationEvents
+   * @param packageName
+   * @param grpcService
+   * @param controllerClassName  TodoGrpcController
+   * @returns
+   */
+  private static methodsWrapper(
+    methods: string,
+    integrationEvents: string[],
+    packageName: string,
+    grpcService: string,
+    controllerClassName: string,
+  ): string {
+    let result = '';
 
-export type Subscriptions = {
-  [integrationEvent: string]: {
-    subscribers: string[];
-  };
-};
-const subscriptions: Subscriptions = {};
+    const needsRealTimeSubscriptions = integrationEvents.length > 0;
 
-// Every 30 seconds, we check if a subscriber has been inactive for more than 1 minute
-// If so, we end their call and promise and remove them from the subscribers list
-setInterval(() => {
-  const subscriberIds = Object.keys(subscribers);
-  for (const subscriberId of subscriberIds) {
-    const subscriber = subscribers[subscriberId];
-    if (subscriber.timestamp < Date.now() - 600 * 1000) {
-      subscriber.call?.end();
-      delete subscribers[subscriberId];
-    }
-  }
-}, 30 * 1000);
-
-async function subscribe(
-  subscriberId: string,
-  topics: string[],
-  call: ServerWritableStream<any, todo.Todo>,
-  resolveSubscription: (value: unknown) => void,
-) {
-  const ctx = asyncLocalStorage.getStore()?.get('context');
-  await new Promise((resolve) => {
-    call.on('end', () => {
-      resolveSubscription(true);
-      resolve(true);
-    });
-
-    call.on('error', () => {
-      resolveSubscription(true);
-      resolve(true);
-    });
-
-    call.on('close', () => {
-      resolveSubscription(true);
-      resolve(true);
-    });
-
-    call.on('finish', () => {
-      resolveSubscription(true);
-      resolve(true);
-    });
-    subscribers[subscriberId] = {
-      timestamp: Date.now(),
-      call,
-      authToken: ctx.jwt,
-      userId: ctx.userId,
+    if (needsRealTimeSubscriptions) {
+      result += `export type Subscribers = {
+      [subscriberId: string]: {
+        timestamp: number;
+        call?: ServerWritableStream<any, ${packageName}.Todo>;
+        authToken: string;
+        userId: string;
+      };
     };
-    topics.forEach((topic) => {
-      if (!subscriptions[topic]) {
-        subscriptions[topic] = {
-          subscribers: [subscriberId],
-        };
-      } else {
-        subscriptions[topic].subscribers.push(subscriberId);
+    const subscribers: Subscribers = {};
+    
+    export type Subscriptions = {
+      [integrationEvent: string]: {
+        subscribers: string[];
+      };
+    };
+    const subscriptions: Subscriptions = {};
+    
+    // Every 30 seconds, we check if a subscriber has been inactive for more than 1 minute
+    // If so, we end their call and promise and remove them from the subscribers list
+    setInterval(() => {
+      const subscriberIds = Object.keys(subscribers);
+      for (const subscriberId of subscriberIds) {
+        const subscriber = subscribers[subscriberId];
+        if (subscriber.timestamp < Date.now() - 600 * 1000) {
+          subscriber.call?.end();
+          delete subscribers[subscriberId];
+        }
       }
-    });
-  });
-}
+    }, 30 * 1000);
+    
+    async function subscribe(
+      subscriberId: string,
+      topics: string[],
+      call: ServerWritableStream<any, ${packageName}.Todo>,
+      resolveSubscription: (value: unknown) => void,
+    ) {
+      const ctx = asyncLocalStorage.getStore()?.get('context');
+      await new Promise((resolve) => {
+        call.on('end', () => {
+          resolveSubscription(true);
+          resolve(true);
+        });
+    
+        call.on('error', () => {
+          resolveSubscription(true);
+          resolve(true);
+        });
+    
+        call.on('close', () => {
+          resolveSubscription(true);
+          resolve(true);
+        });
+    
+        call.on('finish', () => {
+          resolveSubscription(true);
+          resolve(true);
+        });
+        subscribers[subscriberId] = {
+          timestamp: Date.now(),
+          call,
+          authToken: ctx.jwt,
+          userId: ctx.userId,
+        };
+        topics.forEach((topic) => {
+          if (!subscriptions[topic]) {
+            subscriptions[topic] = {
+              subscribers: [subscriberId],
+            };
+          } else {
+            subscriptions[topic].subscribers.push(subscriberId);
+          }
+        });
+      });
+    }`;
+    }
+
+    result += `
 
 async function sha256Hash(message: string) {
   // Convert the message to a Uint8Array
@@ -176,7 +225,7 @@ async function sha256Hash(message: string) {
 @Controller()
 @UseGuards(JwtGrpcAuthGuard)
 @UseInterceptors(CorrelationIdInterceptor, AsyncLocalStorageInterceptor)
-export class TodoGrpcController {
+export class ${controllerClassName} {
   private readonly JWT_SECRET: string;
   private readonly JWT_LIFETIME_SECONDS: string;
   constructor(
@@ -195,14 +244,17 @@ export class TodoGrpcController {
     if (this.JWT_SECRET === '') {
       throw new Error('JWT_SECRET is not defined in env!');
     }
-    this.subscribeToPubSubIntegrationEvents();
+    ${needsRealTimeSubscriptions ? 'this.subscribeToPubSubIntegrationEvents();' : ''}
   }
 
 
     ${methods}
+  `;
 
-  @GrpcMethod('TodoService', 'InitializeSubscriptionConnection')
-  async initializeSubscriptionConnection(): Promise<todo.InitializeConnectionResponse> {
+    if (needsRealTimeSubscriptions) {
+      result += `
+  @GrpcMethod('${grpcService}', 'InitializeSubscriptionConnection')
+  async initializeSubscriptionConnection(): Promise<${packageName}.InitializeConnectionResponse> {
     const ctx = await asyncLocalStorage.getStore()?.get('context');
     const authToken = ctx.jwt;
     const userId = ctx.userId;
@@ -212,15 +264,15 @@ export class TodoGrpcController {
       authToken,
       userId,
     };
-    const response = new todo.InitializeConnectionResponse({ subscriberId });
+    const response = new ${packageName}.InitializeConnectionResponse({ subscriberId });
     console.log('Subscription response', response.toObject());
     return response;
   }
 
-  @GrpcMethod('TodoService', 'KeepSubscriptionAlive')
+  @GrpcMethod('${grpcService}', 'KeepSubscriptionAlive')
   async keepSubscriptionAlive(
-    request: todo.KeepSubscriptionAliveRequest,
-  ): Promise<todo.KeepSubscriptionAliveResponse> {
+    request: ${packageName}.KeepSubscriptionAliveRequest,
+  ): Promise<${packageName}.KeepSubscriptionAliveResponse> {
     const subscriberId = request.subscriberId;
     const subscriber = subscribers[subscriberId];
     if (!subscriber) {
@@ -258,16 +310,16 @@ export class TodoGrpcController {
       authToken: renewedAuthToken || subscribers[subscriberId].authToken,
     };
     // Step 4. Send back the response
-    const response = new todo.KeepSubscriptionAliveResponse({
+    const response = new ${packageName}.KeepSubscriptionAliveResponse({
       renewedAuthToken,
     });
     return response;
   }
 
   ${this.createSubscribeToPubSubIntegrationEvents(integrationEvents)}
-}
-
-
     `;
+    }
+    result += '}';
+    return result;
   }
 }

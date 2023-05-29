@@ -25,9 +25,10 @@ import axios from 'axios';
 
 import transpile from './commands/transpile.js';
 import copyright, { copyrightSnippet } from './commands/copyright.js';
-import generate from './commands/generate/generate.js';
+import generateInfra from './commands/generate/generate.js';
 import { LIB_VERSION } from './version.js';
 import generateNestProject from './commands/generate-nest-project/generate-nest-project.js';
+import { analyzeLinesOfCode } from './commands/analyze-lines-of-code.js';
 
 const VERSION_CHECK_URL = 'https://bitloops-language-version-check-6en3sbe4da-uc.a.run.app';
 const CURRENT_VERSION = LIB_VERSION;
@@ -86,13 +87,20 @@ const checkVersion = async (): Promise<void> => {
       .description('Generate infrastructure code using AI')
       .option('-s, --sourceDirPath <string>')
       .option('-t, --targetDirPath <string>')
-      .action(generate);
+      .action(generateInfra);
 
     program
       .command('new-nest')
       .description('Generate a new NestJS project')
       .argument('<projectName>', 'The name of the project')
       .action(generateNestProject);
+
+    program
+      .command('analyze-lines')
+      .description('Analyze lines of code')
+      .option('-bl, --blSourcePath <string>')
+      .option('-ts, --tsTargetPath <string>')
+      .action(analyzeLinesOfCode);
 
     program.command('copyright').description('Print copyright information').action(copyright);
 

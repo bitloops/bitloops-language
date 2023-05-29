@@ -17,8 +17,20 @@ export type ComponentsInfo = BoundedContextModulesInfo<{
 
 export type ExposedGrpcComponents = {
   handlersContent: string[];
-  commandsContent: string[];
-  queriesContent: string[];
+  commands: {
+    content: string;
+    boundedContextName: string;
+    moduleName: string;
+    // needed so we can get the response type
+    commandHandlerContent: string;
+  }[];
+  queries: {
+    content: string;
+    boundedContextName: string;
+    moduleName: string;
+    // needed so we can get the response type
+    queryHandlerContent: string;
+  }[];
   entitiesContent: string[];
   integrationEvents: TranspiledTypescriptFileInfo[];
 };

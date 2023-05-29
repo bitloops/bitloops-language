@@ -4,34 +4,31 @@ import { homedir } from 'os';
 import { join } from 'path';
 import * as z from 'zod';
 
+const boundedContext = z.record;
+const moduleName = z.record;
+
 const BitloopsProjectConfigSchema = z.object({
-  concretions: z.record(
-    z.record(z.record(z.union([z.literal('Mock'), z.literal('Mongo'), z.literal('Postgres')]))),
+  concretions: boundedContext(
+    moduleName(z.record(z.union([z.literal('Mock'), z.literal('Mongo'), z.literal('Postgres')]))),
   ), // z.literal('Mock', 'Mongo', 'Postgres')))),
   api: z.object({
     grpc: z.object({
       package: z.string(),
       'service-name': z.string(),
-      controllers: z.record(
-        z.record(
+      controllers: boundedContext(
+        moduleName(
           z.object({
             entities: z.array(z.string()),
             handlers: z.record(z.string()),
           }),
         ),
       ),
-      'stream-events': z.record(z.record(z.array(z.string()))),
+      // Bounded-context/module-name -> Array of integration-events
+      'stream-events': boundedContext(moduleName(z.array(z.string()))),
     }),
   }),
 });
 export type BitloopsProjectConfig = z.infer<typeof BitloopsProjectConfigSchema>;
-// type InferValue<T> = T extends z.ZodType<infer U> ? U : never;
-// type UnRecord<T> = { [K in keyof T]: T[K] };
-// type BitloopsProjectConfig = UnRecord<InferValue<typeof BitloopsProjectConfigSchema>>;
-// const a: BitloopsProjectConfig = {} as unknown as BitloopsProjectConfig;
-
-// const { grpc } = a;
-// const { controllers } = grpc;
 
 const homeDirectory = homedir();
 const configDirectory = join(homeDirectory, '.bitloops');

@@ -17,24 +17,12 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@src/*": [
-        "src/*"
-      ],
-      "@modules/*": [
-        "src/modules/*"
-      ],
-      "@config/*": [
-        "src/configs/*"
-      ],
-      "@bitloops/*": [
-        "src/bitloops/*"
-      ],
-      "@lib": [
-        "src/lib/*"
-      ],
-      "@tests/*": [
-        "tests/*"
-      ]
+      "@src/*": ["src/*"],
+      "@modules/*": ["src/modules/*"],
+      "@config/*": ["src/configs/*"],
+      "@bitloops/*": ["src/bitloops/*"],
+      "@lib/*": ["src/lib/*"],
+      "@tests/*": ["tests/*"]
     }
   }
 }

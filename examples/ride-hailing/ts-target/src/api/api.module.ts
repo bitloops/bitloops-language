@@ -1,21 +1,8 @@
-import { ConfigUtils } from '../../../utils/config.js';
-import { GrpcControllerBuilder } from '../component-builders/api/grpc-controller.builder.js';
 
-export const generateApiModule = async (): Promise<string> => {
-  const bitloopsProjectConfig = await ConfigUtils.readBitloopsProjectConfigFile();
-  const packageName = bitloopsProjectConfig.api.grpc.package;
-
-  const grpcControllerClassName = GrpcControllerBuilder.getControllerClassName(packageName);
-  const jetStreamServers = `[
-    \`nats://\${process.env.NATS_HOST ?? 'localhost'}:\${
-      process.env.NATS_PORT ?? 4222
-    }\`,
-  ]`;
-  return `
   import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthController } from './authentication.controller';
-import { ${grpcControllerClassName} } from './${packageName}.grpc.controller';
+import { DriverGrpcController } from './driver.grpc.controller';
 import {
   JetstreamModule,
   NatsStreamingIntegrationEventBus,
@@ -44,7 +31,7 @@ import {
         ) => ({
           secret: configService.get('jwtSecret'),
           signOptions: {
-            expiresIn: \`\${configService.get('JWT_LIFETIME_SECONDS')}s\`,
+            expiresIn: `${configService.get('JWT_LIFETIME_SECONDS')}s`,
           },
         }),
         inject: [ConfigService],
@@ -65,16 +52,18 @@ import {
       integrationEventBus: NatsStreamingIntegrationEventBus as any,
     }),
     JetstreamModule.forRoot({
-      servers: ${jetStreamServers}
+      servers: [
+    `nats://${process.env.NATS_HOST ?? 'localhost'}:${
+      process.env.NATS_PORT ?? 4222
+    }`,
+  ]
     }),
 
     TracingModule.register({
       messageBus: NatsStreamingMessageBus,
     }),
   ],
-  controllers: [AuthController, ${grpcControllerClassName}],
+  controllers: [AuthController, DriverGrpcController],
 })
 export class ApiModule {
 }
-`;
-};

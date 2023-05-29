@@ -92,7 +92,7 @@ export class NestProjectUpdate {
           '@modules/*': ['src/modules/*'],
           '@config/*': ['src/configs/*'],
           '@bitloops/*': ['src/bitloops/*'],
-          '@lib': ['src/lib/*'],
+          '@lib/*': ['src/lib/*'],
           '@tests/*': ['tests/*'],
         },
       },

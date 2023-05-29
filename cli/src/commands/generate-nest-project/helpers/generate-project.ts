@@ -19,6 +19,7 @@ export const generateNestProjectProcess = async (projectName: string): Promise<v
       if (code === 0) {
         resolve();
       }
+      console.log('Have you installed NestJS CLI?');
       reject();
     });
   });
