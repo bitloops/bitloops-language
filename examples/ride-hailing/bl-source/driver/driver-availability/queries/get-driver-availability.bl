@@ -1,0 +1,14 @@
+Query GetDriverAvailabilityQuery {
+  string id;
+}
+
+QueryHandler GetDriverAvailabilityQueryHandler(driverAvailabilityRepository: DriverAvailabilityReadRepoPort) {
+
+    execute(query: GetDriverAvailabilityQuery): (OK(string), Errors(ApplicationErrors.DriverNotFoundError)) {
+        const driverAvailability = this.driverAvailabilityRepository.getById(query.id).ifError()
+        if (driverAvailability == null) {
+            return ApplicationErrors.DriverNotFoundError(query.id)
+        }
+        return driverAvailability.accountStatus;
+    }
+}

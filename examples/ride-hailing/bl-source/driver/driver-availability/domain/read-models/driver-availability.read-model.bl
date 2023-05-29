@@ -1,0 +1,5 @@
+ReadModel DriverAvailabilityReadModel {
+    string id;
+    string availabilityStatus;
+    string accountStatus;
+}

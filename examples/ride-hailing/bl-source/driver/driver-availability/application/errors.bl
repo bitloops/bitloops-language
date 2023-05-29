@@ -1,0 +1,4 @@
+ApplicationError DriverNotFoundError(id: string) {
+  message: `Driver with id ${id} not found`,
+  errorId: "DRIVER_NOT_FOUND",
+}

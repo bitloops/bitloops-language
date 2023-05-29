@@ -27,6 +27,7 @@ import transpile from './commands/transpile.js';
 import copyright, { copyrightSnippet } from './commands/copyright.js';
 import generate from './commands/generate/generate.js';
 import { LIB_VERSION } from './version.js';
+import generateNestProject from './commands/generate-nest-project/generate-nest-project.js';
 
 const VERSION_CHECK_URL = 'https://bitloops-language-version-check-6en3sbe4da-uc.a.run.app';
 const CURRENT_VERSION = LIB_VERSION;
@@ -86,6 +87,12 @@ const checkVersion = async (): Promise<void> => {
       .option('-s, --sourceDirPath <string>')
       .option('-t, --targetDirPath <string>')
       .action(generate);
+
+    program
+      .command('new-nest')
+      .description('Generate a new NestJS project')
+      .argument('<projectName>', 'The name of the project')
+      .action(generateNestProject);
 
     program.command('copyright').description('Print copyright information').action(copyright);
 

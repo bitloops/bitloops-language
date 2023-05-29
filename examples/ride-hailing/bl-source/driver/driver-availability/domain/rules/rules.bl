@@ -1,0 +1,3 @@
+Rule AccountIsNotBlockedRule(id: string, accountStatus: string) throws DomainErrors.AccountIsBlockedError {
+    isBrokenIf(accountStatus != "Unblocked");
+}

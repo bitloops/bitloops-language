@@ -1,5 +1,5 @@
 /**
- *  Bitloops Language CLI
+ *  Bitloops Language
  *  Copyright (C) 2022 Bitloops S.A.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -17,22 +17,20 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import _ from 'lodash';
-
-const pascalCase = (str: string): string => {
-  return str
-    .replace(/[-_]/g, ' ') // replace hyphens and underscores with spaces
-    .split(/(?=[A-Z])|\s+/) // split on uppercase (for camelCase) or spaces
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join('');
-};
-
-const camelCase = (str: string): string => {
-  return _.camelCase(str);
-};
-
-const kebabCase = (str: string): string => {
-  return _.kebabCase(str);
-};
-
-export { pascalCase, kebabCase, camelCase };
+export const StreamingCommandBusToken = Symbol('StreamingCommandBusToken');
+export const PubSubQueryBusToken = Symbol('PubSubQueryBusToken');
+export const StreamingIntegrationEventBusToken = Symbol(
+  'StreamingIntegrationEventBusToken'
+);
+export const StreamingDomainEventBusToken = Symbol(
+  'StreamingDomainEventBusToken'
+);
+export const PubSubIntegrationEventBusToken = Symbol(
+  'PubSubIntegrationEventBusToken'
+);
+export const DriverAvailabilityWriteRepoPortToken = Symbol(
+  'DriverAvailabilityWriteRepoPortToken'
+);
+export const DriverAvailabilityReadRepoPortToken = Symbol(
+  'DriverAvailabilityReadRepoPortToken'
+);

@@ -1,5 +1,5 @@
 /**
- *  Bitloops Language CLI
+ *  Bitloops Language
  *  Copyright (C) 2022 Bitloops S.A.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -17,22 +17,9 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import _ from 'lodash';
-
-const pascalCase = (str: string): string => {
-  return str
-    .replace(/[-_]/g, ' ') // replace hyphens and underscores with spaces
-    .split(/(?=[A-Z])|\s+/) // split on uppercase (for camelCase) or spaces
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join('');
-};
-
-const camelCase = (str: string): string => {
-  return _.camelCase(str);
-};
-
-const kebabCase = (str: string): string => {
-  return _.kebabCase(str);
-};
-
-export { pascalCase, kebabCase, camelCase };
+import { DriverNotFoundError as DriverNotFound } from './driver-not-found.application-error';
+export namespace ApplicationErrors {
+  export class DriverNotFoundError extends DriverNotFound {
+    static readonly errorId = DriverNotFound.errorId;
+  }
+}

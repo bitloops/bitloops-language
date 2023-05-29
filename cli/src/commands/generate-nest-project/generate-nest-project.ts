@@ -17,22 +17,24 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import _ from 'lodash';
 
-const pascalCase = (str: string): string => {
-  return str
-    .replace(/[-_]/g, ' ') // replace hyphens and underscores with spaces
-    .split(/(?=[A-Z])|\s+/) // split on uppercase (for camelCase) or spaces
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join('');
+import path from 'path';
+import { copyrightSnippet } from '../copyright.js';
+import { generateNestProjectProcess } from './helpers/generate-project.js';
+import { NestProjectUpdate } from './helpers/modify-nest-project.js';
+
+export const generateNestProject = async (projectName: string): Promise<void> => {
+  console.log();
+  console.log(copyrightSnippet);
+  console.log();
+
+  const projectPath = path.join(process.cwd(), projectName);
+  await generateNestProjectProcess(projectName);
+  console.log(
+    '\nNavigate into your project and run "yarn install" to install the bitloops dependencies',
+  );
+  const projectUpdates = new NestProjectUpdate(projectPath);
+  await projectUpdates.run();
 };
 
-const camelCase = (str: string): string => {
-  return _.camelCase(str);
-};
-
-const kebabCase = (str: string): string => {
-  return _.kebabCase(str);
-};
-
-export { pascalCase, kebabCase, camelCase };
+export default generateNestProject;

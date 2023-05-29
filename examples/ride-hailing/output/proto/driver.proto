@@ -1,0 +1,132 @@
+
+  syntax = "proto3";
+
+  package driver;
+  
+  service DriverService {
+    rpc BecomeAvailable(BecomeAvailableRequest) returns (BecomeAvailableResponse);
+    rpc BecomeUnavailable(BecomeUnavailableRequest) returns (BecomeUnavailableResponse);
+    rpc GetDriverAvailability(GetDriverAvailabilityRequest) returns (GetDriverAvailabilityResponse);
+    rpc InitializeSubscriptionConnection(InitializeConnectionRequest) returns (InitializeConnectionResponse);
+    rpc KeepSubscriptionAlive(KeepSubscriptionAliveRequest) returns (KeepSubscriptionAliveResponse);
+    rpc On(OnDriverRequest) returns (stream OnEvent);
+  }
+  
+  message InitializeConnectionRequest {}
+  message InitializeConnectionResponse {
+    string subscriberId = 1;
+  }
+  
+  message KeepSubscriptionAliveRequest {
+    string subscriberId = 1;
+  }
+  message KeepSubscriptionAliveResponse {
+    optional string renewedAuthToken = 1;
+  }
+  
+  enum DRIVER_EVENTS {
+    AVAILABLE = 0;
+    UNAVAILABLE = 1;
+  }
+  
+  message OnDriverRequest {
+    string subscriberId = 1;
+    repeated DRIVER_EVENTS events = 2;
+  }
+  
+  message OnEvent {
+    oneof event {
+      DriverAvailability onAvailable = 1;
+      DriverAvailability onUnavailable = 2;
+    }
+  }
+  
+  message ErrorResponse {
+    string code = 1;
+    string message = 2;
+  }
+  
+  message BecomeAvailableRequest {
+    string id = 1;
+  }
+  
+  message BecomeAvailableResponse {
+    oneof result {
+      BecomeAvailableOKResponse ok = 1;
+      BecomeAvailableErrorResponse error = 2;
+    }
+  }
+  
+  message BecomeAvailableErrorResponse {
+    oneof error {
+      ErrorResponse driverNotFoundError = 1;
+      ErrorResponse accountIsBlockedError = 2;
+      ErrorResponse systemUnavailableError = 3;
+    }
+  }
+  
+  message BecomeAvailableOKResponse {}
+  
+  message BecomeUnavailableRequest {
+    string id = 1;
+  }
+  
+  message BecomeUnavailableResponse {
+    oneof result {
+      BecomeUnavailableOKResponse ok = 1;
+      BecomeUnavailableErrorResponse error = 2;
+    }
+  }
+  
+  message BecomeUnavailableErrorResponse {
+    oneof error {
+      ErrorResponse driverNotFoundError = 1;
+      ErrorResponse systemUnavailableError = 2;
+    }
+  }
+  
+  message BecomeUnavailableOKResponse {}
+  
+  message GetDriverAvailabilityRequest {
+    string id = 1;
+  }
+  
+  message GetDriverAvailabilityResponse {
+    oneof result {
+      GetDriverAvailabilityOKResponse ok = 1;
+      GetDriverAvailabilityErrorResponse error = 2;
+    }
+  }
+  
+  message GetDriverAvailabilityErrorResponse {
+    oneof error {
+      ErrorResponse driverNotFoundError = 1;
+      ErrorResponse systemUnavailableError = 2;
+    }
+  }
+  
+  message GetDriverAvailabilityOKResponse {
+    DriverAvailability driverAvailability = 1;
+  }
+  
+  message DriverAvailability {
+    string id = 1;
+    AccountStatus accountStatus = 2;
+    AvailabilityStatus availabilityStatus = 3;
+    BlockReason blockReason = 4;
+  }
+  
+  message AccountStatus {
+    bool isActive = 1;
+    bool isBlocked = 2;
+  }
+  
+  message AvailabilityStatus {
+    bool isAvailable = 1;
+  }
+  
+  message BlockReason {
+    string reason = 1;
+    string description = 2;
+  }
+  
