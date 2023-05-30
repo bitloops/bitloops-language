@@ -64,8 +64,8 @@ export const extractGrpcExposedComponents = async (
 
   const res: ExposedGrpcComponents = {
     handlersContent: [],
-    commandsContent: [],
-    queriesContent: [],
+    commands: [],
+    queries: [],
     entitiesContent: [],
     integrationEvents: [],
   };
@@ -78,26 +78,38 @@ export const extractGrpcExposedComponents = async (
         );
         if (!commandFile)
           throw new Error('Exposing command that does not exist: ' + commandOrQueryName);
-        res.commandsContent.push(commandFile.fileContent);
+
         const commandHandlerFile = componentsInfo[boundedContextName][
           moduleName
         ].commandHandlers.find((x) => x.fileName === handlerName);
         if (!commandHandlerFile)
           throw new Error('Exposing command handler that does not exist: ' + handlerName);
+
         res.handlersContent.push(commandHandlerFile.fileContent);
+        res.commands.push({
+          content: commandFile.fileContent,
+          boundedContextName,
+          moduleName,
+          commandHandlerContent: commandHandlerFile.fileContent,
+        });
       } else if (commandOrQueryName.endsWith('.query.ts')) {
         const queryFile = componentsInfo[boundedContextName][moduleName].queries.find(
           (x) => x.fileName === commandOrQueryName,
         );
         if (!queryFile)
           throw new Error('Exposing query that does not exist: ' + commandOrQueryName);
-        res.queriesContent.push(queryFile.fileContent);
         const queryHandlerFile = componentsInfo[boundedContextName][moduleName].queryHandlers.find(
           (x) => x.fileName === handlerName,
         );
         if (!queryHandlerFile)
           throw new Error('Exposing query handler that does not exist: ' + handlerName);
         res.handlersContent.push(queryHandlerFile.fileContent);
+        res.queries.push({
+          content: queryFile.fileContent,
+          boundedContextName,
+          moduleName,
+          queryHandlerContent: queryHandlerFile.fileContent,
+        });
       }
     }
 

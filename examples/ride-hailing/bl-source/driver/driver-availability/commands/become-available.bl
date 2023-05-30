@@ -1,0 +1,14 @@
+Command BecomeAvailableCommand {
+  string id;
+}
+
+CommandHandler BecomeAvailableCommandHandler(driverAvailabilityRepository: DriverAvailabilityWriteRepoPort) {
+    execute(command: BecomeAvailableCommand): (OK(void), Errors(DomainErrors.AccountIsBlockedError | ApplicationErrors.DriverNotFoundError)) {
+        const uuid = UUIDv4(command.id);
+        const driverAvailability = this.driverAvailabilityRepository.getById(uuid).ifError();
+        if (driverAvailability == null) {
+          return ApplicationErrors.DriverNotFoundError(command.id);
+      }
+        const result = driverAvailability.becomeAvailable().ifError();
+    }
+}

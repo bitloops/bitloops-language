@@ -23,15 +23,17 @@ const messageInstructions = (
   concretionType: Concretion,
 ): string => {
   return `
-    The bounded context is ${bc} and the module is ${mod}. You use them as part of the import paths when necessary.
-    The class name should be: ${FileNameToClassName.repository(fileName, concretionType)}.
+The bounded context is ${bc} and the module is ${mod}. You use them as part of the import paths when necessary.
+The class name should be: ${FileNameToClassName.repository(fileName, concretionType)}.
 The repository should be a ${concretionType} one.  You can assume the ${concretionType} client should be injected.
-The methods getById, update, save and delete should read the ctx(user context) from asyncLocalStorage,
-and verify that the jwt token is valid, and the userId is allowed to run the respective method.
-You should use 
+
+You should define a decodeJWT method that reads the ctx(user context) from asyncLocalStorage, uses the jwtwebtoken library to decode the jwt token.
 ${CodeSnippets.openTypescript()}
 import * as jwtwebtoken from 'jsonwebtoken';
 ${CodeSnippets.closeTypescript()}
+The methods getById, update, save and delete should use the decodeJWT method
+and verify that the jwt token is valid, and the userId is allowed to run the respective method.
+
 `;
 };
 export const promptWriteRepoMessages = (
@@ -72,163 +74,130 @@ ${messageInstructions('todo', 'todo', 'todo-write.repo-port.ts', 'Mongo')}
       role: 'assistant',
       content: `
   ${CodeSnippets.openTypescript()}
-  import {
-    Application,
-    Domain,
-    Either,
-    Infra,
-    asyncLocalStorage,
-    ok,
-  } from '@bitloops/bl-boilerplate-core';
-  import { Injectable, Inject } from '@nestjs/common';
-  import { Collection, MongoClient } from 'mongodb';
-  import * as jwtwebtoken from 'jsonwebtoken';
-  import { TodoWriteRepoPort } from '@lib/bounded-contexts/todo/todo/ports/todo-write.repo-port';
-  import { TodoEntity } from '@lib/bounded-contexts/todo/todo/domain/todo.entity';
-  import { ConfigService } from '@nestjs/config';
-  import { AuthEnvironmentVariables } from '@src/config/auth.configuration';
-  import { StreamingDomainEventBusToken } from '@lib/bounded-contexts/todo/todo/constants';
-  
-  const MONGO_DB_DATABASE = process.env.MONGO_DB_DATABASE || 'todo';
-  const MONGO_DB_TODO_COLLECTION =
-    process.env.MONGO_DB_TODO_COLLECTION || 'todos';
-  
-  @Injectable()
-  export class MongoTodoWriteRepository implements TodoWriteRepoPort {
-    private collectionName = MONGO_DB_TODO_COLLECTION;
-    private dbName = MONGO_DB_DATABASE;
-    private collection: Collection;
-    private JWT_SECRET: string;
-  
-    constructor(
-      @Inject('MONGO_DB_CONNECTION') private client: MongoClient,
-      @Inject(StreamingDomainEventBusToken)
-      private readonly domainEventBus: Infra.EventBus.IEventBus,
-      private configService: ConfigService<AuthEnvironmentVariables, true>,
-    ) {
-      this.collection = this.client
-        .db(this.dbName)
-        .collection(this.collectionName);
-  
-      this.JWT_SECRET = this.configService.get('jwtSecret', { infer: true });
+import { Application, Domain, Either, Infra, asyncLocalStorage, ok } from '@bitloops/bl-boilerplate-core';
+import { Injectable, Inject } from '@nestjs/common';
+import { Collection, MongoClient } from 'mongodb';
+import * as jwtwebtoken from 'jsonwebtoken';
+import { TodoWriteRepoPort } from '@lib/bounded-contexts/todo/todo/ports/todo-write.repo-port';
+import { TodoEntity } from '@lib/bounded-contexts/todo/todo/domain/todo.entity';
+import { ConfigService } from '@nestjs/config';
+import { AuthEnvironmentVariables } from '@src/config/auth.configuration';
+import { StreamingDomainEventBusToken } from '@lib/bounded-contexts/todo/todo/constants';
+
+const MONGO_DB_DATABASE = process.env.MONGO_DB_DATABASE || 'todo';
+const MONGO_DB_TODO_COLLECTION = process.env.MONGO_DB_TODO_COLLECTION || 'todos';
+
+@Injectable()
+export class MongoTodoWriteRepository implements TodoWriteRepoPort {
+  private collectionName = MONGO_DB_TODO_COLLECTION;
+  private dbName = MONGO_DB_DATABASE;
+  private collection: Collection;
+  private JWT_SECRET: string;
+
+  constructor(
+    @Inject('MONGO_DB_CONNECTION') private client: MongoClient,
+    @Inject(StreamingDomainEventBusToken)
+    private readonly domainEventBus: Infra.EventBus.IEventBus,
+    private configService: ConfigService<AuthEnvironmentVariables, true>
+  ) {
+    this.collection = this.client.db(this.dbName).collection(this.collectionName);
+
+    this.JWT_SECRET = this.configService.get('jwtSecret', { infer: true });
+  }
+
+  @Application.Repo.Decorators.ReturnUnexpectedError()
+  async getById(id: Domain.UUIDv4): Promise<Either<TodoEntity | null, Application.Repo.Errors.Unexpected>> {
+    const jwtPayload = this.decodeJWT();
+    const result = await this.collection.findOne({
+      _id: id.toString() as any,
+    });
+
+    if (!result) {
+      return ok(null);
     }
-  
-    @Application.Repo.Decorators.ReturnUnexpectedError()
-    async getById(
-      id: Domain.UUIDv4,
-    ): Promise<Either<TodoEntity | null, Application.Repo.Errors.Unexpected>> {
-      const ctx = asyncLocalStorage.getStore()?.get('context');
-      const { jwt } = ctx;
-      let jwtPayload: null | any = null;
-      try {
-        jwtPayload = jwtwebtoken.verify(jwt, this.JWT_SECRET);
-      } catch (err) {
-        throw new Error('Invalid JWT!');
-      }
-      const result = await this.collection.findOne({
-        _id: id.toString() as any,
-      });
-  
-      if (!result) {
-        return ok(null);
-      }
-  
-      if (result.userId.id !== jwtPayload.sub) {
-        throw new Error('Invalid userId');
-      }
-  
-      const { _id, ...todo } = result as any;
-      return ok(
-        TodoEntity.fromPrimitives({
-          ...todo,
-          id: _id.toString(),
-        }),
-      );
+
+    if (result.userId.id !== jwtPayload.sub) {
+      throw new Error('Invalid userId');
     }
-  
-    @Application.Repo.Decorators.ReturnUnexpectedError()
-    async update(
-      todo: TodoEntity,
-    ): Promise<Either<void, Application.Repo.Errors.Unexpected>> {
-      const ctx = asyncLocalStorage.getStore()?.get('context');
-      const { jwt } = ctx;
-      let jwtPayload: null | any = null;
-      try {
-        jwtPayload = jwtwebtoken.verify(jwt, this.JWT_SECRET);
-      } catch (err) {
-        throw new Error('Invalid JWT!');
-      }
-      const deletedTodo = todo.toPrimitives();
-      if (deletedTodo.userId.id !== jwtPayload.sub) {
-        throw new Error('Unauthorized userId');
-      }
-      const { id, userId, ...todoInfo } = todo.toPrimitives();
-      await this.collection.updateOne(
-        {
-          _id: id as any,
-          userId: userId,
-        },
-        {
-          $set: todoInfo,
-        },
-      );
-      this.domainEventBus.publish(todo.domainEvents);
-      return ok();
+
+    const { _id, ...todo } = result as any;
+    return ok(
+      TodoEntity.fromPrimitives({
+        ...todo,
+        id: _id.toString(),
+      })
+    );
+  }
+
+  @Application.Repo.Decorators.ReturnUnexpectedError()
+  async update(todo: TodoEntity): Promise<Either<void, Application.Repo.Errors.Unexpected>> {
+    const jwtPayload = this.decodeJWT();
+    const deletedTodo = todo.toPrimitives();
+    if (deletedTodo.userId.id !== jwtPayload.sub) {
+      throw new Error('Unauthorized userId');
     }
-  
-    @Application.Repo.Decorators.ReturnUnexpectedError()
-    async delete(
-      todo: TodoEntity,
-    ): Promise<Either<void, Application.Repo.Errors.Unexpected>> {
-      const ctx = asyncLocalStorage.getStore()?.get('context');
-      const { jwt } = ctx;
-      let jwtPayload: null | any = null;
-      try {
-        jwtPayload = jwtwebtoken.verify(jwt, this.JWT_SECRET);
-      } catch (err) {
-        throw new Error('Invalid JWT!');
-      }
-      const deletedTodo = todo.toPrimitives();
-      if (deletedTodo.userId.id !== jwtPayload.sub) {
-        throw new Error('Unauthorized userId');
-      }
-      const { id, userId } = deletedTodo;
-      await this.collection.deleteOne({
+    const { id, userId, ...todoInfo } = todo.toPrimitives();
+    await this.collection.updateOne(
+      {
         _id: id as any,
-        userId,
-      });
-      this.domainEventBus.publish(todo.domainEvents);
-      return ok();
+        userId: userId,
+      },
+      {
+        $set: todoInfo,
+      }
+    );
+    this.domainEventBus.publish(todo.domainEvents);
+    return ok();
+  }
+
+  @Application.Repo.Decorators.ReturnUnexpectedError()
+  async delete(todo: TodoEntity): Promise<Either<void, Application.Repo.Errors.Unexpected>> {
+    const jwtPayload = this.decodeJWT();
+    const deletedTodo = todo.toPrimitives();
+    if (deletedTodo.userId.id !== jwtPayload.sub) {
+      throw new Error('Unauthorized userId');
     }
-  
-    @Application.Repo.Decorators.ReturnUnexpectedError()
-    async save(
-      todo: TodoEntity,
-    ): Promise<Either<void, Application.Repo.Errors.Unexpected>> {
-      const ctx = asyncLocalStorage.getStore()?.get('context');
-      const { jwt } = ctx;
-      let jwtPayload: null | any = null;
-      try {
-        jwtPayload = jwtwebtoken.verify(jwt, this.JWT_SECRET);
-      } catch (err) {
-        throw new Error('Invalid JWT!');
-      }
-      const createdTodo = todo.toPrimitives();
-      if (createdTodo.userId.id !== jwtPayload.sub) {
-        throw new Error('Unauthorized userId');
-      }
-      const { id, ...todoInfo } = createdTodo;
-      await this.collection.insertOne({
-        _id: id as any,
-        id: id,
-        ...todoInfo,
-      });
-      this.domainEventBus.publish(todo.domainEvents);
-      return ok();
+    const { id, userId } = deletedTodo;
+    await this.collection.deleteOne({
+      _id: id as any,
+      userId,
+    });
+    this.domainEventBus.publish(todo.domainEvents);
+    return ok();
+  }
+
+  @Application.Repo.Decorators.ReturnUnexpectedError()
+  async save(todo: TodoEntity): Promise<Either<void, Application.Repo.Errors.Unexpected>> {
+    const jwtPayload = this.decodeJWT();
+
+    const createdTodo = todo.toPrimitives();
+    if (createdTodo.userId.id !== jwtPayload.sub) {
+      throw new Error('Unauthorized userId');
+    }
+    const { id, ...todoInfo } = createdTodo;
+    await this.collection.insertOne({
+      _id: id as any,
+      id: id,
+      ...todoInfo,
+    });
+    this.domainEventBus.publish(todo.domainEvents);
+    return ok();
+  }
+
+  private decodeJWT(): any {
+    const ctx = asyncLocalStorage.getStore()?.get('context');
+    const { jwt } = ctx;
+    let jwtPayload: null | any = null;
+    try {
+      jwtPayload = jwtwebtoken.verify(jwt, this.JWT_SECRET);
+      return jwtPayload;
+    } catch (err) {
+      throw new Error('Invalid JWT!');
     }
   }
+}
+
   ${CodeSnippets.closeTypescript()}
-  The user token is validated before and after allowing certain database operations.
     `,
     },
     {
@@ -396,6 +365,7 @@ ${messageInstructions('marketing', 'marketing', 'user-write.repo-port.ts', 'Mong
     ${port}
     ${CodeSnippets.closeTypescript()}
     ${messageInstructions(boundedContext, module, fileName, concretionType)}
+    For this example, authorization is not needed, so you don't need to worry about the JWT, and you can omit the user id checks.
     `,
     },
   ];

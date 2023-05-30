@@ -1,6 +1,6 @@
 {
   "name": "@bitloops/bitloops-language-cli",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Bitloops Language CLI",
   "type": "module",
   "engines": {
@@ -28,6 +28,7 @@
     "@types/jest": "~27.5",
     "@types/lodash": "^4.14.184",
     "@types/node": "^18.16.1",
+    "@types/sloc": "^0.2.0",
     "@typescript-eslint/eslint-plugin": "~5.26",
     "@typescript-eslint/parser": "~5.26",
     "bitloops-gherkin": "^1.0.0",
@@ -72,6 +73,8 @@
     "ts-node-esm": "node --loader ts-node/esm",
     "transpile": "node --loader ts-node/esm src/index.ts transpile",
     "generate": "node --loader ts-node/esm/transpile-only src/index.ts generate",
+    "new-nest": "node --loader ts-node/esm/transpile-only src/index.ts new-nest",
+    "analyze-lines": "node --loader ts-node/esm/transpile-only src/index.ts analyze-lines",
     "encode": "./node_modules/.bin/env-cmd -f .env ./node_modules/.bin/bitloops-gherkin encode -t",
     "caxa": "npx caxa --input \"/Users/vasilis/Code/Bitloops/bitloops-language-cli\"  --output \"/Users/vasilis/Code/Bitloops/bitloops-language-cli/dist/Bitloops Language.app\" -- \"{{caxa}}/node_modules/.bin/node\" \"{{caxa}}/lib/src/index.js\" \"transpile\"",
     "esbuild-single-cjs": "yarn build && yarn esbuild ./src/index.ts --bundle --platform=node --outfile=pkg-dist/index.cjs --external:figlet --external:path --loader:.flf=file --loader:.tlf=file",
@@ -80,16 +83,18 @@
   "author": "Bitloops S.A.",
   "license": "GPL-3.0",
   "dependencies": {
-    "@bitloops/bl-transpiler": "^0.6.2",
+    "@bitloops/bl-transpiler": "^0.6.5",
     "axios": "^1.1.3",
     "chalk": "5.0.1",
     "cli-progress": "^3.12.0",
+    "cli-table3": "^0.6.3",
     "commander": "^9.4.0",
     "figlet": "1.5.2",
     "inquirer": "9.1.1",
     "inquirer-path": "^1.0.0-beta5",
     "openai": "^3.2.1",
     "ora": "^6.1.2",
+    "sloc": "^0.2.1",
     "zod": "^3.21.4"
   },
   "volta": {

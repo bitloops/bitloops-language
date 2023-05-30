@@ -21,10 +21,10 @@ import _ from 'lodash';
 
 const pascalCase = (str: string): string => {
   return str
-    .replace(/(\w)(\w*)/g, (_, g1, g2) => {
-      return g1.toUpperCase() + g2.toLowerCase();
-    })
-    .replaceAll(' ', '');
+    .replace(/[-_]/g, ' ') // replace hyphens and underscores with spaces
+    .split(/(?=[A-Z])|\s+/) // split on uppercase (for camelCase) or spaces
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join('');
 };
 
 const camelCase = (str: string): string => {

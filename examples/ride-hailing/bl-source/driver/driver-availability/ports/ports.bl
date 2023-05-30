@@ -1,0 +1,3 @@
+RepoPort DriverAvailabilityWriteRepoPort<DriverAvailabilityEntity> extends CRUDWriteRepoPort;
+
+RepoPort DriverAvailabilityReadRepoPort<DriverAvailabilityReadModel> extends CRUDReadRepoPort;
