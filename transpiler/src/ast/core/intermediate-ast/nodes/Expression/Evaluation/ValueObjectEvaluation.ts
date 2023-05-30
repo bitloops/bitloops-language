@@ -1,4 +1,6 @@
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
+import { ValueObjectEvaluationSymbolEntry } from '../../../../../../semantic-analysis/type-inference/SymbolEntry.js';
+import { SymbolTableManager } from '../../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { TNodeMetadata } from '../../IntermediateASTNode.js';
 import { ValueObjectIdentifierNode } from '../../valueObject/ValueObjectIdentifierNode.js';
 import { DomainEvaluationNode } from './DomainEvaluation/DomainEvaluation.js';
@@ -20,8 +22,28 @@ export class ValueObjectEvaluationNode extends EvaluationNode {
     return this.getChildNodeByType<DomainEvaluationNode>(BitloopsTypesMapping.TDomainEvaluation);
   }
 
-  public getInferredType(): string {
-    const voIdentifier = this.getIdentifierNode().getIdentifierName();
-    return voIdentifier;
+  getVOIdentifier(): string {
+    return this.getIdentifierNode().getIdentifierName();
+  }
+
+  getStringValue(): string {
+    return this.getVOIdentifier() + '.create()';
+  }
+
+  getInferredType(symbolTableManager: SymbolTableManager): string {
+    const intermediateASTTree = symbolTableManager.getIntermediateASTTree();
+    const voNode = intermediateASTTree.getValueObjectByIdentifier(this.getVOIdentifier());
+    const voReturnType = voNode.getCreateNode().getReturnOkErrorType().getInferredType();
+    return voReturnType;
+  }
+
+  addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const symbolTable = symbolTableManager.getSymbolTable();
+    const domainEvaluationNode = this.domainEvaluationNode;
+    domainEvaluationNode.addToSymbolTable(symbolTableManager);
+    symbolTable.insert(
+      this.getStringValue(),
+      new ValueObjectEvaluationSymbolEntry(this.getInferredType(symbolTableManager)),
+    );
   }
 }

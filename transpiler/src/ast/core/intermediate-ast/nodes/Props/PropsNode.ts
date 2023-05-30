@@ -53,6 +53,7 @@ export class PropsNode extends ClassTypeNode {
   public getFieldNodeType(identifier: string): string {
     const fieldTypes = this.getFieldTypes();
     const fieldType = fieldTypes[identifier];
+    if (!fieldType) return null;
     return fieldType.getInferredType();
   }
 

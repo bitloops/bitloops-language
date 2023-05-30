@@ -10,9 +10,14 @@ import {
 import { SymbolTable } from '../../../../../../semantic-analysis/type-inference/SymbolTable.js';
 import { SymbolTableManager } from '../../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { bitloopsPrimitivesObj } from '../../../../../../types.js';
-import { MissingIdentifierError } from '../../../../types.js';
+import { MissingIdentifierError, MissingMemberError } from '../../../../types.js';
+import { DomainEventDeclarationNode } from '../../DomainEvent/DomainEventDeclarationNode.js';
 import { EventHandlerBusDependenciesNode } from '../../DomainEventHandler/EventHandlerBusDependenciesNode.js';
 import { TNodeMetadata } from '../../IntermediateASTNode.js';
+import { PropsNode } from '../../Props/PropsNode.js';
+import { CommandDeclarationNode } from '../../command/CommandDeclarationNode.js';
+import { QueryDeclarationNode } from '../../query/QueryDeclarationNode.js';
+import { QueryHandlerNode } from '../../query/QueryHandlerNode.js';
 import { ExpressionNode } from '../ExpressionNode.js';
 import { IdentifierExpressionNode } from '../IdentifierExpression.js';
 import { RegexLiteralNode } from '../Literal/RegexLiteralNode.js';
@@ -297,16 +302,19 @@ export class MemberDotExpressionNode extends ExpressionNode {
 
     if (ClassTypeGuards.isQuery(leftType)) {
       const queryNode = intermediateASTTree.getQueryByIdentifier(leftType);
-      return queryNode.getFieldNodeType(rightExpressionString);
+      const fieldType = getFieldType(queryNode, rightExpressionString, this.getMetadata());
+      return fieldType;
     }
     if (ClassTypeGuards.isCommand(leftType)) {
       const commandNode = intermediateASTTree.getCommandByIdentifier(leftType);
-      return commandNode.getFieldNodeType(rightExpressionString);
+      const fieldType = getFieldType(commandNode, rightExpressionString, this.getMetadata());
+      return fieldType;
     }
 
     if (ClassTypeGuards.isQueryHandler(leftType)) {
       const queryHandlerNode = intermediateASTTree.getQueryHandlerByIdentifier(leftType);
-      return queryHandlerNode.getFieldNodeType(rightExpressionString);
+      const fieldType = getFieldType(queryHandlerNode, rightExpressionString, this.getMetadata());
+      return fieldType;
     }
 
     if (ClassTypeGuards.isRepoPort(leftType)) {
@@ -314,6 +322,12 @@ export class MemberDotExpressionNode extends ExpressionNode {
       const methodDefinitionTypes =
         intermediateASTTree.getMethodDefinitionTypesOfRepoPort(repoPortNode);
       const methodDefinitionType = methodDefinitionTypes[rightExpressionString];
+      if (!methodDefinitionType)
+        throw new MissingMemberError(
+          rightExpressionString,
+          repoPortNode.getIdentifier().getIdentifierName(),
+          this.getMetadata(),
+        );
       return methodDefinitionType.getInferredType();
     }
     if (ClassTypeGuards.isEntity(leftType)) {
@@ -329,10 +343,15 @@ export class MemberDotExpressionNode extends ExpressionNode {
         const propsNode = intermediateASTTree.getPropsByIdentifier(propsIdentifier);
         const fieldTypes = propsNode.getFieldTypes();
         const fieldType = fieldTypes[rightExpressionString];
+        if (!fieldType)
+          throw new MissingMemberError(rightExpressionString, leftType, this.getMetadata());
         return fieldType.getInferredType();
       }
       // TODO if none of them typeCheck??
-      return publicMethodType.getInferredType();
+      const publicMethodInferredType = publicMethodType.getInferredType();
+      if (!publicMethodInferredType)
+        throw new MissingMemberError(rightExpressionString, leftType, this.getMetadata());
+      return publicMethodInferredType;
     }
     if (ClassTypeGuards.isVO(leftType)) {
       // same with entity fields
@@ -341,15 +360,24 @@ export class MemberDotExpressionNode extends ExpressionNode {
       const propsNode = intermediateASTTree.getPropsByIdentifier(propsIdentifier);
       const fieldTypes = propsNode.getFieldTypes();
       const fieldType = fieldTypes[rightExpressionString];
+      if (!fieldType)
+        throw new MissingMemberError(rightExpressionString, leftType, this.getMetadata());
       return fieldType.getInferredType();
     }
     if (ClassTypeGuards.isDomainEvent(leftType)) {
       const domainEventNode = intermediateASTTree.getDomainEventByIdentifier(leftType);
-      return domainEventNode.getFieldNodeType(rightExpressionString);
+      const fieldType = getFieldType(domainEventNode, rightExpressionString, this.getMetadata());
+      return fieldType;
     }
     if (ClassTypeGuards.isCommandBusPort(leftType)) {
       const commandBusMethodType = EventHandlerBusDependenciesNode.getCommandBusMethodType();
       const typeNode = commandBusMethodType[rightExpressionString];
+      if (!typeNode)
+        throw new MissingMemberError(
+          rightExpressionString,
+          leftType.replace('Port', ''),
+          this.getMetadata(),
+        );
       return typeNode.getInferredType();
     }
     if (ClassTypeGuards.isIntegrationEvent(leftType)) {
@@ -362,18 +390,47 @@ export class MemberDotExpressionNode extends ExpressionNode {
       const schemaNode = ASTTree.getStructByIdentifier(schemaType.getIdentifierName());
       const fieldTypes = schemaNode.getFieldTypes();
       const fieldType = fieldTypes[rightExpressionString];
+      if (!fieldType)
+        throw new MissingMemberError(
+          rightExpressionString,
+          schemaNode.getIdentifier().getIdentifierName(),
+          this.getMetadata(),
+        );
       return fieldType.getInferredType();
     }
     if (ClassTypeGuards.isProps(leftType)) {
       const propsNode = intermediateASTTree.getPropsByIdentifier(leftType);
-      return propsNode.getFieldNodeType(rightExpressionString);
+      const fieldType = getFieldType(propsNode, rightExpressionString, this.getMetadata());
+      return fieldType;
     }
 
     if (ClassTypeGuards.isRegex(leftType)) {
       const regexType = RegexLiteralNode.getLiteralType(rightExpressionString);
+      if (!regexType)
+        throw new MissingMemberError(rightExpressionString, leftType, this.getMetadata());
       return regexType;
     }
 
     return '';
   }
 }
+
+const getFieldType = (
+  node:
+    | QueryDeclarationNode
+    | CommandDeclarationNode
+    | QueryHandlerNode
+    | DomainEventDeclarationNode
+    | PropsNode,
+  rightExpressionString: string,
+  metadata: TNodeMetadata,
+): string => {
+  const fieldType = node.getFieldNodeType(rightExpressionString);
+  if (!fieldType || fieldType === SymbolTableManager.UNKNOWN_TYPE)
+    throw new MissingMemberError(
+      rightExpressionString,
+      node.getIdentifier().getIdentifierName(),
+      metadata,
+    );
+  return fieldType;
+};

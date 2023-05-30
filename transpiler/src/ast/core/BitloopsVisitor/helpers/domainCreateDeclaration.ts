@@ -22,6 +22,7 @@ import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { DomainCreateNodeBuilder } from '../../intermediate-ast/builders/Domain/DomainCreateBuilder.js';
 import { DomainCreateNode } from '../../intermediate-ast/nodes/Domain/DomainCreateNode.js';
+import { produceMetadata } from '../metadata.js';
 
 export const domainCreateDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -31,7 +32,8 @@ export const domainCreateDeclarationVisitor = (
   const returnTypeNode = thisVisitor.visit(ctx.returnOkErrorType());
   const propsParameter = thisVisitor.visit(ctx.domainCreateParam());
 
-  const domainCreateNode = new DomainCreateNodeBuilder()
+  const metadata = produceMetadata(ctx, thisVisitor);
+  const domainCreateNode = new DomainCreateNodeBuilder(metadata)
     .withStatements(statementListNode)
     .withReturnType(returnTypeNode)
     .withParameter(propsParameter)

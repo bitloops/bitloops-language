@@ -62,6 +62,12 @@ export class ConstVariableReassingedError extends ValidationError {
   }
 }
 
+export class MissingMemberError extends ValidationError {
+  constructor(member: string, dotExpression: string, metadata: TNodeMetadata) {
+    super(`Member ${member} not defined in ${dotExpression}.`, metadata);
+  }
+}
+
 export interface IIntermediateASTValidator {
   validate: (ast: IntermediateAST) => void | ValidationError[];
   getSymbolTable: (ast: IntermediateAST) => TSymbolTableSemantics;

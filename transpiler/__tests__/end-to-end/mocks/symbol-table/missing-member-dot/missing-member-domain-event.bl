@@ -1,0 +1,33 @@
+  DomainEvent TodoAddedDomainEvent<TodoEntity> {
+    string userId;
+    string title;
+}
+Props TodoProps {
+  optional UUIDv4 id;
+  bool completed;
+}
+
+Root Entity TodoEntity {
+  static create(props: TodoProps): (OK(TodoEntity), Errors())  {
+      const todo = TodoEntity(props);
+      const isNew = props.id != null;
+      if (isNew) {
+          const event = TodoAddedDomainEvent.create({ 
+              aggregateId: todo.id.toString(),
+              completed: todo.completed
+          });
+          todo.addDomainEvent(event);
+      }
+      return todo;
+    }
+  }
+
+DomainEventHandler TodoAddedPublishPubSubIntegrationDomainEventHandler() {
+
+    handle(event: TodoAddedDomainEvent): (OK(void),Errors()) {
+      const events = TodoAddedIntegrationEvent.create(event)
+      const test = event.test
+      this.pubSubIntegrationEventBus.publish(events)
+    }
+}
+

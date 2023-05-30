@@ -1,0 +1,21 @@
+DomainEvent DepositsIncrementedDomainEvent<AccountEntity> {
+    string customerId;
+    float amount;
+}
+
+DomainEventHandler SendEmailAfterMoneyDepositedDomainEventHandler() {
+    handle(event: DepositsIncrementedDomainEvent): (OK(void), Errors()){
+        const command = SendEmailCommand.create({ customerId: event.customerId, amount: event.amount});
+        this.commandBus.test(command);
+    }
+  }
+
+  Props AccountProps {
+    string accountId;
+    int32 balance;
+}
+
+Entity AccountEntity {
+    static create(props: AccountProps): (OK(AccountEntity), Errors())  {
+    }
+}

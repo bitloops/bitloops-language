@@ -21,15 +21,15 @@
 import BitloopsParser from '../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../BitloopsVisitor.js';
 import { produceMetadata } from '../metadata.js';
-import { ReadModelEvaluationNode } from '../../intermediate-ast/nodes/Expression/Evaluation/ReadModelEvaluationNode.js';
 import { IdentifierNode } from '../../intermediate-ast/nodes/identifier/IdentifierNode.js';
 import { PackageEvaluationNodeBuilder } from '../../intermediate-ast/builders/expressions/evaluation/PackageEvaluationNodeBuilder.js';
 import { PackageMethodNameBuilder } from '../../intermediate-ast/builders/expressions/evaluation/PackageMethodNameBuilder.js';
+import { PackageEvaluationNode } from '../../intermediate-ast/nodes/Expression/Evaluation/PackageEvaluationNode.js';
 
 export const packageEvaluationVisitor = (
   thisVisitor: BitloopsVisitor,
   ctx: BitloopsParser.PackageEvaluationContext,
-): ReadModelEvaluationNode => {
+): PackageEvaluationNode => {
   const packageIdentifier: IdentifierNode = thisVisitor.visit(ctx.packageIdentifier());
 
   const methodName = ctx.regularIdentifier().getText();

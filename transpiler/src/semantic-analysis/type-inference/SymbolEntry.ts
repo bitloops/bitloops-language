@@ -49,3 +49,15 @@ export class MemberDotSymbolEntry extends SymbolEntry {
     super(type);
   }
 }
+
+export class EntityEvaluationSymbolEntry extends SymbolEntry {
+  constructor(type: TInferredTypes) {
+    super(type);
+  }
+}
+
+export class ValueObjectEvaluationSymbolEntry extends SymbolEntry {
+  constructor(type: TInferredTypes) {
+    super(type);
+  }
+}

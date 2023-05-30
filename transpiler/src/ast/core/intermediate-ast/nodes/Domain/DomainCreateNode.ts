@@ -2,6 +2,7 @@ import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
 import { ParameterNode } from '../ParameterList/ParameterNode.js';
+import { ReturnOkErrorTypeNode } from '../returnOkErrorType/ReturnOkErrorTypeNode.js';
 import { StatementNode } from '../statements/Statement.js';
 import { StatementListNode } from '../statements/StatementList.js';
 
@@ -31,6 +32,10 @@ export class DomainCreateNode extends IntermediateASTNode {
     const parameterNode = this.getParameterNode();
     if (!parameterNode) return [];
     return [parameterNode];
+  }
+
+  public getReturnOkErrorType(): ReturnOkErrorTypeNode | null {
+    return this.getChildNodeByType<ReturnOkErrorTypeNode>(BitloopsTypesMapping.TOkErrorReturnType);
   }
 
   addToSymbolTable(symbolTableManager: SymbolTableManager): void {
