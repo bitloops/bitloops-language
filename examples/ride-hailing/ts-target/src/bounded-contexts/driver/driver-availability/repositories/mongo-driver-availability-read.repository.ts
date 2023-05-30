@@ -1,5 +1,5 @@
 
-    import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { Collection, MongoClient } from 'mongodb';
 import * as jwtwebtoken from 'jsonwebtoken';
 import { DriverAvailabilityReadRepoPort } from '@lib/bounded-contexts/driver/driver-availability/ports/driver-availability-read.repo-port';
@@ -34,6 +34,40 @@ export class MongoDriverAvailabilityReadRepository
   }
 
   @Application.Repo.Decorators.ReturnUnexpectedError()
+  async getAll(): Promise<
+    Either<
+      DriverAvailabilityReadModel[] ,
+      Application.Repo.Errors.Unexpected
+    >
+  > {
+    const ctx = asyncLocalStorage.getStore()?.get('context');
+    const { jwt } = ctx;
+    let jwtPayload: null | any = null;
+    try {
+      jwtPayload = jwtwebtoken.verify(jwt, this.JWT_SECRET);
+    } catch (err) {
+      throw new Error('Invalid JWT!');
+    }
+    const userId = jwtPayload.sub;
+    if (!userId) {
+      throw new Error('Invalid userId');
+    }
+    const results = await this.collection
+      .find({ userId: { id: userId } })
+      .toArray();
+
+    return ok(
+      results.map((result) => {
+        const { _id, ...todo } = result as any;
+        return DriverAvailabilityReadModel.fromPrimitives({
+          ...todo,
+          id: _id.toString(),
+        });
+      }),
+    );
+  }
+
+  @Application.Repo.Decorators.ReturnUnexpectedError()
   async getById(
     id: string,
   ): Promise<
@@ -58,7 +92,7 @@ export class MongoDriverAvailabilityReadRepository
       return ok(null);
     }
 
-    if (result.driverId !== jwtPayload.sub) {
+    if (result.userId !== jwtPayload.sub) {
       throw new Error('Invalid userId');
     }
 
@@ -67,40 +101,6 @@ export class MongoDriverAvailabilityReadRepository
       DriverAvailabilityReadModel.fromPrimitives({
         ...todo,
         id: _id.toString(),
-      }),
-    );
-  }
-
-  @Application.Repo.Decorators.ReturnUnexpectedError()
-  async getAll(): Promise<
-    Either<
-      DriverAvailabilityReadModel[],
-      Application.Repo.Errors.Unexpected
-    >
-  > {
-    const ctx = asyncLocalStorage.getStore()?.get('context');
-    const { jwt } = ctx;
-    let jwtPayload: null | any = null;
-    try {
-      jwtPayload = jwtwebtoken.verify(jwt, this.JWT_SECRET);
-    } catch (err) {
-      throw new Error('Invalid JWT!');
-    }
-    const driverId = jwtPayload.sub;
-    if (!driverId) {
-      throw new Error('Invalid driverId');
-    }
-    const results = await this.collection
-      .find({ driverId: driverId })
-      .toArray();
-
-    return ok(
-      results.map((result) => {
-        const { _id, ...todo } = result as any;
-        return DriverAvailabilityReadModel.fromPrimitives({
-          ...todo,
-          id: _id.toString(),
-        });
       }),
     );
   }

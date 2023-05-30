@@ -282,7 +282,7 @@ const messageInstructions = (
   queries: string[],
   entities: string[],
 ): string => {
-  console.log(packageName);
+  // console.log(packageName);
   const truncatedEntities = [];
   for (const entity of entities) {
     const entityTruncationIndex = entity.indexOf('extends Domain');

@@ -260,7 +260,9 @@ const messageInstructionsQuery = (
   <Method>
   ${CodeSnippets.closeTypescript()}
 
-  As imports, you only add the import of the command and of any possible errors. You can use this information for that:
+  As imports, you only add the import of the command and of any possible errors.
+  Don't import Inject. It's already imported.
+  You can use this information for that:
   boundedContextName: ${boundedContextName}
   moduleName: ${moduleName}
   

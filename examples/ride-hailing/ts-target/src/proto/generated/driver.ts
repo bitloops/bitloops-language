@@ -3,7 +3,6 @@
  * compiler version: 3.21.12
  * source: driver.proto
  * git: https://github.com/thesayyn/protoc-gen-ts */
-import * as dependency_1 from "./google/protobuf/timestamp";
 import * as pb_1 from "google-protobuf";
 import * as grpc_1 from "@grpc/grpc-js";
 export namespace driver {
@@ -1282,55 +1281,37 @@ export namespace driver {
     export class AccountStatus extends pb_1.Message {
         #one_of_decls: number[][] = [];
         constructor(data?: any[] | {
-            isActive?: boolean;
-            isVerified?: boolean;
+            status?: string;
         }) {
             super();
             pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
             if (!Array.isArray(data) && typeof data == "object") {
-                if ("isActive" in data && data.isActive != undefined) {
-                    this.isActive = data.isActive;
-                }
-                if ("isVerified" in data && data.isVerified != undefined) {
-                    this.isVerified = data.isVerified;
+                if ("status" in data && data.status != undefined) {
+                    this.status = data.status;
                 }
             }
         }
-        get isActive() {
-            return pb_1.Message.getFieldWithDefault(this, 1, false) as boolean;
+        get status() {
+            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
         }
-        set isActive(value: boolean) {
+        set status(value: string) {
             pb_1.Message.setField(this, 1, value);
         }
-        get isVerified() {
-            return pb_1.Message.getFieldWithDefault(this, 2, false) as boolean;
-        }
-        set isVerified(value: boolean) {
-            pb_1.Message.setField(this, 2, value);
-        }
         static fromObject(data: {
-            isActive?: boolean;
-            isVerified?: boolean;
+            status?: string;
         }): AccountStatus {
             const message = new AccountStatus({});
-            if (data.isActive != null) {
-                message.isActive = data.isActive;
-            }
-            if (data.isVerified != null) {
-                message.isVerified = data.isVerified;
+            if (data.status != null) {
+                message.status = data.status;
             }
             return message;
         }
         toObject() {
             const data: {
-                isActive?: boolean;
-                isVerified?: boolean;
+                status?: string;
             } = {};
-            if (this.isActive != null) {
-                data.isActive = this.isActive;
-            }
-            if (this.isVerified != null) {
-                data.isVerified = this.isVerified;
+            if (this.status != null) {
+                data.status = this.status;
             }
             return data;
         }
@@ -1338,10 +1319,8 @@ export namespace driver {
         serialize(w: pb_1.BinaryWriter): void;
         serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
             const writer = w || new pb_1.BinaryWriter();
-            if (this.isActive != false)
-                writer.writeBool(1, this.isActive);
-            if (this.isVerified != false)
-                writer.writeBool(2, this.isVerified);
+            if (this.status.length)
+                writer.writeString(1, this.status);
             if (!w)
                 return writer.getResultBuffer();
         }
@@ -1352,10 +1331,7 @@ export namespace driver {
                     break;
                 switch (reader.getFieldNumber()) {
                     case 1:
-                        message.isActive = reader.readBool();
-                        break;
-                    case 2:
-                        message.isVerified = reader.readBool();
+                        message.status = reader.readString();
                         break;
                     default: reader.skipField();
                 }
@@ -1372,58 +1348,37 @@ export namespace driver {
     export class AvailabilityStatus extends pb_1.Message {
         #one_of_decls: number[][] = [];
         constructor(data?: any[] | {
-            isAvailable?: boolean;
-            lastChangedAt?: dependency_1.google.protobuf.Timestamp;
+            status?: string;
         }) {
             super();
             pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
             if (!Array.isArray(data) && typeof data == "object") {
-                if ("isAvailable" in data && data.isAvailable != undefined) {
-                    this.isAvailable = data.isAvailable;
-                }
-                if ("lastChangedAt" in data && data.lastChangedAt != undefined) {
-                    this.lastChangedAt = data.lastChangedAt;
+                if ("status" in data && data.status != undefined) {
+                    this.status = data.status;
                 }
             }
         }
-        get isAvailable() {
-            return pb_1.Message.getFieldWithDefault(this, 1, false) as boolean;
+        get status() {
+            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
         }
-        set isAvailable(value: boolean) {
+        set status(value: string) {
             pb_1.Message.setField(this, 1, value);
         }
-        get lastChangedAt() {
-            return pb_1.Message.getWrapperField(this, dependency_1.google.protobuf.Timestamp, 2) as dependency_1.google.protobuf.Timestamp;
-        }
-        set lastChangedAt(value: dependency_1.google.protobuf.Timestamp) {
-            pb_1.Message.setWrapperField(this, 2, value);
-        }
-        get has_lastChangedAt() {
-            return pb_1.Message.getField(this, 2) != null;
-        }
         static fromObject(data: {
-            isAvailable?: boolean;
-            lastChangedAt?: ReturnType<typeof dependency_1.google.protobuf.Timestamp.prototype.toObject>;
+            status?: string;
         }): AvailabilityStatus {
             const message = new AvailabilityStatus({});
-            if (data.isAvailable != null) {
-                message.isAvailable = data.isAvailable;
-            }
-            if (data.lastChangedAt != null) {
-                message.lastChangedAt = dependency_1.google.protobuf.Timestamp.fromObject(data.lastChangedAt);
+            if (data.status != null) {
+                message.status = data.status;
             }
             return message;
         }
         toObject() {
             const data: {
-                isAvailable?: boolean;
-                lastChangedAt?: ReturnType<typeof dependency_1.google.protobuf.Timestamp.prototype.toObject>;
+                status?: string;
             } = {};
-            if (this.isAvailable != null) {
-                data.isAvailable = this.isAvailable;
-            }
-            if (this.lastChangedAt != null) {
-                data.lastChangedAt = this.lastChangedAt.toObject();
+            if (this.status != null) {
+                data.status = this.status;
             }
             return data;
         }
@@ -1431,10 +1386,8 @@ export namespace driver {
         serialize(w: pb_1.BinaryWriter): void;
         serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
             const writer = w || new pb_1.BinaryWriter();
-            if (this.isAvailable != false)
-                writer.writeBool(1, this.isAvailable);
-            if (this.has_lastChangedAt)
-                writer.writeMessage(2, this.lastChangedAt, () => this.lastChangedAt.serialize(writer));
+            if (this.status.length)
+                writer.writeString(1, this.status);
             if (!w)
                 return writer.getResultBuffer();
         }
@@ -1445,10 +1398,7 @@ export namespace driver {
                     break;
                 switch (reader.getFieldNumber()) {
                     case 1:
-                        message.isAvailable = reader.readBool();
-                        break;
-                    case 2:
-                        reader.readMessage(message.lastChangedAt, () => message.lastChangedAt = dependency_1.google.protobuf.Timestamp.deserialize(reader));
+                        message.status = reader.readString();
                         break;
                     default: reader.skipField();
                 }
@@ -1466,16 +1416,12 @@ export namespace driver {
         #one_of_decls: number[][] = [];
         constructor(data?: any[] | {
             reason?: string;
-            blockedAt?: dependency_1.google.protobuf.Timestamp;
         }) {
             super();
             pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
             if (!Array.isArray(data) && typeof data == "object") {
                 if ("reason" in data && data.reason != undefined) {
                     this.reason = data.reason;
-                }
-                if ("blockedAt" in data && data.blockedAt != undefined) {
-                    this.blockedAt = data.blockedAt;
                 }
             }
         }
@@ -1485,38 +1431,21 @@ export namespace driver {
         set reason(value: string) {
             pb_1.Message.setField(this, 1, value);
         }
-        get blockedAt() {
-            return pb_1.Message.getWrapperField(this, dependency_1.google.protobuf.Timestamp, 2) as dependency_1.google.protobuf.Timestamp;
-        }
-        set blockedAt(value: dependency_1.google.protobuf.Timestamp) {
-            pb_1.Message.setWrapperField(this, 2, value);
-        }
-        get has_blockedAt() {
-            return pb_1.Message.getField(this, 2) != null;
-        }
         static fromObject(data: {
             reason?: string;
-            blockedAt?: ReturnType<typeof dependency_1.google.protobuf.Timestamp.prototype.toObject>;
         }): BlockReason {
             const message = new BlockReason({});
             if (data.reason != null) {
                 message.reason = data.reason;
-            }
-            if (data.blockedAt != null) {
-                message.blockedAt = dependency_1.google.protobuf.Timestamp.fromObject(data.blockedAt);
             }
             return message;
         }
         toObject() {
             const data: {
                 reason?: string;
-                blockedAt?: ReturnType<typeof dependency_1.google.protobuf.Timestamp.prototype.toObject>;
             } = {};
             if (this.reason != null) {
                 data.reason = this.reason;
-            }
-            if (this.blockedAt != null) {
-                data.blockedAt = this.blockedAt.toObject();
             }
             return data;
         }
@@ -1526,8 +1455,6 @@ export namespace driver {
             const writer = w || new pb_1.BinaryWriter();
             if (this.reason.length)
                 writer.writeString(1, this.reason);
-            if (this.has_blockedAt)
-                writer.writeMessage(2, this.blockedAt, () => this.blockedAt.serialize(writer));
             if (!w)
                 return writer.getResultBuffer();
         }
@@ -1539,9 +1466,6 @@ export namespace driver {
                 switch (reader.getFieldNumber()) {
                     case 1:
                         message.reason = reader.readString();
-                        break;
-                    case 2:
-                        reader.readMessage(message.blockedAt, () => message.blockedAt = dependency_1.google.protobuf.Timestamp.deserialize(reader));
                         break;
                     default: reader.skipField();
                 }

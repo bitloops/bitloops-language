@@ -21,8 +21,6 @@ var global =
     (function () { return this; }).call(null) ||
     Function('return this')();
 
-var google_protobuf_timestamp_pb = require('google-protobuf/google/protobuf/timestamp_pb.js');
-goog.object.extend(proto, google_protobuf_timestamp_pb);
 goog.exportSymbol('proto.driver.AccountStatus', null, global);
 goog.exportSymbol('proto.driver.AvailabilityStatus', null, global);
 goog.exportSymbol('proto.driver.BecomeAvailableErrorResponse', null, global);
@@ -3041,8 +3039,7 @@ proto.driver.AccountStatus.prototype.toObject = function(opt_includeInstance) {
  */
 proto.driver.AccountStatus.toObject = function(includeInstance, msg) {
   var f, obj = {
-    isactive: jspb.Message.getBooleanFieldWithDefault(msg, 1, false),
-    isverified: jspb.Message.getBooleanFieldWithDefault(msg, 2, false)
+    status: jspb.Message.getFieldWithDefault(msg, 1, "")
   };
 
   if (includeInstance) {
@@ -3080,12 +3077,8 @@ proto.driver.AccountStatus.deserializeBinaryFromReader = function(msg, reader) {
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {boolean} */ (reader.readBool());
-      msg.setIsactive(value);
-      break;
-    case 2:
-      var value = /** @type {boolean} */ (reader.readBool());
-      msg.setIsverified(value);
+      var value = /** @type {string} */ (reader.readString());
+      msg.setStatus(value);
       break;
     default:
       reader.skipField();
@@ -3116,56 +3109,31 @@ proto.driver.AccountStatus.prototype.serializeBinary = function() {
  */
 proto.driver.AccountStatus.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getIsactive();
-  if (f) {
-    writer.writeBool(
+  f = message.getStatus();
+  if (f.length > 0) {
+    writer.writeString(
       1,
       f
     );
   }
-  f = message.getIsverified();
-  if (f) {
-    writer.writeBool(
-      2,
-      f
-    );
-  }
 };
 
 
 /**
- * optional bool isActive = 1;
- * @return {boolean}
+ * optional string status = 1;
+ * @return {string}
  */
-proto.driver.AccountStatus.prototype.getIsactive = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 1, false));
+proto.driver.AccountStatus.prototype.getStatus = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
 /**
- * @param {boolean} value
+ * @param {string} value
  * @return {!proto.driver.AccountStatus} returns this
  */
-proto.driver.AccountStatus.prototype.setIsactive = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 1, value);
-};
-
-
-/**
- * optional bool isVerified = 2;
- * @return {boolean}
- */
-proto.driver.AccountStatus.prototype.getIsverified = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 2, false));
-};
-
-
-/**
- * @param {boolean} value
- * @return {!proto.driver.AccountStatus} returns this
- */
-proto.driver.AccountStatus.prototype.setIsverified = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 2, value);
+proto.driver.AccountStatus.prototype.setStatus = function(value) {
+  return jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -3201,8 +3169,7 @@ proto.driver.AvailabilityStatus.prototype.toObject = function(opt_includeInstanc
  */
 proto.driver.AvailabilityStatus.toObject = function(includeInstance, msg) {
   var f, obj = {
-    isavailable: jspb.Message.getBooleanFieldWithDefault(msg, 1, false),
-    lastchangedat: (f = msg.getLastchangedat()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f)
+    status: jspb.Message.getFieldWithDefault(msg, 1, "")
   };
 
   if (includeInstance) {
@@ -3240,13 +3207,8 @@ proto.driver.AvailabilityStatus.deserializeBinaryFromReader = function(msg, read
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {boolean} */ (reader.readBool());
-      msg.setIsavailable(value);
-      break;
-    case 2:
-      var value = new google_protobuf_timestamp_pb.Timestamp;
-      reader.readMessage(value,google_protobuf_timestamp_pb.Timestamp.deserializeBinaryFromReader);
-      msg.setLastchangedat(value);
+      var value = /** @type {string} */ (reader.readString());
+      msg.setStatus(value);
       break;
     default:
       reader.skipField();
@@ -3277,76 +3239,31 @@ proto.driver.AvailabilityStatus.prototype.serializeBinary = function() {
  */
 proto.driver.AvailabilityStatus.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getIsavailable();
-  if (f) {
-    writer.writeBool(
+  f = message.getStatus();
+  if (f.length > 0) {
+    writer.writeString(
       1,
       f
     );
   }
-  f = message.getLastchangedat();
-  if (f != null) {
-    writer.writeMessage(
-      2,
-      f,
-      google_protobuf_timestamp_pb.Timestamp.serializeBinaryToWriter
-    );
-  }
 };
 
 
 /**
- * optional bool isAvailable = 1;
- * @return {boolean}
+ * optional string status = 1;
+ * @return {string}
  */
-proto.driver.AvailabilityStatus.prototype.getIsavailable = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 1, false));
+proto.driver.AvailabilityStatus.prototype.getStatus = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
 /**
- * @param {boolean} value
+ * @param {string} value
  * @return {!proto.driver.AvailabilityStatus} returns this
  */
-proto.driver.AvailabilityStatus.prototype.setIsavailable = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 1, value);
-};
-
-
-/**
- * optional google.protobuf.Timestamp lastChangedAt = 2;
- * @return {?proto.google.protobuf.Timestamp}
- */
-proto.driver.AvailabilityStatus.prototype.getLastchangedat = function() {
-  return /** @type{?proto.google.protobuf.Timestamp} */ (
-    jspb.Message.getWrapperField(this, google_protobuf_timestamp_pb.Timestamp, 2));
-};
-
-
-/**
- * @param {?proto.google.protobuf.Timestamp|undefined} value
- * @return {!proto.driver.AvailabilityStatus} returns this
-*/
-proto.driver.AvailabilityStatus.prototype.setLastchangedat = function(value) {
-  return jspb.Message.setWrapperField(this, 2, value);
-};
-
-
-/**
- * Clears the message field making it undefined.
- * @return {!proto.driver.AvailabilityStatus} returns this
- */
-proto.driver.AvailabilityStatus.prototype.clearLastchangedat = function() {
-  return this.setLastchangedat(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.driver.AvailabilityStatus.prototype.hasLastchangedat = function() {
-  return jspb.Message.getField(this, 2) != null;
+proto.driver.AvailabilityStatus.prototype.setStatus = function(value) {
+  return jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -3382,8 +3299,7 @@ proto.driver.BlockReason.prototype.toObject = function(opt_includeInstance) {
  */
 proto.driver.BlockReason.toObject = function(includeInstance, msg) {
   var f, obj = {
-    reason: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    blockedat: (f = msg.getBlockedat()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f)
+    reason: jspb.Message.getFieldWithDefault(msg, 1, "")
   };
 
   if (includeInstance) {
@@ -3424,11 +3340,6 @@ proto.driver.BlockReason.deserializeBinaryFromReader = function(msg, reader) {
       var value = /** @type {string} */ (reader.readString());
       msg.setReason(value);
       break;
-    case 2:
-      var value = new google_protobuf_timestamp_pb.Timestamp;
-      reader.readMessage(value,google_protobuf_timestamp_pb.Timestamp.deserializeBinaryFromReader);
-      msg.setBlockedat(value);
-      break;
     default:
       reader.skipField();
       break;
@@ -3465,14 +3376,6 @@ proto.driver.BlockReason.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
-  f = message.getBlockedat();
-  if (f != null) {
-    writer.writeMessage(
-      2,
-      f,
-      google_protobuf_timestamp_pb.Timestamp.serializeBinaryToWriter
-    );
-  }
 };
 
 
@@ -3491,43 +3394,6 @@ proto.driver.BlockReason.prototype.getReason = function() {
  */
 proto.driver.BlockReason.prototype.setReason = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
-};
-
-
-/**
- * optional google.protobuf.Timestamp blockedAt = 2;
- * @return {?proto.google.protobuf.Timestamp}
- */
-proto.driver.BlockReason.prototype.getBlockedat = function() {
-  return /** @type{?proto.google.protobuf.Timestamp} */ (
-    jspb.Message.getWrapperField(this, google_protobuf_timestamp_pb.Timestamp, 2));
-};
-
-
-/**
- * @param {?proto.google.protobuf.Timestamp|undefined} value
- * @return {!proto.driver.BlockReason} returns this
-*/
-proto.driver.BlockReason.prototype.setBlockedat = function(value) {
-  return jspb.Message.setWrapperField(this, 2, value);
-};
-
-
-/**
- * Clears the message field making it undefined.
- * @return {!proto.driver.BlockReason} returns this
- */
-proto.driver.BlockReason.prototype.clearBlockedat = function() {
-  return this.setBlockedat(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.driver.BlockReason.prototype.hasBlockedat = function() {
-  return jspb.Message.getField(this, 2) != null;
 };
 
 

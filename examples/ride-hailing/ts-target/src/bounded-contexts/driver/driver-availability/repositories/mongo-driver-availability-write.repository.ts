@@ -14,12 +14,12 @@
       import { StreamingDomainEventBusToken } from '@lib/bounded-contexts/driver/driver-availability/constants';
       
       const MONGO_DB_DATABASE = process.env.MONGO_DB_DATABASE || 'driver';
-      const MONGO_DB_COLLECTION =
-        process.env.MONGO_DB_COLLECTION || 'driver_availabilities';
+      const MONGO_DB_DRIVER_AVAILABILITY_COLLECTION =
+        process.env.MONGO_DB_DRIVER_AVAILABILITY_COLLECTION || 'driver_availabilities';
       
       @Injectable()
       export class MongoDriverAvailabilityWriteRepository implements DriverAvailabilityWriteRepoPort {
-        private collectionName = MONGO_DB_COLLECTION;
+        private collectionName = MONGO_DB_DRIVER_AVAILABILITY_COLLECTION;
         private dbName = MONGO_DB_DATABASE;
         private collection: Collection;
       
@@ -45,10 +45,10 @@
             return ok(null);
           }
       
-          const { _id, ...availability } = result as any;
+          const { _id, ...driverAvailability } = result as any;
           return ok(
             DriverAvailabilityEntity.fromPrimitives({
-              ...availability,
+              ...driverAvailability,
               id: _id.toString(),
             }),
           );
@@ -56,47 +56,47 @@
       
         @Application.Repo.Decorators.ReturnUnexpectedError()
         async update(
-          availability: DriverAvailabilityEntity,
+          driverAvailability: DriverAvailabilityEntity,
         ): Promise<Either<void, Application.Repo.Errors.Unexpected>> {
-          const { id, ...availabilityInfo } = availability.toPrimitives();
+          const { id, ...driverAvailabilityInfo } = driverAvailability.toPrimitives();
           await this.collection.updateOne(
             {
               _id: id as any,
             },
             {
-              $set: availabilityInfo,
+              $set: driverAvailabilityInfo,
             },
           );
       
-          this.domainEventBus.publish(availability.domainEvents);
+          this.domainEventBus.publish(driverAvailability.domainEvents);
           return ok();
         }
       
         @Application.Repo.Decorators.ReturnUnexpectedError()
         async delete(
-          availability: DriverAvailabilityEntity,
+          driverAvailability: DriverAvailabilityEntity,
         ): Promise<Either<void, Application.Repo.Errors.Unexpected>> {
-          const { id } = availability.toPrimitives();
+          const { id } = driverAvailability.toPrimitives();
           await this.collection.deleteOne({
             _id: id as any,
           });
       
-          this.domainEventBus.publish(availability.domainEvents);
+          this.domainEventBus.publish(driverAvailability.domainEvents);
           return ok();
         }
       
         @Application.Repo.Decorators.ReturnUnexpectedError()
         async save(
-          availability: DriverAvailabilityEntity,
+          driverAvailability: DriverAvailabilityEntity,
         ): Promise<Either<void, Application.Repo.Errors.Unexpected>> {
-          const createdAvailability = availability.toPrimitives();
+          const createdDriverAvailability = driverAvailability.toPrimitives();
       
           await this.collection.insertOne({
-            _id: createdAvailability.id as any,
-            ...createdAvailability,
+            _id: createdDriverAvailability.id as any,
+            ...createdDriverAvailability,
           });
       
-          this.domainEventBus.publish(availability.domainEvents);
+          this.domainEventBus.publish(driverAvailability.domainEvents);
           return ok();
         }
       }
