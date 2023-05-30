@@ -18,8 +18,7 @@ export class MongoDriverAvailabilityReadRepository
   implements DriverAvailabilityReadRepoPort
 {
   private collectionName =
-    process.env.MONGO_DB_DRIVER_AVAILABILITY_COLLECTION ||
-    'driverAvailability';
+    process.env.MONGO_DB_TODO_COLLECTION || 'driverAvailability';
   private dbName = process.env.MONGO_DB_DATABASE || 'driver';
   private collection: Collection;
   private JWT_SECRET: string;
@@ -36,7 +35,7 @@ export class MongoDriverAvailabilityReadRepository
   @Application.Repo.Decorators.ReturnUnexpectedError()
   async getAll(): Promise<
     Either<
-      DriverAvailabilityReadModel[] ,
+      DriverAvailabilityReadModel[],
       Application.Repo.Errors.Unexpected
     >
   > {

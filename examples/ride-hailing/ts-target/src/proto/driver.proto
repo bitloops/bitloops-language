@@ -3,6 +3,8 @@ syntax = "proto3";
 
 package driver;
 
+import "google/protobuf/timestamp.proto";
+
 service DriverService {
   rpc BecomeAvailable(BecomeAvailableRequest) returns (BecomeAvailableResponse);
   rpc BecomeUnavailable(BecomeUnavailableRequest) returns (BecomeUnavailableResponse);
@@ -82,6 +84,8 @@ message DriverAvailability {
   AccountStatus accountStatus = 2;
   AvailabilityStatus availabilityStatus = 3;
   BlockReason blockReason = 4;
+  google.protobuf.Timestamp createdAt = 5;
+  google.protobuf.Timestamp updatedAt = 6;
 }
 
 message AccountStatus {

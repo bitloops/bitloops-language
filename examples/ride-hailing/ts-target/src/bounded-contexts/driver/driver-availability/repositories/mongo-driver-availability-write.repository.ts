@@ -90,7 +90,6 @@
           driverAvailability: DriverAvailabilityEntity,
         ): Promise<Either<void, Application.Repo.Errors.Unexpected>> {
           const createdDriverAvailability = driverAvailability.toPrimitives();
-      
           await this.collection.insertOne({
             _id: createdDriverAvailability.id as any,
             ...createdDriverAvailability,
