@@ -33,7 +33,7 @@ export class ValueObjectEvaluationNode extends EvaluationNode {
   getInferredType(symbolTableManager: SymbolTableManager): string {
     const intermediateASTTree = symbolTableManager.getIntermediateASTTree();
     const voNode = intermediateASTTree.getValueObjectByIdentifier(this.getVOIdentifier());
-    const voReturnType = voNode.getCreateNode().getReturnType().getInferredType();
+    const voReturnType = voNode.getCreateNode().getReturnOkErrorType().getInferredType();
     return voReturnType;
   }
 

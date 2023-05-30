@@ -35,7 +35,10 @@ export class EntityEvaluationNode extends EvaluationNode {
     const entityNode =
       intermediateASTTree.getRootEntityByIdentifier(this.getEntityIdentifier()) ??
       intermediateASTTree.getEntityByIdentifier(this.getEntityIdentifier());
-    const entityReturnType = entityNode.getDomainCreateNode().getReturnType().getInferredType();
+    const entityReturnType = entityNode
+      .getDomainCreateNode()
+      .getReturnOkErrorType()
+      .getInferredType();
     return entityReturnType;
   }
 
