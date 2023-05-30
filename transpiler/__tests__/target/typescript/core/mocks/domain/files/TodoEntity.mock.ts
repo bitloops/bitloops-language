@@ -1,22 +1,13 @@
 import { Domain, Either, ok, fail } from '@bitloops/bl-boilerplate-core';
 import { TodoProps } from './todo.props';
+import { TTitleVOPrimitives, TitleVO } from './title.value-object';
+import { LanguageVO, TLanguageVOPrimitives } from './language.value-object';
 import { DomainErrors } from './errors/index';
-import { LanguageVO } from './language.value-object';
-import { TitleVO } from './title.value-object';
-type TTodoEntityPrimitives = {
+export type TTodoEntityPrimitives = {
   id: string;
   completed: boolean;
-  title: {
-    title: string;
-    language: {
-      code: string;
-      id: string;
-    };
-  };
-  todoLanguage: {
-    code: string;
-    id: string;
-  };
+  title: TTitleVOPrimitives;
+  todoLanguage: TLanguageVOPrimitives;
 };
 export class TodoEntity extends Domain.Entity<TodoProps> {
   private constructor(props: TodoProps) {
@@ -54,35 +45,17 @@ export class TodoEntity extends Domain.Entity<TodoProps> {
     const TodoEntityProps = {
       id: new Domain.UUIDv4(data.id) as Domain.UUIDv4,
       completed: data.completed,
-      title: TitleVO.create({
-        title: data.title.title,
-        language: LanguageVO.create({
-          code: data.title.language.code,
-          id: new Domain.UUIDv4(data.title.language.id) as Domain.UUIDv4,
-        }).value as LanguageVO,
-      }).value as TitleVO,
-      todoLanguage: LanguageVO.create({
-        code: data.todoLanguage.code,
-        id: new Domain.UUIDv4(data.todoLanguage.id) as Domain.UUIDv4,
-      }).value as LanguageVO,
+      title: TitleVO.fromPrimitives(data.title),
+      todoLanguage: LanguageVO.fromPrimitives(data.todoLanguage),
     };
     return new TodoEntity(TodoEntityProps);
   }
   public toPrimitives(): TTodoEntityPrimitives {
     return {
       id: this.id.toString(),
-      completed: this.props.completed,
-      title: {
-        title: this.props.title.title,
-        language: {
-          code: this.props.title.language.code,
-          id: this.props.title.language.id.toString(),
-        },
-      },
-      todoLanguage: {
-        code: this.props.todoLanguage.code,
-        id: this.props.todoLanguage.id.toString(),
-      },
+      completed: this.completed,
+      title: this.title.toPrimitives(),
+      todoLanguage: this.todoLanguage.toPrimitives(),
     };
   }
 }

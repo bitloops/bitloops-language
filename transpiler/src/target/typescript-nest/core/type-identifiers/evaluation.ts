@@ -31,6 +31,7 @@ import {
   TReadModelEvaluation,
   TDomainServiceEvaluation,
   TPackageEvaluation,
+  TValueObjectConstructorEvaluation,
 } from '../../../../types.js';
 const STRUCT_STRING = 'struct';
 // const DTO_STRING = 'dto';
@@ -76,6 +77,15 @@ export class EvaluationTypeIdentifiers {
     evaluation: TEvaluationValues,
   ): evaluation is TEntityConstructorEvaluation {
     if ('entityConstructor' in evaluation) {
+      return true;
+    }
+    return false;
+  }
+
+  static iValueObjectConstructorEvaluation(
+    evaluation: TEvaluationValues,
+  ): evaluation is TValueObjectConstructorEvaluation {
+    if ('valueObjectConstructor' in evaluation) {
       return true;
     }
     return false;

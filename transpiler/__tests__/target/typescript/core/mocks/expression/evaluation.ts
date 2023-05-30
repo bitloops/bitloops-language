@@ -119,6 +119,14 @@ export const VALID_EVALUATION_TEST_CASES = [
     output: 'new TodoEntity(todoProps)',
   },
   {
+    description: 'Value object constructor evaluation with identifier expression',
+    evaluation: new EvaluationBuilderDirector().buildValueObjectConstructorEvaluationWithExpression(
+      'TitleVO',
+      new ExpressionBuilderDirector().buildIdentifierExpression('titleProps'),
+    ),
+    output: 'new TitleVO(titleProps)',
+  },
+  {
     description: 'Read model evaluation',
     evaluation: new EvaluationBuilderDirector().buildReadModelEvaluation(
       'UserEmailReadModel',

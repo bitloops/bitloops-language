@@ -1,0 +1,28 @@
+Props MoneyProps {
+    string currency;
+    AmountVO amount; 
+    int32[] denominations;
+    RateVO[] rates;
+}
+
+ValueObject MoneyVO {
+    static create(props: MoneyProps): (OK(MoneyVO), Errors()) {
+    }
+}
+// ----AmountVO
+Props AmountProps {
+    int32 value;
+}
+ValueObject AmountVO {
+    static create(props: AmountProps): (OK(AmountVO), Errors()) {
+    }
+}
+
+// ----RateVO
+Props RateProps {
+    int32 value;
+}
+ValueObject RateVO {
+    static create(props: RateProps): (OK(RateVO), Errors()) {
+    }
+}

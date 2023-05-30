@@ -267,6 +267,7 @@ export type TEvaluationValues =
   | TEntityEvaluation
   | TIntegrationEventEvaluation
   | TEntityConstructorEvaluation
+  | TValueObjectConstructorEvaluation
   | TErrorEvaluation
   | TBuiltInClassEvaluation
   | TBuiltInFunctionValues
@@ -352,6 +353,10 @@ export type TEntityConstructorEvaluation = {
   entityConstructor: TDomainEvaluation;
 };
 
+export type TValueObjectConstructorEvaluation = {
+  valueObjectConstructor: TDomainEvaluation;
+};
+
 export type TIntegrationEventEvaluation = {
   integrationEvent: {
     props: TDomainEvaluationExpression;
@@ -409,7 +414,8 @@ export type TExpressionValues =
   | TGetClass
   | TEnvironmentVariableExpression
   | TObjectLiteral
-  | TIfErrorExpression;
+  | TIfErrorExpression
+  | TAnonymousFunction;
 
 export type TIfErrorExpression = {
   ifErrorExpression: TExpression & Partial<TAnonymousFunction>;

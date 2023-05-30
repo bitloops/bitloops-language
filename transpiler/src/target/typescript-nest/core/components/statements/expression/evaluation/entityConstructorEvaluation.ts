@@ -59,16 +59,18 @@ export const domainEvaluationToTargetLanguage = (
   const domainName = getDomainName(evaluation);
 
   return {
-    output: `new ${domainName}(${resultDomainProps.output});`,
+    output: `new ${domainName}(${resultDomainProps.output})`,
     dependencies,
   };
 };
 
-const getDomainName = (evaluation: TDomainEvaluation): string => {
+export const getDomainName = (evaluation: TDomainEvaluation): string => {
   const domainEvaluation = evaluation.domainEvaluation;
   let domainName;
   if ('entityIdentifier' in domainEvaluation) domainName = domainEvaluation.entityIdentifier;
-  if ('valueObjectIdentifier' in domainEvaluation)
+  else if ('valueObjectIdentifier' in domainEvaluation)
     domainName = domainEvaluation.valueObjectIdentifier;
+  else if ('readModelIdentifier' in domainEvaluation)
+    domainName = domainEvaluation.readModelIdentifier;
   return domainName;
 };

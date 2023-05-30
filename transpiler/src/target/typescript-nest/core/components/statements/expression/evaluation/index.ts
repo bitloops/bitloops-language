@@ -96,6 +96,13 @@ const evaluationToTargetLanguage = (variable: TEvaluation): TTargetDependenciesT
     });
   }
 
+  if (EvaluationTypeIdentifiers.iValueObjectConstructorEvaluation(evaluation)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TValueObjectConstructorEvaluation,
+      value: evaluation,
+    });
+  }
+
   if (EvaluationTypeIdentifiers.isDomainServiceEvaluation(evaluation)) {
     return modelToTargetLanguage({
       type: BitloopsTypesMapping.TDomainServiceEvaluation,

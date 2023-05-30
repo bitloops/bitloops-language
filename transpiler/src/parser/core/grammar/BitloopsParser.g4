@@ -265,6 +265,7 @@ evaluation
     | valueObjectEvaluation
     | entityEvaluation
     | entityConstructorEvaluation
+    | valueObjectConstructorEvaluation
     | propsEvaluation
     | structEvaluation
     | commandEvaluation
@@ -619,6 +620,10 @@ entityConstructorEvaluation
     : entityIdentifier domainEvaluationInput
     ;
 
+valueObjectConstructorEvaluation
+    : valueObjectIdentifier domainEvaluationInput
+    ;
+
 commandEvaluation
     : commandIdentifier Dot Create OpenParen (OpenBrace evaluationFieldList CloseBrace)? CloseParen
     ;
@@ -816,6 +821,7 @@ expression
     | EnvPrefix OpenParen (identifier | upperCaseIdentifier) Comma literal CloseParen           # EnvVarWithDefaultValueExpression
     | envVariable                                                # EnvironmentVariableExpression
     | expression Dot IfError OpenParen anonymousFunction? CloseParen  # IfErrorExpression
+    | anonymousFunction                                          # AnonymousFunctionExpression
     ;
 
 anonymousFunction

@@ -219,6 +219,24 @@ export class EvaluationBuilderDirector {
     };
   }
 
+  buildValueObjectonstructorEvaluation(
+    valueObjectIdentifier: string,
+    propsParam: PropsParam,
+  ): TEvaluation {
+    const { fields, expression } = propsParam;
+    const props: TDomainEvaluationExpression = fields ? { fields } : { ...expression };
+    return {
+      evaluation: {
+        valueObjectConstructor: {
+          domainEvaluation: {
+            valueObjectIdentifier,
+            props,
+          },
+        },
+      },
+    };
+  }
+
   buildDomainServiceEvaluation(domainServiceIdentifier: string, args?: TArgumentList): TEvaluation {
     return {
       evaluation: {

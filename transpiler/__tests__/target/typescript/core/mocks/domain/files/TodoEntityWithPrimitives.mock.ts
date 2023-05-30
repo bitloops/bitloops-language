@@ -35,7 +35,7 @@ export class TodoEntity extends Domain.Entity<TodoProps> {
   public toPrimitives(): TTodoEntityPrimitives {
     return {
       id: this.id.toString(),
-      completed: this.props.completed,
+      completed: this.completed,
     };
   }
 }

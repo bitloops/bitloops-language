@@ -176,7 +176,12 @@ const expressionValuesToTargetLanguage = (
       value: expressionValue,
     });
   }
-
+  if (ExpressionTypeIdentifiers.isAnonymousFunctionExpression(expressionValue)) {
+    return modelToTargetLanguage({
+      type: BitloopsTypesMapping.TAnonymousFunction,
+      value: expressionValue,
+    });
+  }
   throw new Error(`Unsupported expression: ${JSON.stringify(expressionValue)}`);
 };
 

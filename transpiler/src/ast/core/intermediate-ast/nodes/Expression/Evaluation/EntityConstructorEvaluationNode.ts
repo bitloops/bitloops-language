@@ -31,7 +31,6 @@ export class EntityConstructorEvaluationNode extends EvaluationNode {
     this.nodeType = BitloopsTypesMapping.TEntityConstructorEvaluation;
     this.classNodeName = EntityConstructorEvaluationNode.nodeName;
   }
-
   public override getIdentifierNode(): EntityIdentifierNode {
     const domainEvaluationNode = this.getChildNodeByType<DomainEvaluationNode>(
       BitloopsTypesMapping.TDomainEvaluation,

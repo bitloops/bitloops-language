@@ -39,6 +39,7 @@ import { aggregateDeclarationVisitor } from './helpers/aggregateDeclarationVisit
 import { bitloopsPrimaryTypeVisitor } from './helpers/bitloopsPrimaryType.js';
 import { entityBodyVisitor } from './helpers/entityBodyVisitor.js';
 import {
+  AnonymousExpressionVisitor,
   enviromentVariableVisitor,
   envVarWithDefaultValueExpressionVisitor,
   LiteralExpressionVisitor,
@@ -246,6 +247,7 @@ import { domainServiceEvaluationVisitor } from './helpers/expression/evaluation/
 import { IntegrationEventHandlerHandleMethodNode } from '../intermediate-ast/nodes/integration-event/IntegrationEventHandlerHandleMethodNode.js';
 import { anonymousFunctionVisitor } from './helpers/anonymousFunctionVisitor.js';
 import { arrowFunctionBodyVisitor } from './helpers/arrowFunctionBodyVisitor.js';
+import { valueObjectConstructorEvaluationVisitor } from './helpers/expression/evaluation/valueObejctConstructorEvaluation.js';
 
 export type TContextInfo = {
   boundedContextName: string;
@@ -610,8 +612,13 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return booleanEvaluation(ctx.BooleanLiteral().getText());
   }
 
-  visitLiteralExpression(ctx: BitloopsParser.LiteralExpressionContext) {
+  visitLiteralExpression(ctx: BitloopsParser.LiteralExpressionContext): ExpressionNode {
     return LiteralExpressionVisitor(this, ctx);
+  }
+  visitAnonymousFunctionExpression(
+    ctx: BitloopsParser.AnonymousFunctionExpressionContext,
+  ): ExpressionNode {
+    return AnonymousExpressionVisitor(this, ctx);
   }
   visitNumericLiteralLabel(ctx: BitloopsParser.NumericLiteralLabelContext) {
     const actualNumericLiteral = this.visitChildren(ctx)[0];
@@ -685,6 +692,12 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
   }
   visitEntityConstructorEvaluation(ctx: BitloopsParser.EntityConstructorEvaluationContext): any {
     return entityConstructorEvaluationVisitor(this, ctx);
+  }
+
+  visitValueObjectConstructorEvaluation(
+    ctx: BitloopsParser.ValueObjectConstructorEvaluationContext,
+  ): any {
+    return valueObjectConstructorEvaluationVisitor(this, ctx);
   }
 
   visitDomainEvaluationInputFieldList(ctx: BitloopsParser.DomainEvaluationInputFieldListContext) {
