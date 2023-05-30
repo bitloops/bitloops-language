@@ -1,0 +1,14 @@
+Command BecomeUnavailableCommand {
+  string id;
+}
+
+CommandHandler BecomeUnavailableCommandHandler(driverAvailabilityRepository: DriverAvailabilityWriteRepoPort) {
+    execute(command: BecomeUnavailableCommand): (OK(void), Errors(ApplicationErrors.DriverNotFoundError)) {
+        const uuid = UUIDv4(command.id);
+        const driverAvailability = this.driverAvailabilityRepository.getById(uuid).ifError();
+        if (driverAvailability == null) {
+            return ApplicationErrors.DriverNotFoundError(command.id);
+        }
+        driverAvailability.becomeUnavailable()
+    }
+}

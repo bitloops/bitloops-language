@@ -1,13 +1,16 @@
-import { GrpcControllerBuilder } from '../commands/generate/component-builders/api/grpc-controller.builder.js';
+import { GrpcControllerBuilder } from '../component-builders/api/grpc-controller.builder.js';
 // import { GrpcPubSubHandlerBuilder } from '../commands/prompt/component-builders/api/grpc-pub-sub-handler.builder.js';
-import { CodeSnippets } from '../commands/generate/data-sets/common/code-snippets.js';
-import { FileNameToClassName } from '../commands/generate/data-sets/common/names.js';
-import { ExposedGrpcComponents } from '../commands/generate/interfaces/infra-code-generator.js';
-import { TGeneratedInfra } from '../commands/generate/invoker.js';
-import { yieldModuleInfo } from '../utils/bounded-context-module.generator.js';
-import { ConfigUtils } from '../utils/config.js';
-import { writeTargetFile } from './writeTargetFile.js';
+import { CodeSnippets } from '../data-sets/common/code-snippets.js';
+import { FileNameToClassName } from '../data-sets/common/names.js';
+import { ExposedGrpcComponents } from '../interfaces/infra-code-generator.js';
+import { TGeneratedInfra } from '../invoker.js';
+import { yieldModuleInfo } from '../../../utils/bounded-context-module.generator.js';
+import { ConfigUtils } from '../../../utils/config.js';
+import { writeTargetFile } from '../../../functions/writeTargetFile.js';
 
+// TODO Refactor this function to be more readable & extendable
+// Introduce file-types and have a switch or object deciding filePaths and fileContents
+// Also make all file operations async
 export const writeAIResults = async (
   responses: TGeneratedInfra,
   targetDirPath: string,
@@ -88,19 +91,24 @@ export const writeAIResults = async (
   if (responses.api?.grpcControllers) {
     const { api } = await ConfigUtils.readBitloopsProjectConfigFile();
     const { grpc } = api;
+    const integrationEventClassNames = exposedGrpcComponents.integrationEvents.map((x) =>
+      FileNameToClassName.integrationEvent(x.fileName),
+    );
+    const controllerContent = GrpcControllerBuilder.assemble(
+      responses.api.grpcControllers.map((x) => x.fileContent),
+      grpc.package,
+      grpc['service-name'],
+      integrationEventClassNames,
+    );
+
+    const filename = grpc.package + '.grpc.controller.ts';
     writeTargetFile({
       projectPath: targetDirPath,
       filePathObj: {
         path: 'api',
-        filename: grpc.package + '.grpc.controller.ts',
+        filename,
       },
-      fileContent: GrpcControllerBuilder.assemble(
-        responses.api.grpcControllers.map((x) => x.fileContent),
-        grpc.package,
-        exposedGrpcComponents.integrationEvents.map((x) =>
-          FileNameToClassName.integrationEvent(x.fileName),
-        ),
-      ),
+      fileContent: controllerContent,
     });
   }
   if (responses.api?.grpcPubSubHandlers) {

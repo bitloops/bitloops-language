@@ -2,11 +2,9 @@ import { yieldModuleInfo } from '../../utils/bounded-context-module.generator.js
 import { CasingUtils } from '../../utils/casing.js';
 import { BitloopsProjectConfig } from '../../utils/config.js';
 import { Client } from './client.js';
-import {
-  promptApiGrpcControllerCommand,
-  promptApiGrpcControllerOnEventMethod,
-  promptApiGrpcControllerQuery,
-} from './data-sets/api/prompt-grpc-controller.context.js';
+import { promptApiGrpcControllerCommand } from './data-sets/api/controller/prompt-grpc-controller-command-method.context.js';
+import { promptApiGrpcControllerOnEventMethod } from './data-sets/api/controller/prompt-grpc-controller-on-method.context copy.js';
+import { promptApiGrpcControllerQuery } from './data-sets/api/controller/prompt-grpc-controller-query-method.context.js';
 import { promptProtoRealTimeStreamsMessages } from './data-sets/api/prompt-proto-real-time.context.js';
 import { promptProtoMessages } from './data-sets/api/prompt-proto.context.js';
 import { promptPubSubHandlers } from './data-sets/api/prompt-pub-sub-handlers.context.js';
@@ -53,17 +51,28 @@ export class CliInfraCodeGenerator implements IInfraCodeGenerator {
     await this.promptAiResultsFirstRound(client, componentsInfo, exposedGrpcComponents);
     let responses = await client.getResponses();
 
-    console.log('Generating protobuf file...');
-    this.promptAiResultsSecondRound(client, responses, exposedGrpcComponents);
-    responses = await client.getResponses();
-
-    console.log('Generating api...');
+    if (this.needsGrpcStreamEvents(exposedGrpcComponents)) {
+      console.log('Generating protobuf file stream events...');
+      this.promptAiResultsSecondRound(client, responses, exposedGrpcComponents);
+      responses = await client.getResponses();
+    }
+    console.log('Generating api controllers...');
     await this.promptAiResultsThirdRound(client, responses, exposedGrpcComponents);
     responses = await client.getResponses();
     this.totalCost = client.getTotalCost();
     return responses;
   }
 
+  /**
+   *  For each module, prompt the AI for the following:
+   * - WriteRepo concretions
+   * - ReadRepo concretions
+   * - Service concretions
+   * - Module file
+   *
+   * Generate proto file, for all exposed commands and queries
+   *
+   */
   private async promptAiResultsFirstRound(
     client: Client,
     componentsInfo: ComponentsInfo,
@@ -170,24 +179,31 @@ export class CliInfraCodeGenerator implements IInfraCodeGenerator {
     /**
      * Grpc stuff
      */
-    const { handlersContent, commandsContent, queriesContent, entitiesContent } =
-      exposedGrpcComponents;
+    const { handlersContent, commands, queries, entitiesContent } = exposedGrpcComponents;
 
     client.makeOpenAIRequest(
       promptProtoMessages(
         grpc.package,
         grpc['service-name'],
         handlersContent,
-        commandsContent,
-        queriesContent,
+        commands.map((command) => command.content),
+        queries.map((query) => query.content),
         entitiesContent,
       ),
       { key: GENERATED_INFRA_KEYS.API_PROTO_BUFF },
     );
   }
 
+  private needsGrpcStreamEvents(exposedGrpcComponents: ExposedGrpcComponents): boolean {
+    const { integrationEvents } = exposedGrpcComponents;
+    return integrationEvents.length > 0;
+  }
   /**
    * Adds real-time stuff in protobuf file.
+   *
+   * Depends on the basic proto-file generated in the first round.
+   * Which has commands & queries definitions.
+   * Because it overrides the service by adding the real-time stuff.
    */
   private promptAiResultsSecondRound(
     client: Client,
@@ -210,9 +226,9 @@ export class CliInfraCodeGenerator implements IInfraCodeGenerator {
   }
 
   /**
-   *  Creates the grpc controllers,by adding controller commands/queries methods.
-   *  Add on-Event method of controller.
-   *  Generate Grpc PubSub handlers.
+   *  - Creates the grpc controllers,by adding controller commands/queries methods.
+   *  - Add on-Event method of controller.
+   *  - Generates Grpc PubSub handlers.
    */
   private async promptAiResultsThirdRound(
     client: Client,
@@ -221,21 +237,29 @@ export class CliInfraCodeGenerator implements IInfraCodeGenerator {
   ): Promise<void> {
     const protobuf = responses.api.protobuff;
     const { grpc } = this.bitloopsProjectConfig.api;
-    const { queriesContent, commandsContent, integrationEvents } = exposedGrpcComponents;
+    const { queries, commands, integrationEvents } = exposedGrpcComponents;
 
     const commandsAtATimeNum = 1;
-    const totalExposedCommandsLength = commandsContent.length;
+    const totalExposedCommandsLength = commands.length;
+    // We loop this way to add support for 2+ commands at a time.
     for (let i = 0; i < totalExposedCommandsLength; i += commandsAtATimeNum) {
       const toIndex =
         i + commandsAtATimeNum > totalExposedCommandsLength
           ? totalExposedCommandsLength
           : i + commandsAtATimeNum;
-      const slice = commandsContent.slice(i, toIndex);
+      const slice = commands.slice(i, toIndex);
+      const currentCommand = slice[0];
+      const commandContext = {
+        boundedContextName: currentCommand.boundedContextName,
+        moduleName: currentCommand.moduleName,
+      };
       client.makeOpenAIRequest(
         promptApiGrpcControllerCommand(
-          slice[0],
+          currentCommand.content,
+          currentCommand.commandHandlerContent,
           CodeSnippets.sanitizeProto(protobuf.fileContent),
           grpc.package,
+          commandContext,
         ),
         {
           key: GENERATED_INFRA_KEYS.API_GRPC_CONTROLLER,
@@ -244,18 +268,25 @@ export class CliInfraCodeGenerator implements IInfraCodeGenerator {
       );
     }
     const queriesAtATimeNum = 1;
-    const totalExposedQueriesLength = queriesContent.length;
+    const totalExposedQueriesLength = queries.length;
     for (let i = 0; i < totalExposedQueriesLength; i += queriesAtATimeNum) {
       const toIndex =
         i + queriesAtATimeNum > totalExposedQueriesLength
           ? totalExposedQueriesLength
           : i + queriesAtATimeNum;
-      const slice = queriesContent.slice(i, toIndex);
+      const slice = queries.slice(i, toIndex);
+      const currentQuery = slice[0];
+      const queryContext = {
+        boundedContextName: currentQuery.boundedContextName,
+        moduleName: currentQuery.moduleName,
+      };
       client.makeOpenAIRequest(
         promptApiGrpcControllerQuery(
-          slice[0],
+          currentQuery.content,
+          currentQuery.queryHandlerContent,
           CodeSnippets.sanitizeProto(protobuf.fileContent),
           grpc.package,
+          queryContext,
         ),
         {
           key: GENERATED_INFRA_KEYS.API_GRPC_CONTROLLER,
@@ -264,15 +295,19 @@ export class CliInfraCodeGenerator implements IInfraCodeGenerator {
       );
     }
 
+    if (!this.needsGrpcStreamEvents(exposedGrpcComponents)) {
+      return;
+    }
     const integrationEventNames = integrationEvents.map((x) =>
       FileNameToClassName.integrationEvent(x.fileName),
     );
+    const grpcServiceName = grpc['service-name'];
     client.makeOpenAIRequest(
       promptApiGrpcControllerOnEventMethod(
         CodeSnippets.sanitizeProto(protobuf.fileContent),
         integrationEventNames,
         grpc.package,
-        grpc['service-name'],
+        grpcServiceName,
       ),
       {
         key: GENERATED_INFRA_KEYS.API_GRPC_CONTROLLER,

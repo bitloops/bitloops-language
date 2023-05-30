@@ -7,12 +7,12 @@ import { getBoundedContextModules } from '../../functions/index.js';
 import { TBoundedContextName, TModuleName } from '../../types.js';
 import path from 'path';
 import { getTypescriptFilesAndContents } from '../../functions/readFilesContents.js';
-import { writeAIResults } from '../../functions/writeAiResults.js';
+import { writeAIResults } from './helpers/writeAiResults.js';
 import { greenColor, redColor } from '../../utils/oraUtils.js';
-import { writeStaticAssets } from '../../functions/writeStaticAssets.js';
 import { extractComponentsFromFiles, extractGrpcExposedComponents } from './helpers/input-files.js';
 import { CliInfraCodeGenerator } from './cli-infra-code-generator.js';
 import { IInfraCodeGenerator } from './interfaces/infra-code-generator.js';
+import { writeStaticAssets } from './helpers/writeStaticAssets.js';
 /**
  * TODO add a json or yaml config file, where the user can set settings for preferred repo adapters
  * for each port(file-name as a key), and e.g. MongoDB as value
@@ -40,7 +40,7 @@ const questions: Question[] = [
   },
 ];
 
-const generate = async (source: ICollection): Promise<void> => {
+const generateInfra = async (source: ICollection): Promise<void> => {
   console.log();
   console.log(copyrightSnippet);
   console.log();
@@ -96,7 +96,7 @@ const generate = async (source: ICollection): Promise<void> => {
     console.log(greenColor('Generated.'), ' ✅');
     console.log(`Total cost: $${totalCost}`);
     await writeAIResults(responses, targetDirPath, exposedGrpcComponents);
-    await writeStaticAssets(targetDirPath);
+    await writeStaticAssets(targetDirPath, componentsInfo);
   } catch (error) {
     const TAB = '\t';
     console.error(redColor(TAB + '❌ ' + error));
@@ -105,4 +105,4 @@ const generate = async (source: ICollection): Promise<void> => {
   console.log();
 };
 
-export default generate;
+export default generateInfra;

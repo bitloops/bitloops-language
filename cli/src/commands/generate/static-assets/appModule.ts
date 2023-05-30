@@ -1,19 +1,44 @@
-export const generateAppModule = (): string => {
+import { yieldModuleInfo } from '../../../utils/bounded-context-module.generator.js';
+import { CasingUtils } from '../../../utils/casing.js';
+import { ComponentsInfo } from '../interfaces/infra-code-generator.js';
+
+export const generateAppModule = (componentsInfo: ComponentsInfo): string => {
+  const modulesForImport: Array<{
+    moduleClassName: string;
+    moduleImportPath: string;
+  }> = [];
+  for (const { boundedContextName, moduleName } of yieldModuleInfo(componentsInfo)) {
+    const pascalModuleName = CasingUtils.anyCaseToPascalCase(moduleName);
+    modulesForImport.push({
+      moduleClassName: `${pascalModuleName}Module`,
+      moduleImportPath: `./bounded-contexts/${boundedContextName}/${moduleName}/${moduleName}.module`,
+    });
+  }
+
   const jetStreamServers = `[
     \`nats://\${process.env.NATS_HOST ?? 'localhost'}:\${
       process.env.NATS_PORT ?? 4222
     }\`,
   ],`;
 
+  const moduleImports = modulesForImport
+    .map(
+      ({ moduleClassName, moduleImportPath }) =>
+        `import { ${moduleClassName} } from '${moduleImportPath}';`,
+    )
+    .join('\n');
+
+  // import { TodoModule } from './bounded-contexts/todo/todo/todo.module';
+  // import { MarketingModule } from './bounded-contexts/marketing/marketing/marketing.module';
+  // import { AuthenticationModule } from './bounded-contexts/iam/authentication/authentication.module';
+
   const mongoUrl = `\`mongodb://\${process.env.MONGO_HOST || 'localhost'}:\${
     process.env.MONGO_PORT || 30001
   }/?directConnection=true&replicaSet=my-replica-set\``;
-  //TODO: add dynamically the modules: name them from bitloops-config file
+
   return `
   import { Module } from '@nestjs/common';
-import { TodoModule } from './bounded-contexts/todo/todo/todo.module';
-import { MarketingModule } from './bounded-contexts/marketing/marketing/marketing.module';
-import { AuthenticationModule } from './bounded-contexts/iam/authentication/authentication.module';
+  ${moduleImports}
 import {
   JetstreamModule,
   NatsStreamingMessageBus,
@@ -46,10 +71,7 @@ import { TracingModule } from '@bitloops/bl-boilerplate-infra-telemetry';
     MongoModule.forRoot({
       url: ${mongoUrl},
     }),
-
-    TodoModule,
-    MarketingModule,
-    AuthenticationModule,
+    ${modulesForImport.map(({ moduleClassName }) => moduleClassName).join(',\n')},
     TracingModule.register({
       messageBus: NatsStreamingMessageBus,
     }),

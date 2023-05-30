@@ -1,29 +1,31 @@
-import { generateApiModule } from '../commands/generate/static-assets/apiModule.js';
-import { generateAuthenticationController } from '../commands/generate/static-assets/authenticationController.js';
 import { mkdir } from 'fs/promises';
-import {
-  generateAuthConfiguration,
-  generateMainConfiguration,
-} from '../commands/generate/static-assets/config.js';
-import { writeTargetFile } from './writeTargetFile.js';
-import { generateMainFile } from '../commands/generate/static-assets/mainFile.js';
-import { generateAppModule } from '../commands/generate/static-assets/appModule.js';
-import { generateConfigYaml } from '../commands/generate/static-assets/configYaml.js';
 
-export const writeStaticAssets = async (targetDirPath: string): Promise<void> => {
+import { ComponentsInfo } from '../interfaces/infra-code-generator.js';
+import { writeTargetFile } from '../../../functions/writeTargetFile.js';
+import { generateApiModule } from '../static-assets/apiModule.js';
+import { generateAppModule } from '../static-assets/appModule.js';
+import { generateAuthenticationController } from '../static-assets/authenticationController.js';
+import { generateMainConfiguration, generateAuthConfiguration } from '../static-assets/config.js';
+import { generateConfigYaml } from '../static-assets/configYaml.js';
+import { generateMainFile } from '../static-assets/mainFile.js';
+
+export const writeStaticAssets = async (
+  targetDirPath: string,
+  componentsInfo: ComponentsInfo,
+): Promise<void> => {
   await Promise.all([
     writeApiModuleDefinition(targetDirPath),
     writeApiRestAuthController(targetDirPath),
     writeConfigFiles(targetDirPath),
     writeMainFile(targetDirPath),
-    writeAppModule(targetDirPath),
+    writeAppModule(targetDirPath, componentsInfo),
     writeConfigYaml(targetDirPath),
     createProtoGeneratedFolder(targetDirPath),
   ]);
 };
 
 async function writeApiModuleDefinition(targetDirPath: string): Promise<void> {
-  const content = generateApiModule();
+  const content = await generateApiModule();
   writeTargetFile({
     projectPath: targetDirPath,
     filePathObj: {
@@ -80,8 +82,11 @@ async function writeMainFile(targetDirPath: string): Promise<void> {
   });
 }
 
-async function writeAppModule(targetDirPath): Promise<void> {
-  const mainConfigContent = generateAppModule();
+async function writeAppModule(
+  targetDirPath: string,
+  componentsInfo: ComponentsInfo,
+): Promise<void> {
+  const mainConfigContent = generateAppModule(componentsInfo);
   writeTargetFile({
     projectPath: targetDirPath,
     filePathObj: {

@@ -1,0 +1,5 @@
+DomainError AccountIsBlockedError(accountId:string, accountStatus: string) {
+    message: `Account ${accountId} is ${accountStatus}. Please contact support.`,
+    errorId: 'DRIVER_ACCOUNT_IS_BLOCKED'
+}
+

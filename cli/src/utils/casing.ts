@@ -23,4 +23,12 @@ export class CasingUtils {
   static pascalCaseToKebabCase(str: string): string {
     return CasingUtils.camelCaseToKebabCase(CasingUtils.pascalCaseToCamelCase(str));
   }
+
+  static anyCaseToPascalCase(str: string): string {
+    return str
+      .replace(/[-_]/g, ' ') // replace hyphens and underscores with spaces
+      .split(/(?=[A-Z])|\s+/) // split on uppercase (for camelCase) or spaces
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join('');
+  }
 }

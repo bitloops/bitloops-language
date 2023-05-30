@@ -1,0 +1,61 @@
+
+Props BlockReasonProps {
+    string reason;
+}
+
+ValueObject BlockReasonVO {
+    static create(props: BlockReasonProps): (OK(BlockReasonVO), Errors()) {
+
+    }
+}
+
+Props AccountStatusProps {
+    string status;
+}
+
+ValueObject AccountStatusVO {
+    static create(props: AccountStatusProps): (OK(AccountStatusVO), Errors()) {
+        
+    }  
+}
+
+Props AvailabilityStatusProps {
+    string status;
+}
+
+ValueObject AvailabilityStatusVO {
+    static create(props: AvailabilityStatusProps): (OK(AvailabilityStatusVO), Errors()) {
+        // applyRules
+    }
+}
+
+Props DriverAvailabilityProps {
+    optional UUIDv4 id;
+    // TODO Make this work
+    // optional string id;
+    AccountStatusVO accountStatus;
+    AvailabilityStatusVO availabilityStatus;
+    optional BlockReasonVO blockReason;
+    // rideStatus 
+}
+
+Root Entity DriverAvailabilityEntity {
+
+    static create(props: DriverAvailabilityProps): (OK(DriverAvailabilityEntity), Errors()) {
+        return DriverAvailabilityEntity(props);
+        // const driverAvailability = DriverAvailabilityEntity(props);
+        // return driverAvailability;
+    }
+
+    becomeAvailable(): (OK(void), Errors(DomainErrors.AccountIsBlockedError)) {
+        applyRules(AccountIsNotBlockedRule(this.id.toString(), this.accountStatus.status))
+        const newStatus = AvailabilityStatusVO.create({status: "AVAILABLE"}).ifError();
+        this.availabilityStatus = newStatus;
+    }
+
+    becomeUnavailable(): (OK(void), Errors()) {
+        // applyRules
+        const newStatus = AvailabilityStatusVO.create({status: "UNAVAILABLE"}).ifError();
+        this.availabilityStatus = newStatus;
+    }
+}

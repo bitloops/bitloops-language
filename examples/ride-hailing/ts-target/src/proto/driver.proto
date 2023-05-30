@@ -1,0 +1,102 @@
+
+syntax = "proto3";
+
+package driver;
+
+import "google/protobuf/timestamp.proto";
+
+service DriverService {
+  rpc BecomeAvailable(BecomeAvailableRequest) returns (BecomeAvailableResponse);
+  rpc BecomeUnavailable(BecomeUnavailableRequest) returns (BecomeUnavailableResponse);
+  rpc GetDriverAvailability(GetDriverAvailabilityRequest) returns (GetDriverAvailabilityResponse);
+}
+
+message ErrorResponse {
+  string code = 1;
+  string message = 2;
+}
+
+message BecomeAvailableRequest {
+  string id = 1;
+}
+
+message BecomeAvailableResponse {
+  oneof result {
+    BecomeAvailableOKResponse ok = 1;
+    BecomeAvailableErrorResponse error = 2;
+  }
+}
+
+message BecomeAvailableErrorResponse {
+  oneof error {
+    ErrorResponse unexpectedError = 1;
+    ErrorResponse accountIsBlockedError = 2;
+    ErrorResponse driverNotFoundError = 3;
+  }
+}
+
+message BecomeAvailableOKResponse {}
+
+message BecomeUnavailableRequest {
+  string id = 1;
+}
+
+message BecomeUnavailableResponse {
+  oneof result {
+    BecomeUnavailableOKResponse ok = 1;
+    BecomeUnavailableErrorResponse error = 2;
+  }
+}
+
+message BecomeUnavailableErrorResponse {
+  oneof error {
+    ErrorResponse unexpectedError = 1;
+    ErrorResponse driverNotFoundError = 2;
+  }
+}
+
+message BecomeUnavailableOKResponse {}
+
+message GetDriverAvailabilityRequest {
+  string id = 1;
+}
+
+message GetDriverAvailabilityResponse {
+  oneof result {
+    GetDriverAvailabilityOKResponse ok = 1;
+    GetDriverAvailabilityErrorResponse error = 2;
+  }
+}
+
+message GetDriverAvailabilityErrorResponse {
+  oneof error {
+    ErrorResponse unexpectedError = 1;
+    ErrorResponse driverNotFoundError = 2;
+  }
+}
+
+message GetDriverAvailabilityOKResponse {
+  DriverAvailability driverAvailability = 1;
+}
+
+message DriverAvailability {
+  string id = 1;
+  AccountStatus accountStatus = 2;
+  AvailabilityStatus availabilityStatus = 3;
+  BlockReason blockReason = 4;
+  google.protobuf.Timestamp createdAt = 5;
+  google.protobuf.Timestamp updatedAt = 6;
+}
+
+message AccountStatus {
+  bool isActive = 1;
+  bool isBlocked = 2;
+}
+
+message AvailabilityStatus {
+  bool isAvailable = 1;
+}
+
+message BlockReason {
+  string reason = 1;
+}

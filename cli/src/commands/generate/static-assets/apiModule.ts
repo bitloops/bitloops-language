@@ -1,4 +1,11 @@
-export const generateApiModule = (): string => {
+import { ConfigUtils } from '../../../utils/config.js';
+import { GrpcControllerBuilder } from '../component-builders/api/grpc-controller.builder.js';
+
+export const generateApiModule = async (): Promise<string> => {
+  const bitloopsProjectConfig = await ConfigUtils.readBitloopsProjectConfigFile();
+  const packageName = bitloopsProjectConfig.api.grpc.package;
+
+  const grpcControllerClassName = GrpcControllerBuilder.getControllerClassName(packageName);
   const jetStreamServers = `[
     \`nats://\${process.env.NATS_HOST ?? 'localhost'}:\${
       process.env.NATS_PORT ?? 4222
@@ -8,7 +15,7 @@ export const generateApiModule = (): string => {
   import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthController } from './authentication.controller';
-import { TodoGrpcController } from './todo.grpc.controller';
+import { ${grpcControllerClassName} } from './${packageName}.grpc.controller';
 import {
   JetstreamModule,
   NatsStreamingIntegrationEventBus,
@@ -65,7 +72,7 @@ import {
       messageBus: NatsStreamingMessageBus,
     }),
   ],
-  controllers: [AuthController, TodoGrpcController],
+  controllers: [AuthController, ${grpcControllerClassName}],
 })
 export class ApiModule {
 }

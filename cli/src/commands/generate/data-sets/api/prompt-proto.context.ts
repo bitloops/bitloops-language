@@ -3,7 +3,7 @@ import { CodeSnippets } from '../common/code-snippets.js';
 
 const HANDLERS = [
   `
-  type AddTodoUseCaseResponse = Either<
+  type AddTodoCommandHandlerResponse = Either<
     string,
     DomainErrors.TitleOutOfBoundsError | Application.Repo.Errors.Unexpected
   >;
@@ -32,7 +32,7 @@ const HANDLERS = [
         category: 'commandHandler',
       },
     })
-    async execute(command: AddTodoCommand): Promise<AddTodoUseCaseResponse> {
+    async execute(command: AddTodoCommand): Promise<AddTodoCommandHandlerResponse> {
       const title = TitleVO.create({ title: command.title });
       if (title.isFail()) {
         return fail(title.value);
@@ -60,7 +60,7 @@ const HANDLERS = [
   }
   `,
   `
-  type CompleteTodoUseCaseResponse = Either<
+  type CompleteTodoCommandHandlerResponse = Either<
     void,
     DomainErrors.TodoAlreadyCompletedError | ApplicationErrors.TodoNotFoundError
   >;
@@ -69,7 +69,7 @@ const HANDLERS = [
     implements
       Application.IUseCase<
         CompleteTodoCommand,
-        Promise<CompleteTodoUseCaseResponse>
+        Promise<CompleteTodoCommandHandlerResponse>
       >
   {
     constructor(
@@ -95,7 +95,7 @@ const HANDLERS = [
     })
     async execute(
       command: CompleteTodoCommand,
-    ): Promise<CompleteTodoUseCaseResponse> {
+    ): Promise<CompleteTodoCommandHandlerResponse> {
       const todo = await this.todoRepo.getById(new Domain.UUIDv4(command.id));
   
       if (todo.isFail()) {
@@ -118,7 +118,7 @@ const HANDLERS = [
   }
   `,
   `
-  type ModifyTodoTitleResponse = Either<
+  type ModifyTodoTitleCommandHandlerResponse = Either<
     void,
     DomainErrors.TitleOutOfBoundsError | Application.Repo.Errors.Unexpected
   >;
@@ -127,7 +127,7 @@ const HANDLERS = [
     implements
       Application.IUseCase<
         ModifyTodoTitleCommand,
-        Promise<ModifyTodoTitleResponse>
+        Promise<ModifyTodoTitleCommandHandlerResponse>
       >
   {
     constructor(
@@ -153,7 +153,7 @@ const HANDLERS = [
     })
     async execute(
       command: ModifyTodoTitleCommand,
-    ): Promise<ModifyTodoTitleResponse> {
+    ): Promise<ModifyTodoTitleCommandHandlerResponse> {
       const requestId = new Domain.UUIDv4(command.id);
       const todoFound = await this.todoRepo.getById(requestId);
       if (todoFound.isFail()) {
@@ -181,63 +181,6 @@ const HANDLERS = [
     }
   }
   `,
-
-  // `
-  // type UncompleteTodoUseCaseResponse = Either<
-  //   void,
-  //   DomainErrors.TodoAlreadyUncompletedError | ApplicationErrors.TodoNotFoundError
-  // >;
-
-  // export class UncompleteTodoHandler
-  //   implements
-  //     Application.IUseCase<
-  //       UncompleteTodoCommand,
-  //       Promise<UncompleteTodoUseCaseResponse>
-  //     >
-  // {
-  //   get command() {
-  //     return UncompleteTodoCommand;
-  //   }
-
-  //   get boundedContext() {
-  //     return 'Todo';
-  //   }
-  //   constructor(
-  //     @Inject(TodoWriteRepoPortToken)
-  //     private readonly todoRepo: TodoWriteRepoPort,
-  //   ) {}
-
-  //   @Traceable({
-  //     operation: '[Todo] UncompleteTodoCommandHandler',
-  //     serviceName: 'Todo',
-  //     metrics: {
-  //       name: '[Todo] UncompleteTodoCommandHandler',
-  //       category: 'commandHandler',
-  //     },
-  //   })
-  //   async execute(
-  //     command: UncompleteTodoCommand,
-  //   ): Promise<UncompleteTodoUseCaseResponse> {
-  //     const todo = await this.todoRepo.getById(new Domain.UUIDv4(command.id));
-  //     if (todo.isFail()) {
-  //       return fail(todo.value);
-  //     }
-  //     if (!todo.value) {
-  //       return fail(new ApplicationErrors.TodoNotFoundError(command.id));
-  //     }
-
-  //     const uncompletedOrError = todo.value.uncomplete();
-  //     if (uncompletedOrError.isFail()) {
-  //       return fail(uncompletedOrError.value);
-  //     }
-  //     const saveResult = await this.todoRepo.update(todo.value);
-  //     if (saveResult.isFail()) {
-  //       return fail(saveResult.value);
-  //     }
-  //     return ok();
-  //   }
-  // }
-  // `
   ` export type GetTodosQueryHandlerResponse = Either<
     TTodoReadModelSnapshot[],
     Application.Repo.Errors.Unexpected
@@ -308,19 +251,6 @@ const COMMANDS = [
     }
   }
   `,
-  ` export type TDeleteTodoCommand = {
-  id: string;
-};
-
-export class DeleteTodoCommand extends Application.Command {
-  public id: string;
-
-  constructor(props: TDeleteTodoCommand) {
-    super('Todo');
-    this.id = props.id;
-  }
-}
-`,
   `
 export type TModifyTodoTitleCommand = {
   id: string;
@@ -336,20 +266,6 @@ export class ModifyTodoTitleCommand extends Application.Command {
     this.title = modifyTitleTodo.title;
   }
 }`,
-  `
-export type TUncompleteTodoCommand = {
-  id: string;
-};
-
-export class UncompleteTodoCommand extends Application.Command {
-  public id: string;
-
-  constructor(props: TUncompleteTodoCommand) {
-    super('Todo');
-    this.id = props.id;
-  }
-}
-`,
 ];
 const QUERIES = [
   ` export class GetTodosQuery extends Application.Query {
@@ -367,10 +283,6 @@ const messageInstructions = (
   entities: string[],
 ): string => {
   // console.log(packageName);
-  // console.log({
-  //   commandsLength: commands.length,
-  //   handlersLength: handlers.length,
-  // });
   const truncatedEntities = [];
   for (const entity of entities) {
     const entityTruncationIndex = entity.indexOf('extends Domain');
@@ -413,8 +325,8 @@ const messageInstructions = (
     string message = 2;
   }
   ${CodeSnippets.closeProto()}
+  You also need to add the ErrorResponse message.
   Create one rpc per handler(command or query)
-  If there are any commands or queries not corresponding to a handler, do not implement their rpcs.
   
   You can create the Entity Message and its props using the primitives of these Entities
   ${CodeSnippets.openTypescript()}
@@ -423,6 +335,7 @@ const messageInstructions = (
 
   Remove the Entity suffix when naming the message.
 `;
+  // TODO Fix this, primitives type now is not complete since it has other types inside it
 };
 const TODO_ENTITY = [
   `
@@ -477,9 +390,7 @@ package todo;
 service TodoService {
 	rpc Add(AddTodoRequest) returns (AddTodoResponse);
   rpc Complete (CompleteTodoRequest) returns (CompleteTodoResponse);
-  rpc Uncomplete (UncompleteTodoRequest) returns (UncompleteTodoResponse);
   rpc ModifyTitle (ModifyTitleTodoRequest) returns (ModifyTitleTodoResponse);
-  rpc Delete (DeleteTodoRequest) returns (DeleteTodoResponse);
 	rpc GetAll(GetAllTodosRequest) returns (GetAllTodosResponse);
 }
 
@@ -501,9 +412,8 @@ message AddTodoResponse {
 
 message AddTodoErrorResponse {
   oneof error {
-    ErrorResponse unauthorizedError = 1;
-    ErrorResponse systemUnavailableError = 2;
-    ErrorResponse invalidTitleLengthError = 3;
+    ErrorResponse unexpectedError = 1;
+    ErrorResponse titleOutOfBoundsError = 2;
   }
 }
 
@@ -524,34 +434,33 @@ message CompleteTodoResponse {
 
 message CompleteTodoErrorResponse {
   oneof error {
-    ErrorResponse unauthorizedError = 1;
-    ErrorResponse systemUnavailableError = 2;
-    ErrorResponse todoAlreadyExistsError = 3;
-  }
-}
-
-message DeleteTodoOKResponse {}
-
-message DeleteTodoRequest {
-  string id = 1;
-}
-
-message DeleteTodoResponse {
-  oneof result {
-    DeleteTodoOKResponse ok = 1;
-    DeleteTodoErrorResponse error = 2;
-  }
-}
-
-message DeleteTodoErrorResponse {
-  oneof error {
-    ErrorResponse unauthorizedError = 1;
-    ErrorResponse systemUnavailableError = 2;
-    ErrorResponse todoAlreadyExistsError = 3;
+    ErrorResponse todoAlreadyCompletedError = 1;
+    ErrorResponse todoNotFoundError = 2;
   }
 }
 
 message CompleteTodoOKResponse {}
+
+message ModifyTitleTodoRequest {
+  string id = 1;
+  string title = 2;
+}
+
+message ModifyTitleTodoResponse {
+  oneof result {
+    ModifyTitleTodoOKResponse ok = 1;
+    ModifyTitleTodoErrorResponse error = 2;
+  }
+}
+
+message ModifyTitleTodoErrorResponse {
+  oneof error {
+    ErrorResponse titleOutOfBoundsError = 1;
+    ErrorResponse unexpectedError = 2;
+  }
+}
+
+message ModifyTitleTodoOKResponse {}
 
 message GetAllTodosRequest {}
 
@@ -573,49 +482,6 @@ message GetAllTodosOKResponse {
   repeated Todo todos = 1;
 }
 
-message ModifyTitleTodoRequest {
-  string id = 1;
-  string title = 2;
-}
-
-message ModifyTitleTodoResponse {
-  oneof result {
-    ModifyTitleTodoOKResponse ok = 1;
-    ModifyTitleTodoErrorResponse error = 2;
-  }
-}
-
-message ModifyTitleTodoErrorResponse {
-  oneof error {
-    ErrorResponse unauthorizedError = 1;
-    ErrorResponse systemUnavailableError = 2;
-    ErrorResponse todoDoesNotExistError = 3;
-    ErrorResponse invalidTitleLengthError = 4;
-  }
-}
-
-message ModifyTitleTodoOKResponse {}
-
-message UncompleteTodoRequest {
-  string id = 1;
-}
-
-message UncompleteTodoResponse {
-  oneof result {
-    UncompleteTodoOKResponse ok = 1;
-    UncompleteTodoErrorResponse error = 2;
-  }
-}
-
-message UncompleteTodoErrorResponse {
-  oneof error {
-    ErrorResponse unauthorizedError = 1;
-    ErrorResponse systemUnavailableError = 2;
-    ErrorResponse todoAlreadyExistsError = 3;
-  }
-}
-
-message UncompleteTodoOKResponse {}
 
 message Todo {
   string id = 1;
