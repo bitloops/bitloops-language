@@ -14,6 +14,10 @@ export class EntityEvaluationNode extends EvaluationNode {
     this.classNodeName = EntityEvaluationNode.entityNodeName;
   }
 
+  private get domainEvaluationNode(): DomainEvaluationNode {
+    return this.getChildNodeByType<DomainEvaluationNode>(BitloopsTypesMapping.TDomainEvaluation);
+  }
+
   getEntityIdentifier(): string {
     const domainEvaluationNode = this.getChildNodeByType<DomainEvaluationNode>(
       BitloopsTypesMapping.TDomainEvaluation,
@@ -37,6 +41,8 @@ export class EntityEvaluationNode extends EvaluationNode {
 
   addToSymbolTable(symbolTableManager: SymbolTableManager): void {
     const symbolTable = symbolTableManager.getSymbolTable();
+    const domainEvaluationNode = this.domainEvaluationNode;
+    domainEvaluationNode.addToSymbolTable(symbolTableManager);
     symbolTable.insert(
       this.getStringValue(),
       new EntityEvaluationSymbolEntry(this.getInferredType(symbolTableManager)),

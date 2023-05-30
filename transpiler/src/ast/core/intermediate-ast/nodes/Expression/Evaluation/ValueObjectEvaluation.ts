@@ -39,6 +39,8 @@ export class ValueObjectEvaluationNode extends EvaluationNode {
 
   addToSymbolTable(symbolTableManager: SymbolTableManager): void {
     const symbolTable = symbolTableManager.getSymbolTable();
+    const domainEvaluationNode = this.domainEvaluationNode;
+    domainEvaluationNode.addToSymbolTable(symbolTableManager);
     symbolTable.insert(
       this.getStringValue(),
       new ValueObjectEvaluationSymbolEntry(this.getInferredType(symbolTableManager)),

@@ -20,10 +20,12 @@
 import {
   ClassTypeParameterSymbolEntry,
   ClassTypeThisSymbolEntry,
+  EntityEvaluationSymbolEntry,
   IntegrationEventParameterSymbolEntry,
   MemberDotSymbolEntry,
   MethodCallSymbolEntry,
   ParameterSymbolEntry,
+  ValueObjectEvaluationSymbolEntry,
   VariableSymbolEntry,
 } from '../../../../src/semantic-analysis/type-inference/SymbolEntry.js';
 import { PrimitiveSymbolTable } from '../../../../src/semantic-analysis/type-inference/SymbolTable.js';
@@ -699,6 +701,105 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
       )
       .build(),
   },
+  {
+    description: 'Should create symbol table for entity evaluation',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/entityEvaluation.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    expectedSymbolTable: new SymbolTableBuilder()
+      .insertChildScope('WithdrawMoneyCommand', new SymbolTableBuilder())
+      .insertChildScope('AccountNotFoundError', new SymbolTableBuilder())
+      .insertChildScope(
+        'AccountEntity',
+        new SymbolTableBuilder()
+          .insert('this', new ClassTypeThisSymbolEntry('AccountEntity'))
+          .insertChildScope(
+            SCOPE_NAMES.DOMAIN_CREATE,
+            new SymbolTableBuilder().insert('props', new ParameterSymbolEntry('AccountProps')),
+          ),
+      )
+      .insertChildScope('AccountProps', new SymbolTableBuilder())
+
+      .insertChildScope(
+        'WithdrawMoneyCommandHandler',
+        new SymbolTableBuilder()
+          .insert('this', new ClassTypeThisSymbolEntry('WithdrawMoneyCommandHandler'))
+          .insert('this.accountRepo', new ClassTypeParameterSymbolEntry('AccountWriteRepoPort'))
+          .insert(
+            'this.integrationEventBus',
+            new ClassTypeParameterSymbolEntry('IntegrationEventBusPort'),
+          )
+          .insertChildScope(
+            'execute',
+            new SymbolTableBuilder()
+              .insert('command', new ParameterSymbolEntry('WithdrawMoneyCommand'))
+              .insert('command.accountId', new MemberDotSymbolEntry('string'))
+              .insert('accountEntity', new VariableSymbolEntry('AccountEntity', true))
+              .insert(
+                'AccountEntity.create()',
+                new EntityEvaluationSymbolEntry('(OK(AccountEntity), Errors())'),
+              )
+              .insert(
+                'AccountEntity.create().ifError()',
+                new MethodCallSymbolEntry('AccountEntity'),
+              )
+              .insertChildScope('ifError0', new SymbolTableBuilder()),
+          ),
+      )
+      .build(),
+  },
+  {
+    description: 'Should create symbol table for value object evaluation',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/valueObjectEvaluation.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    expectedSymbolTable: new SymbolTableBuilder()
+      .insertChildScope('AddTodoCommand', new SymbolTableBuilder())
+      .insertChildScope(
+        'TitleVO',
+        new SymbolTableBuilder()
+          .insert('this', new ClassTypeThisSymbolEntry('TitleVO'))
+          .insertChildScope(
+            SCOPE_NAMES.DOMAIN_CREATE,
+            new SymbolTableBuilder()
+              .insert('props', new ParameterSymbolEntry('TitleProps'))
+              .insert('props.title', new MemberDotSymbolEntry('string')),
+          ),
+      )
+      .insertChildScope('TitleProps', new SymbolTableBuilder())
+      .insertChildScope(
+        'AddTodoCommandHandler',
+        new SymbolTableBuilder()
+          .insert('this', new ClassTypeThisSymbolEntry('AddTodoCommandHandler'))
+          .insert(
+            'this.integrationEventBus',
+            new ClassTypeParameterSymbolEntry('IntegrationEventBusPort'),
+          )
+          .insertChildScope(
+            'execute',
+            new SymbolTableBuilder()
+              .insert('command', new ParameterSymbolEntry('AddTodoCommand'))
+              .insert('command.title', new MemberDotSymbolEntry('string'))
+              .insert('titlevo', new VariableSymbolEntry('TitleVO', true))
+              .insert(
+                'TitleVO.create()',
+                new ValueObjectEvaluationSymbolEntry(
+                  '(OK(TitleVO), Errors(DomainErrors.TitleOutOfBoundsError))',
+                ),
+              )
+              .insert('TitleVO.create().ifError()', new MethodCallSymbolEntry('TitleVO'))
+
+              .insertChildScope('ifError0', new SymbolTableBuilder()),
+          ),
+      )
+      .build(),
+  },
 ];
 
 type SymbolTableErrorTestCase = {
@@ -898,10 +999,7 @@ export const SYMBOL_TABLE_MEMBER_NOT_DEFINED_TEST_CASES: SymbolTableErrorTestCas
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    errorMessages: [
-      'Identifier TodoEntity not found: from 1:36 to 1:46 of file fileId',
-      'Member test not defined in TodoAddedDomainEvent.',
-    ],
+    errorMessages: ['Member test not defined in TodoAddedDomainEvent.'],
   },
   {
     description: 'Should return error that member is not defined for props',
@@ -921,10 +1019,7 @@ export const SYMBOL_TABLE_MEMBER_NOT_DEFINED_TEST_CASES: SymbolTableErrorTestCas
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    errorMessages: [
-      'Identifier MoneyDepositedDomainEvent not found: from 19:56 to 19:81 of file fileId',
-      'Member account not defined in IntegrationMoneyDepositedSchemaV1.',
-    ],
+    errorMessages: ['Member account not defined in IntegrationMoneyDepositedSchemaV1.'],
   },
   {
     description: 'Should return error that member is not defined for value object',
@@ -934,14 +1029,7 @@ export const SYMBOL_TABLE_MEMBER_NOT_DEFINED_TEST_CASES: SymbolTableErrorTestCas
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    errorMessages: [
-      'Identifier DomainErrors.TitleOutOfBoundsError not found: from 2:60 to 2:94 of file fileId',
-      'Identifier TitleOutOfBoundsRule not found: from 3:20 to 3:40 of file fileId',
-      'Identifier DomainErrors.TitleOutOfBoundsError not found: from 12:55 to 12:89 of file fileId',
-      'Identifier AddTodoCommand not found: from 12:19 to 12:33 of file fileId',
-      'Identifier TodoWriteRepoPort not found: from 11:49 to 11:66 of file fileId',
-      'Member test not defined in TitleVO.',
-    ],
+    errorMessages: ['Member test not defined in TitleVO.'],
   },
   {
     description: 'Should return error that member is not defined for command bus port',
@@ -951,11 +1039,7 @@ export const SYMBOL_TABLE_MEMBER_NOT_DEFINED_TEST_CASES: SymbolTableErrorTestCas
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    errorMessages: [
-      'Identifier AccountEntity not found: from 1:44 to 1:57 of file fileId',
-      'Identifier CustomerServicePort not found: from 6:84 to 6:103 of file fileId',
-      'Member test not defined in CommandBus.',
-    ],
+    errorMessages: ['Member test not defined in CommandBus.'],
   },
   {
     description: 'Should return error that member is not defined for regex',

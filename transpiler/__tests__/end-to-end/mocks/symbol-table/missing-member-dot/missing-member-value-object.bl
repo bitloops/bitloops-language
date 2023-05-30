@@ -8,11 +8,21 @@ Props TitleProps {
     string title;
 }
 
-CommandHandler AddTodoCommandHandler (todoRepo: TodoWriteRepoPort){
+CommandHandler AddTodoCommandHandler (){
 execute (command: AddTodoCommand): (OK(string),Errors(DomainErrors.TitleOutOfBoundsError))
 {
     const title = TitleVO.create({ title: command.title }).ifError()
     title.test()
     return title;
 }
+}
+Command AddTodoCommand {
+    string title;
+  }
+DomainError TitleOutOfBoundsError(title: string) { 
+    message: `Title ${title} is out of range`,
+    errorId: 'a12ec42c-4d31-4f7c-b68a-b68a78-b68a655'
+}
+Rule TitleOutOfBoundsRule(title: string) throws DomainErrors.TitleOutOfBoundsError { 
+    isBrokenIf(title.length > 150 OR title.length < 4);
 }

@@ -1,23 +1,49 @@
-IntegrationEventHandler MoneyDepositedIntegrationEventHandler() {
+IntegrationEventHandler TodoAddedIntegrationEventHandler() {
     
     eventVersion: 'v1';
     
-    handle(event: [Hello world][demo]MoneyDepositedIntegrationEvent): (OK(void), Errors()) {
-      const accountId = event.account;
+    handle(event: [Hello world][demo]TodoAddedIntegrationEvent): (OK(void), Errors()) {
+      const userId = event.account;
 
-      const command = IncrementDepositsCommand.create({
-        accountId: accountId,
-      })
-      this.commandBus.send(command);
+      
     }
 }
 
 Struct IntegrationMoneyDepositedSchemaV1 {
-  string accountId;
+  string userId;
 }
 
-IntegrationEvent MoneyDepositedIntegrationEvent(event: MoneyDepositedDomainEvent) {  
+IntegrationEvent TodoAddedIntegrationEvent(event: TodoAddedDomainEvent) {  
   'v1' : IntegrationMoneyDepositedSchemaV1 {
     return 'v1'
+  }
+}
+
+
+
+DomainEvent TodoAddedDomainEvent<TodoEntity> {
+  string userId;
+  string title;
+  bool completed;
+}
+
+Props TodoProps {
+  optional UUIDv4 id;
+  bool completed;
+}
+
+
+Root Entity TodoEntity {
+  static create(props: TodoProps): (OK(TodoEntity), Errors())  {
+      const todo = TodoEntity(props);
+      const isNew = props.id != null;
+      if (isNew) {
+          const event = TodoAddedDomainEvent.create({ 
+              aggregateId: todo.id.toString(),
+              completed: todo.completed
+          });
+          todo.addDomainEvent(event);
+      }
+      return todo;
   }
 }
