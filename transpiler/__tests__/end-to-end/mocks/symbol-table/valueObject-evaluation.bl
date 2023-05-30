@@ -13,7 +13,7 @@ Command AddTodoCommand {
 CommandHandler AddTodoCommandHandler (){
 execute (command: AddTodoCommand): (OK(string),Errors(DomainErrors.TitleOutOfBoundsError))
 {
-    const titlevo = TitleVO.create({ title: command.title }).ifError()
-    return titlevo;
+    const title = TitleVO.create({ title: command.title }).ifError()
+    return title;
 }
 }

@@ -704,7 +704,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
   {
     description: 'Should create symbol table for entity evaluation',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/entityEvaluation.bl',
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/entity-evaluation.bl',
     ),
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
@@ -754,7 +754,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
   {
     description: 'Should create symbol table for value object evaluation',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/valueObjectEvaluation.bl',
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/valueObject-evaluation.bl',
     ),
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
