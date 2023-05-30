@@ -267,6 +267,7 @@ export type TEvaluationValues =
   | TEntityEvaluation
   | TIntegrationEventEvaluation
   | TEntityConstructorEvaluation
+  | TValueObjectConstructorEvaluation
   | TErrorEvaluation
   | TBuiltInClassEvaluation
   | TBuiltInFunctionValues
@@ -350,6 +351,10 @@ export type TEntityEvaluation = {
 };
 export type TEntityConstructorEvaluation = {
   entityConstructor: TDomainEvaluation;
+};
+
+export type TValueObjectConstructorEvaluation = {
+  valueObjectConstructor: TDomainEvaluation;
 };
 
 export type TIntegrationEventEvaluation = {

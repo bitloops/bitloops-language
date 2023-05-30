@@ -32,6 +32,8 @@ import { DomainEventEvaluationNodeBuilder } from '../../../../../src/ast/core/in
 import { IdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/identifier/IdentifierBuilder.js';
 import { PackageMethodNameBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/PackageMethodNameBuilder.js';
 import { PackageEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/PackageEvaluationNodeBuilder.js';
+import { ValueObjectIdentifierNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/valueObject/ValueObjectIdentifierNodeBuilder.js';
+import { ValueObjectConstructorEvaluationNodeBuilder } from '../../../../../src/ast/core/intermediate-ast/builders/expressions/evaluation/ValueObjectConstructorEvaluationNodeBuilder.js';
 
 export class EvaluationBuilderDirector {
   buildStructEvaluation(identifier: string, evalFields: EvaluationFieldNode[]): EvaluationNode {
@@ -119,6 +121,24 @@ export class EvaluationBuilderDirector {
       .withDomainEvaluation(domainEvaluation)
       .build();
     const evaluationNode = new EvaluationBuilder().withEvaluation(entityEvaluationNode).build();
+    return evaluationNode;
+  }
+
+  buildValueObjectConstructorEvaluationWithExpression(
+    valueObjectName: string,
+    expressionNode: ExpressionNode,
+  ): EvaluationNode {
+    const domainEvaluation =
+      new DomainEvaluationBuilderDirector().buildDomainEvaluationWithExpressionProps(
+        new ValueObjectIdentifierNodeBuilder().withName(valueObjectName).build(),
+        expressionNode,
+      );
+    const valueObjectEvaluationNode = new ValueObjectConstructorEvaluationNodeBuilder()
+      .withEvaluation(domainEvaluation)
+      .build();
+    const evaluationNode = new EvaluationBuilder()
+      .withEvaluation(valueObjectEvaluationNode)
+      .build();
     return evaluationNode;
   }
 
