@@ -32,6 +32,6 @@ export class MoneyDepositedIntegrationHandler implements Application.IHandleInte
     event: UserRegisteredIntegrationEvent,
   ): Promise<Either<void, ApplicationErrors.InvalidMoneyError>> {
     const email = 'example@email.com';
-    await this.commandBus.send(email);
+    await this.commandBus.publish(email);
   }
 }

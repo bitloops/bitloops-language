@@ -109,11 +109,13 @@ export class SymbolTable {
   public findScopeOfKeyword({
     line,
     column,
+    fileId,
   }: {
     line: number;
     column: number;
+    fileId: string;
   }): IntermediateASTNode[] | null {
-    const nodes = this.findScopeByPosition(undefined, { line, column });
+    const nodes = this.findScopeByPosition(undefined, { line, column, fileId });
     return nodes;
   }
   private findScopeByPosition(
@@ -121,13 +123,16 @@ export class SymbolTable {
     {
       line,
       column,
+      fileId,
     }: {
       line: number;
       column: number;
+      fileId: string;
     },
   ): IntermediateASTNode[] | null {
     if (
       this.node &&
+      this.node.getMetadata().fileId === fileId &&
       this.node.getMetadata()?.start.line <= line &&
       this.node.getMetadata()?.start.column <= column &&
       this.node.getMetadata()?.end.line >= line
@@ -136,7 +141,7 @@ export class SymbolTable {
       nodes.push(this.node);
     }
     for (const child of Object.values(this.childrenScopes)) {
-      child.findScopeByPosition(nodes, { line, column });
+      child.findScopeByPosition(nodes, { line, column, fileId });
     }
     if (nodes.length === 0) {
       return null;
@@ -147,12 +152,12 @@ export class SymbolTable {
   //returns the type of the keyword and if it is const or not
   public findTypeOfKeyword(
     keyword: string,
-    { line, column }: { line: number; column: number },
+    { line, column, fileId }: { line: number; column: number; fileId: string },
   ): {
     type: string | null;
     isConst: boolean | null;
   } {
-    const nodes = this.findScopeOfKeyword({ line, column });
+    const nodes = this.findScopeOfKeyword({ line, column, fileId });
     let type;
     let isConst;
     let childScopes: SymbolTable;

@@ -41,6 +41,7 @@ export class ExecuteNode extends IntermediateASTNode {
     symbolTableManager.createSymbolTableChildScope(SymbolTableManager.SCOPE_NAMES.EXECUTE, this);
     const executeParameter = this.getParameter();
     if (executeParameter) {
+      symbolTableManager.addMetadataContext(executeParameter.getIdentifier());
       executeParameter.addToSymbolTable(symbolTableManager);
     }
 

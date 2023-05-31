@@ -36,7 +36,7 @@ export const VALID_DOMAIN_EVENT_HANDLER_TEST_CASES: Array<TDomainEventHandlerTes
         ),
         new ExpressionBuilderDirector().buildThisDependencyMethodCall(
           'commandBus',
-          'send',
+          'publish',
           new ArgumentListDirector().buildArgumentListWithIdentifierExpression('email'),
         ),
       ],
@@ -66,7 +66,7 @@ export const VALID_DOMAIN_EVENT_HANDLER_TEST_CASES: Array<TDomainEventHandlerTes
           ),
           new ExpressionBuilderDirector().buildThisDependencyMethodCall(
             'commandBus',
-            'send',
+            'publish',
             new ArgumentListDirector().buildArgumentListWithIdentifierExpression('email'),
           ),
         ],
@@ -120,7 +120,7 @@ export const VALID_DOMAIN_EVENT_HANDLER_TEST_CASES: Array<TDomainEventHandlerTes
           ),
           new ExpressionBuilderDirector().buildThisDependencyMethodCall(
             'commandBus',
-            'send',
+            'publish',
             new ArgumentListDirector().buildArgumentListWithIdentifierExpression(
               'emailToBeSentInfoResponse',
             ),

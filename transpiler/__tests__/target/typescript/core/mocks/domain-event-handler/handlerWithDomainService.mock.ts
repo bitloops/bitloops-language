@@ -26,6 +26,6 @@ export class SendEmailAfterMoneyDepositedHandler implements Application.IHandleD
     const marketingNotificationService = new MarketingNotificationDomainService(this.repo);
     const emailToBeSentInfoResponse =
       await marketingNotificationService.getNotificationTemplateToBeSent(user);
-    await this.commandBus.send(emailToBeSentInfoResponse.value);
+    await this.commandBus.publish(emailToBeSentInfoResponse.value);
   }
 }

@@ -38,6 +38,7 @@ export class EventHandleNode extends IntermediateASTNode {
     const initialSymbolTable = symbolTableManager.getSymbolTable();
     symbolTableManager.createSymbolTableChildScope(SymbolTableManager.SCOPE_NAMES.HANDLE, this);
     const parameter = this.getParameter();
+    symbolTableManager.addMetadataContext(parameter.getIdentifier());
     parameter.addToSymbolTable(symbolTableManager);
 
     const statementList = this.getStatementList();

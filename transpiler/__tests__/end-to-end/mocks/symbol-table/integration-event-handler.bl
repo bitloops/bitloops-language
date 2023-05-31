@@ -8,7 +8,7 @@ IntegrationEventHandler MoneyDepositedIntegrationEventHandler() {
       const command = IncrementDepositsCommand.create({
         accountId: accountId,
       })
-      this.commandBus.send(command);
+      this.commandBus.publish(command);
     }
 }
 

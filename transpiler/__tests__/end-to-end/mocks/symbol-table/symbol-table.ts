@@ -40,6 +40,8 @@ type SymbolTableTestCase = {
   inputSetup: string;
   expectedSymbolTable: PrimitiveSymbolTable;
 };
+const METADATA_TYPE = '{ context: { jwt: string; userId: string } }';
+const CONTEXT_TYPE = '{ jwt: string; userId: string }';
 const SCOPE_NAMES = SymbolTableManager.SCOPE_NAMES;
 
 export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
@@ -67,6 +69,10 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
               .insert('command', new ParameterSymbolEntry('WithdrawMoneyCommand'))
               .insert('command.accountId', new MemberDotSymbolEntry('string'))
               .insert('command.amount', new MemberDotSymbolEntry('int32'))
+              .insert('command.metadata', new MemberDotSymbolEntry(METADATA_TYPE))
+              .insert('command.metadata.context', new MemberDotSymbolEntry(CONTEXT_TYPE))
+              .insert('command.metadata.context.jwt', new MemberDotSymbolEntry('string'))
+              .insert('command.metadata.context.userId', new MemberDotSymbolEntry('string'))
               .insertVariableSymbolEntry('accountId', 'UUIDv4', true)
               .insert(
                 'this.accountRepo.getById()',
@@ -142,6 +148,10 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
               .insert('command', new ParameterSymbolEntry('WithdrawMoneyCommand'))
               .insert('command.accountId', new MemberDotSymbolEntry('string'))
               .insert('command.amount', new MemberDotSymbolEntry('int32'))
+              .insert('command.metadata', new MemberDotSymbolEntry(METADATA_TYPE))
+              .insert('command.metadata.context', new MemberDotSymbolEntry(CONTEXT_TYPE))
+              .insert('command.metadata.context.jwt', new MemberDotSymbolEntry('string'))
+              .insert('command.metadata.context.userId', new MemberDotSymbolEntry('string'))
               .insertVariableSymbolEntry('accountId', 'UUIDv4', true)
               .insert(
                 'this.accountRepo.getById()',
@@ -221,6 +231,10 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
               .insert('command', new ParameterSymbolEntry('WithdrawMoneyCommand'))
               .insert('command.accountId', new MemberDotSymbolEntry('string'))
               .insert('command.amount', new MemberDotSymbolEntry('int32'))
+              .insert('command.metadata', new MemberDotSymbolEntry(METADATA_TYPE))
+              .insert('command.metadata.context', new MemberDotSymbolEntry(CONTEXT_TYPE))
+              .insert('command.metadata.context.jwt', new MemberDotSymbolEntry('string'))
+              .insert('command.metadata.context.userId', new MemberDotSymbolEntry('string'))
               .insertVariableSymbolEntry('accountId', 'UUIDv4', true)
               .insert(
                 'this.accountRepo.getById()',
@@ -292,6 +306,10 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
             new SymbolTableBuilder()
               .insert('query', new ParameterSymbolEntry('GetAccountQuery'))
               .insert('query.accountId', new MemberDotSymbolEntry('string'))
+              .insert('query.metadata', new MemberDotSymbolEntry(METADATA_TYPE))
+              .insert('query.metadata.context', new MemberDotSymbolEntry(CONTEXT_TYPE))
+              .insert('query.metadata.context.jwt', new MemberDotSymbolEntry('string'))
+              .insert('query.metadata.context.userId', new MemberDotSymbolEntry('string'))
               .insertVariableSymbolEntry('requestId', 'string', true)
               .insert(
                 'this.accountRepo.getById()',
@@ -421,8 +439,12 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
               .insert('event', new ParameterSymbolEntry('DepositsIncrementedDomainEvent'))
               .insert('event.customerId', new MemberDotSymbolEntry('string'))
               .insert('event.amount', new MemberDotSymbolEntry('float'))
+              .insert('event.metadata', new MemberDotSymbolEntry(METADATA_TYPE))
+              .insert('event.metadata.context', new MemberDotSymbolEntry(CONTEXT_TYPE))
+              .insert('event.metadata.context.userId', new MemberDotSymbolEntry('string'))
+              .insert('event.metadata.context.jwt', new MemberDotSymbolEntry('string'))
               .insertVariableSymbolEntry('command', 'SendEmailCommand', true)
-              .insert('this.commandBus.send()', new MethodCallSymbolEntry('void')),
+              .insert('this.commandBus.publish()', new MethodCallSymbolEntry('void')),
           ),
       )
       .insertChildScope('DepositsIncrementedDomainEvent', new SymbolTableBuilder())
@@ -457,7 +479,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
               .insert('event.accountId', new MemberDotSymbolEntry('string'))
               .insertVariableSymbolEntry('accountId', 'string', true)
               .insertVariableSymbolEntry('command', 'IncrementDepositsCommand', true)
-              .insert('this.commandBus.send()', new MethodCallSymbolEntry('void')),
+              .insert('this.commandBus.publish()', new MethodCallSymbolEntry('void')),
           ),
       )
       .insertChildScope('IntegrationMoneyDepositedSchemaV1', new SymbolTableBuilder())
@@ -737,6 +759,10 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
             new SymbolTableBuilder()
               .insert('command', new ParameterSymbolEntry('WithdrawMoneyCommand'))
               .insert('command.accountId', new MemberDotSymbolEntry('string'))
+              .insert('command.metadata', new MemberDotSymbolEntry(METADATA_TYPE))
+              .insert('command.metadata.context', new MemberDotSymbolEntry(CONTEXT_TYPE))
+              .insert('command.metadata.context.jwt', new MemberDotSymbolEntry('string'))
+              .insert('command.metadata.context.userId', new MemberDotSymbolEntry('string'))
               .insert('accountEntity', new VariableSymbolEntry('AccountEntity', true))
               .insert(
                 'AccountEntity.create()',
@@ -786,6 +812,10 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
             new SymbolTableBuilder()
               .insert('command', new ParameterSymbolEntry('AddTodoCommand'))
               .insert('command.title', new MemberDotSymbolEntry('string'))
+              .insert('command.metadata', new MemberDotSymbolEntry(METADATA_TYPE))
+              .insert('command.metadata.context', new MemberDotSymbolEntry(CONTEXT_TYPE))
+              .insert('command.metadata.context.jwt', new MemberDotSymbolEntry('string'))
+              .insert('command.metadata.context.userId', new MemberDotSymbolEntry('string'))
               .insert('titlevo', new VariableSymbolEntry('TitleVO', true))
               .insert(
                 'TitleVO.create()',
@@ -1066,7 +1096,14 @@ export const SYMBOL_TABLE_FIND_TYPE_OF_KEYWORD_TEST_CASES = [
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    keywordInfo: { name: 'accountEntity', position: { line: 16, column: 22 } },
+    keywordInfo: {
+      name: 'accountEntity',
+      position: {
+        line: 16,
+        column: 22,
+        fileId: 'fileId',
+      },
+    },
     expectedOutput: { type: '(OK(AccountEntity), Errors(UnexpectedError))', isConst: true },
   },
   {
@@ -1077,7 +1114,7 @@ export const SYMBOL_TABLE_FIND_TYPE_OF_KEYWORD_TEST_CASES = [
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    keywordInfo: { name: 'accountEntity', position: { line: 16, column: 22 } },
+    keywordInfo: { name: 'accountEntity', position: { line: 16, column: 22, fileId: 'fileId' } },
     expectedOutput: { type: 'AccountEntity', isConst: true },
   },
   {
@@ -1088,7 +1125,7 @@ export const SYMBOL_TABLE_FIND_TYPE_OF_KEYWORD_TEST_CASES = [
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    keywordInfo: { name: 'result', position: { line: 17, column: 22 } },
+    keywordInfo: { name: 'result', position: { line: 17, column: 22, fileId: 'fileId' } },
     expectedOutput: { type: 'string', isConst: true },
   },
   {
@@ -1099,7 +1136,7 @@ export const SYMBOL_TABLE_FIND_TYPE_OF_KEYWORD_TEST_CASES = [
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    keywordInfo: { name: 'message', position: { line: 23, column: 23 } },
+    keywordInfo: { name: 'message', position: { line: 23, column: 23, fileId: 'fileId' } },
     expectedOutput: { type: 'string', isConst: true },
   },
   {
@@ -1110,7 +1147,7 @@ export const SYMBOL_TABLE_FIND_TYPE_OF_KEYWORD_TEST_CASES = [
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    keywordInfo: { name: 'account', position: { line: 17, column: 24 } },
+    keywordInfo: { name: 'account', position: { line: 17, column: 24, fileId: 'fileId' } },
     expectedOutput: { type: '(OK(AccountReadModel), Errors(UnexpectedError))', isConst: true },
   },
   {
@@ -1121,7 +1158,7 @@ export const SYMBOL_TABLE_FIND_TYPE_OF_KEYWORD_TEST_CASES = [
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    keywordInfo: { name: 'animal', position: { line: 22, column: 19 } },
+    keywordInfo: { name: 'animal', position: { line: 22, column: 19, fileId: 'fileId' } },
     expectedOutput: { type: 'string', isConst: true },
   },
   {
@@ -1132,7 +1169,7 @@ export const SYMBOL_TABLE_FIND_TYPE_OF_KEYWORD_TEST_CASES = [
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    keywordInfo: { name: 'bird', position: { line: 43, column: 20 } },
+    keywordInfo: { name: 'bird', position: { line: 43, column: 20, fileId: 'fileId' } },
     expectedOutput: { type: 'string', isConst: true },
   },
   {
@@ -1143,7 +1180,7 @@ export const SYMBOL_TABLE_FIND_TYPE_OF_KEYWORD_TEST_CASES = [
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    keywordInfo: { name: 'cat', position: { line: 49, column: 26 } },
+    keywordInfo: { name: 'cat', position: { line: 49, column: 26, fileId: 'fileId' } },
     expectedOutput: { type: 'string', isConst: true },
   },
   {
@@ -1154,7 +1191,7 @@ export const SYMBOL_TABLE_FIND_TYPE_OF_KEYWORD_TEST_CASES = [
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    keywordInfo: { name: 'isNew', position: { line: 20, column: 16 } },
+    keywordInfo: { name: 'isNew', position: { line: 20, column: 16, fileId: 'fileId' } },
     expectedOutput: { type: 'bool', isConst: true },
   },
   {
@@ -1165,7 +1202,7 @@ export const SYMBOL_TABLE_FIND_TYPE_OF_KEYWORD_TEST_CASES = [
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    keywordInfo: { name: 'command', position: { line: 9, column: 36 } },
+    keywordInfo: { name: 'command', position: { line: 9, column: 36, fileId: 'fileId' } },
     expectedOutput: { type: 'SendEmailCommand', isConst: true },
   },
 ];

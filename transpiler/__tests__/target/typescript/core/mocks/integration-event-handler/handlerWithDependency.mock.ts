@@ -29,6 +29,6 @@ export class MoneyDepositedIntegrationHandler implements Application.IHandleInte
   })
   public async handle(event: MoneyDepositedIntegrationEvent): Promise<Either<void, never>> {
     const email = 'example@email.com';
-    await this.commandBus.send(email);
+    await this.commandBus.publish(email);
   }
 }
