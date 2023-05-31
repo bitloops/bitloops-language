@@ -40,7 +40,7 @@ export const VALID_INTEGRATION_EVENT_HANDLER_TEST_CASES: Array<TIntegrationEvent
           ),
           new ExpressionBuilderDirector().buildThisDependencyMethodCall(
             'commandBus',
-            'send',
+            'publish',
             new ArgumentListDirector().buildArgumentListWithIdentifierExpression('email'),
           ),
         ],
@@ -73,7 +73,7 @@ export const VALID_INTEGRATION_EVENT_HANDLER_TEST_CASES: Array<TIntegrationEvent
           ),
           new ExpressionBuilderDirector().buildThisDependencyMethodCall(
             'commandBus',
-            'send',
+            'publish',
             new ArgumentListDirector().buildArgumentListWithIdentifierExpression('email'),
           ),
         ],
@@ -106,7 +106,7 @@ export const VALID_INTEGRATION_EVENT_HANDLER_TEST_CASES: Array<TIntegrationEvent
           ),
           new ExpressionBuilderDirector().buildThisDependencyMethodCall(
             'commandBus',
-            'send',
+            'publish',
             new ArgumentListDirector().buildArgumentListWithIdentifierExpression('email'),
           ),
         ],

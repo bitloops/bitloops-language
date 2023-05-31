@@ -28,7 +28,7 @@ export const validIntegrationEventHandlersTestCases = [
           new ExpressionBuilderDirector().buildMethodCallExpression(
             new ExpressionBuilderDirector().buildThisMemberExpressionOutOfVariables(
               'commandBus',
-              'send',
+              'publish',
             ),
             new ArgumentListBuilderDirector().buildArgumentList(['command']),
           ),
@@ -66,7 +66,7 @@ export const validIntegrationEventHandlersTestCases = [
           new ExpressionBuilderDirector().buildMethodCallExpression(
             new ExpressionBuilderDirector().buildThisMemberExpressionOutOfVariables(
               'commandBus',
-              'send',
+              'publish',
             ),
             new ArgumentListBuilderDirector().buildArgumentList(['command']),
           ),

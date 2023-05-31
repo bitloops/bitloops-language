@@ -4,6 +4,6 @@ IntegrationEventHandler MoneyDepositedIntegrationEventHandler() {
     
     handle(event: [banking][banking]MoneyDepositedIntegrationEvent): (OK(void), Errors()) {
   
-      this.commandBus.send(command);
+      this.commandBus.publish(command);
     }
 }

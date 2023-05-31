@@ -1,7 +1,11 @@
 import { IntermediateASTTree } from '../../ast/core/intermediate-ast/IntermediateASTTree.js';
 import { IntermediateASTNode } from '../../ast/core/intermediate-ast/nodes/IntermediateASTNode.js';
 import { TBoundedContexts } from '../../ast/core/types.js';
-import { ClassTypeParameterSymbolEntry, ClassTypeThisSymbolEntry } from './SymbolEntry.js';
+import {
+  ClassTypeParameterSymbolEntry,
+  ClassTypeThisSymbolEntry,
+  MemberDotSymbolEntry,
+} from './SymbolEntry.js';
 import { SymbolTable } from './SymbolTable.js';
 
 export class SymbolTableManager {
@@ -64,6 +68,19 @@ export class SymbolTableManager {
     this.symbolTable.insert(queryBusKey, new ClassTypeParameterSymbolEntry('QueryBusPort'));
   }
 
+  public addMetadataContext(identifier: string): void {
+    const identifierMetadataKey = this.joinWithDot([identifier, 'metadata']);
+    this.symbolTable.insert(
+      identifierMetadataKey,
+      new MemberDotSymbolEntry(this.getMetadataType()),
+    );
+    const identifierContextKey = this.joinWithDot([identifierMetadataKey, 'context']);
+    this.symbolTable.insert(identifierContextKey, new MemberDotSymbolEntry(this.getContextType()));
+    const jwtKey = this.joinWithDot([identifierContextKey, 'jwt']);
+    this.symbolTable.insert(jwtKey, new MemberDotSymbolEntry('string'));
+    const userIdKey = this.joinWithDot([identifierContextKey, 'userId']);
+    this.symbolTable.insert(userIdKey, new MemberDotSymbolEntry('string'));
+  }
   private joinThisWithIdentifier(identifier: string): string {
     return SymbolTableManager.THIS + '.' + identifier;
   }
@@ -75,4 +92,12 @@ export class SymbolTableManager {
   public joinWithDot(memberDotMembers: string[]): string {
     return memberDotMembers.join('.');
   }
+
+  private getMetadataType(): string {
+    return '{ context: { jwt: string; userId: string } }';
+  } //type of object is string for now
+
+  private getContextType(): string {
+    return '{ jwt: string; userId: string }';
+  } //type of object is string for now
 }

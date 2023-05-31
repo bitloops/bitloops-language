@@ -26,7 +26,7 @@ export const validDomainEventHandlersTestCases = [
           new ExpressionBuilderDirector().buildMethodCallExpression(
             new ExpressionBuilderDirector().buildThisMemberExpressionOutOfVariables(
               'commandBus',
-              'send',
+              'publish',
             ),
             new ArgumentListBuilderDirector().buildArgumentList(['command']),
           ),
@@ -62,7 +62,7 @@ export const validDomainEventHandlersTestCases = [
           new ExpressionBuilderDirector().buildMethodCallExpression(
             new ExpressionBuilderDirector().buildThisMemberExpressionOutOfVariables(
               'commandBus',
-              'send',
+              'publish',
             ),
             new ArgumentListBuilderDirector().buildArgumentList(['command']),
           ),

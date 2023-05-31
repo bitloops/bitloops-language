@@ -40,6 +40,8 @@ type SymbolTableTestCase = {
   inputSetup: string;
   expectedSymbolTable: PrimitiveSymbolTable;
 };
+const METADATA_TYPE = '{ context: { jwt: string; userId: string } }';
+const CONTEXT_TYPE = '{ jwt: string; userId: string }';
 const SCOPE_NAMES = SymbolTableManager.SCOPE_NAMES;
 
 export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
@@ -67,6 +69,10 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
               .insert('command', new ParameterSymbolEntry('WithdrawMoneyCommand'))
               .insert('command.accountId', new MemberDotSymbolEntry('string'))
               .insert('command.amount', new MemberDotSymbolEntry('int32'))
+              .insert('command.metadata', new MemberDotSymbolEntry(METADATA_TYPE))
+              .insert('command.metadata.context', new MemberDotSymbolEntry(CONTEXT_TYPE))
+              .insert('command.metadata.context.jwt', new MemberDotSymbolEntry('string'))
+              .insert('command.metadata.context.userId', new MemberDotSymbolEntry('string'))
               .insertVariableSymbolEntry('accountId', 'UUIDv4', true)
               .insert(
                 'this.accountRepo.getById()',
@@ -142,6 +148,10 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
               .insert('command', new ParameterSymbolEntry('WithdrawMoneyCommand'))
               .insert('command.accountId', new MemberDotSymbolEntry('string'))
               .insert('command.amount', new MemberDotSymbolEntry('int32'))
+              .insert('command.metadata', new MemberDotSymbolEntry(METADATA_TYPE))
+              .insert('command.metadata.context', new MemberDotSymbolEntry(CONTEXT_TYPE))
+              .insert('command.metadata.context.jwt', new MemberDotSymbolEntry('string'))
+              .insert('command.metadata.context.userId', new MemberDotSymbolEntry('string'))
               .insertVariableSymbolEntry('accountId', 'UUIDv4', true)
               .insert(
                 'this.accountRepo.getById()',
@@ -221,6 +231,10 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
               .insert('command', new ParameterSymbolEntry('WithdrawMoneyCommand'))
               .insert('command.accountId', new MemberDotSymbolEntry('string'))
               .insert('command.amount', new MemberDotSymbolEntry('int32'))
+              .insert('command.metadata', new MemberDotSymbolEntry(METADATA_TYPE))
+              .insert('command.metadata.context', new MemberDotSymbolEntry(CONTEXT_TYPE))
+              .insert('command.metadata.context.jwt', new MemberDotSymbolEntry('string'))
+              .insert('command.metadata.context.userId', new MemberDotSymbolEntry('string'))
               .insertVariableSymbolEntry('accountId', 'UUIDv4', true)
               .insert(
                 'this.accountRepo.getById()',
@@ -292,6 +306,10 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
             new SymbolTableBuilder()
               .insert('query', new ParameterSymbolEntry('GetAccountQuery'))
               .insert('query.accountId', new MemberDotSymbolEntry('string'))
+              .insert('query.metadata', new MemberDotSymbolEntry(METADATA_TYPE))
+              .insert('query.metadata.context', new MemberDotSymbolEntry(CONTEXT_TYPE))
+              .insert('query.metadata.context.jwt', new MemberDotSymbolEntry('string'))
+              .insert('query.metadata.context.userId', new MemberDotSymbolEntry('string'))
               .insertVariableSymbolEntry('requestId', 'string', true)
               .insert(
                 'this.accountRepo.getById()',
@@ -421,8 +439,12 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
               .insert('event', new ParameterSymbolEntry('DepositsIncrementedDomainEvent'))
               .insert('event.customerId', new MemberDotSymbolEntry('string'))
               .insert('event.amount', new MemberDotSymbolEntry('float'))
+              .insert('event.metadata', new MemberDotSymbolEntry(METADATA_TYPE))
+              .insert('event.metadata.context', new MemberDotSymbolEntry(CONTEXT_TYPE))
+              .insert('event.metadata.context.userId', new MemberDotSymbolEntry('string'))
+              .insert('event.metadata.context.jwt', new MemberDotSymbolEntry('string'))
               .insertVariableSymbolEntry('command', 'SendEmailCommand', true)
-              .insert('this.commandBus.send()', new MethodCallSymbolEntry('void')),
+              .insert('this.commandBus.publish()', new MethodCallSymbolEntry('void')),
           ),
       )
       .insertChildScope('DepositsIncrementedDomainEvent', new SymbolTableBuilder())
@@ -457,7 +479,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
               .insert('event.accountId', new MemberDotSymbolEntry('string'))
               .insertVariableSymbolEntry('accountId', 'string', true)
               .insertVariableSymbolEntry('command', 'IncrementDepositsCommand', true)
-              .insert('this.commandBus.send()', new MethodCallSymbolEntry('void')),
+              .insert('this.commandBus.publish()', new MethodCallSymbolEntry('void')),
           ),
       )
       .insertChildScope('IntegrationMoneyDepositedSchemaV1', new SymbolTableBuilder())
@@ -737,6 +759,10 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
             new SymbolTableBuilder()
               .insert('command', new ParameterSymbolEntry('WithdrawMoneyCommand'))
               .insert('command.accountId', new MemberDotSymbolEntry('string'))
+              .insert('command.metadata', new MemberDotSymbolEntry(METADATA_TYPE))
+              .insert('command.metadata.context', new MemberDotSymbolEntry(CONTEXT_TYPE))
+              .insert('command.metadata.context.jwt', new MemberDotSymbolEntry('string'))
+              .insert('command.metadata.context.userId', new MemberDotSymbolEntry('string'))
               .insert('accountEntity', new VariableSymbolEntry('AccountEntity', true))
               .insert(
                 'AccountEntity.create()',
@@ -786,6 +812,10 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
             new SymbolTableBuilder()
               .insert('command', new ParameterSymbolEntry('AddTodoCommand'))
               .insert('command.title', new MemberDotSymbolEntry('string'))
+              .insert('command.metadata', new MemberDotSymbolEntry(METADATA_TYPE))
+              .insert('command.metadata.context', new MemberDotSymbolEntry(CONTEXT_TYPE))
+              .insert('command.metadata.context.jwt', new MemberDotSymbolEntry('string'))
+              .insert('command.metadata.context.userId', new MemberDotSymbolEntry('string'))
               .insert('titlevo', new VariableSymbolEntry('TitleVO', true))
               .insert(
                 'TitleVO.create()',

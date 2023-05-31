@@ -1,6 +1,6 @@
 DomainEventHandler TodoCreatedDomainEventHandler() {
     handle(event: TodoCreatedDomainEvent): (OK(void), Errors()) {
-      this.commandBus.send(event);
+      this.commandBus.publish(event);
     }
   }
 
@@ -48,7 +48,7 @@ IntegrationEventHandler MoneyDepositedIntegrationEventHandler() {
         subject: 'Money deposited',
         body: 'Money deposited to your account'
       });
-      this.commandBus.send(command);
+      this.commandBus.publish(command);
     }
 }
 
