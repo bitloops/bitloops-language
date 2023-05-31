@@ -26,6 +26,6 @@ export class SendEmailAfterMoneyDepositedHandler implements Application.IHandleD
   })
   public async handle(event: MoneyDepositedToAccountDomainEvent): Promise<Either<void, never>> {
     const email = 'example@email.com';
-    await this.commandBus.send(email);
+    await this.commandBus.publish(email);
   }
 }

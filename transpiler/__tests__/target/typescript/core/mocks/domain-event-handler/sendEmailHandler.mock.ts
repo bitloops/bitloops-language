@@ -26,6 +26,6 @@ export class SendEmailAfterMoneyDepositedHandler implements Application.IHandleD
     event: MoneyDepositedToAccountDomainEvent,
   ): Promise<Either<void, DomainErrors.SendEmailError>> {
     const email = 'example@email.com';
-    await this.commandBus.send(email);
+    await this.commandBus.publish(email);
   }
 }

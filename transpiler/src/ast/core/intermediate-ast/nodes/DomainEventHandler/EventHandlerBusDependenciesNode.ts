@@ -16,7 +16,7 @@ export class EventHandlerBusDependenciesNode extends IntermediateASTNode {
 
   static getCommandBusMethodType(): Record<string, BitloopsPrimaryTypeNode> {
     return {
-      send: new BitloopsPrimaryTypeNodeBuilderDirector().buildPrimitivePrimaryType('void'),
+      publish: new BitloopsPrimaryTypeNodeBuilderDirector().buildPrimitivePrimaryType('void'),
     };
   }
 }
