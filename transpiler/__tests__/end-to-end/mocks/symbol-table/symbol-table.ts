@@ -1096,7 +1096,14 @@ export const SYMBOL_TABLE_FIND_TYPE_OF_KEYWORD_TEST_CASES = [
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    keywordInfo: { name: 'accountEntity', position: { line: 16, column: 22 } },
+    keywordInfo: {
+      name: 'accountEntity',
+      position: {
+        line: 16,
+        column: 22,
+        fileId: 'fileId',
+      },
+    },
     expectedOutput: { type: '(OK(AccountEntity), Errors(UnexpectedError))', isConst: true },
   },
   {
@@ -1107,7 +1114,7 @@ export const SYMBOL_TABLE_FIND_TYPE_OF_KEYWORD_TEST_CASES = [
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    keywordInfo: { name: 'accountEntity', position: { line: 16, column: 22 } },
+    keywordInfo: { name: 'accountEntity', position: { line: 16, column: 22, fileId: 'fileId' } },
     expectedOutput: { type: 'AccountEntity', isConst: true },
   },
   {
@@ -1118,7 +1125,7 @@ export const SYMBOL_TABLE_FIND_TYPE_OF_KEYWORD_TEST_CASES = [
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    keywordInfo: { name: 'result', position: { line: 17, column: 22 } },
+    keywordInfo: { name: 'result', position: { line: 17, column: 22, fileId: 'fileId' } },
     expectedOutput: { type: 'string', isConst: true },
   },
   {
@@ -1129,7 +1136,7 @@ export const SYMBOL_TABLE_FIND_TYPE_OF_KEYWORD_TEST_CASES = [
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    keywordInfo: { name: 'message', position: { line: 23, column: 23 } },
+    keywordInfo: { name: 'message', position: { line: 23, column: 23, fileId: 'fileId' } },
     expectedOutput: { type: 'string', isConst: true },
   },
   {
@@ -1140,7 +1147,7 @@ export const SYMBOL_TABLE_FIND_TYPE_OF_KEYWORD_TEST_CASES = [
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    keywordInfo: { name: 'account', position: { line: 17, column: 24 } },
+    keywordInfo: { name: 'account', position: { line: 17, column: 24, fileId: 'fileId' } },
     expectedOutput: { type: '(OK(AccountReadModel), Errors(UnexpectedError))', isConst: true },
   },
   {
@@ -1151,7 +1158,7 @@ export const SYMBOL_TABLE_FIND_TYPE_OF_KEYWORD_TEST_CASES = [
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    keywordInfo: { name: 'animal', position: { line: 22, column: 19 } },
+    keywordInfo: { name: 'animal', position: { line: 22, column: 19, fileId: 'fileId' } },
     expectedOutput: { type: 'string', isConst: true },
   },
   {
@@ -1162,7 +1169,7 @@ export const SYMBOL_TABLE_FIND_TYPE_OF_KEYWORD_TEST_CASES = [
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    keywordInfo: { name: 'bird', position: { line: 43, column: 20 } },
+    keywordInfo: { name: 'bird', position: { line: 43, column: 20, fileId: 'fileId' } },
     expectedOutput: { type: 'string', isConst: true },
   },
   {
@@ -1173,7 +1180,7 @@ export const SYMBOL_TABLE_FIND_TYPE_OF_KEYWORD_TEST_CASES = [
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    keywordInfo: { name: 'cat', position: { line: 49, column: 26 } },
+    keywordInfo: { name: 'cat', position: { line: 49, column: 26, fileId: 'fileId' } },
     expectedOutput: { type: 'string', isConst: true },
   },
   {
@@ -1184,7 +1191,7 @@ export const SYMBOL_TABLE_FIND_TYPE_OF_KEYWORD_TEST_CASES = [
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    keywordInfo: { name: 'isNew', position: { line: 20, column: 16 } },
+    keywordInfo: { name: 'isNew', position: { line: 20, column: 16, fileId: 'fileId' } },
     expectedOutput: { type: 'bool', isConst: true },
   },
   {
@@ -1195,7 +1202,7 @@ export const SYMBOL_TABLE_FIND_TYPE_OF_KEYWORD_TEST_CASES = [
     inputSetup: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
     ),
-    keywordInfo: { name: 'command', position: { line: 9, column: 36 } },
+    keywordInfo: { name: 'command', position: { line: 9, column: 36, fileId: 'fileId' } },
     expectedOutput: { type: 'SendEmailCommand', isConst: true },
   },
 ];
