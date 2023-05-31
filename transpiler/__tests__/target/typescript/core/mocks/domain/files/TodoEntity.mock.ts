@@ -4,7 +4,7 @@ import { TTitleVOPrimitives, TitleVO } from './title.value-object';
 import { LanguageVO, TLanguageVOPrimitives } from './language.value-object';
 import { DomainErrors } from './errors/index';
 export type TTodoEntityPrimitives = {
-  id: string;
+  id?: string;
   completed: boolean;
   title: TTitleVOPrimitives;
   todoLanguage: TLanguageVOPrimitives;

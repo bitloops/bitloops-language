@@ -7,4 +7,8 @@ export class OptionalNode extends IntermediateASTNode {
   constructor(metadata?: TNodeMetadata) {
     super(BitloopsTypesMapping.TOptional, metadata, NAME);
   }
+
+  isOptional(): boolean {
+    return !!this.getValue().optional;
+  }
 }

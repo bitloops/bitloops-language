@@ -50,6 +50,9 @@ class ToPrimitivesMethod {
       PrimitivesObjectTypeGuard.isEntityType(keyValue) ||
       PrimitivesObjectTypeGuard.isStandardVOType(keyValue)
     ) {
+      if (keyValue.optional) {
+        return `${keyToPrepend}?.toPrimitives()`;
+      }
       return `${keyToPrepend}.toPrimitives()`;
     }
     if (PrimitivesObjectTypeGuard.isArrayType(keyValue)) {
@@ -86,6 +89,13 @@ class ToPrimitivesMethod {
       PrimitivesObjectTypeGuard.isArrayType(arrayValue)
     ) {
       const variableName = 'x';
+      if (propertyValue.optional) {
+        return `${keyToPrepend}?.map((${variableName}) => (${this.buildToPrimitivesForProperty(
+          variableName,
+          arrayValue,
+        )}))`;
+      }
+
       return `${keyToPrepend}.map((${variableName}) => (${this.buildToPrimitivesForProperty(
         variableName,
         arrayValue,

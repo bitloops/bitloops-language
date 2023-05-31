@@ -7,7 +7,7 @@ import {
 import { StatusVO, TStatusVOPrimitives } from './status.value-object';
 import { RowEntity, TRowEntityPrimitives } from './row.entity';
 export type TDocumentEntityPrimitives = {
-  id: string;
+  id?: string;
   name: string;
   locations: TDocumentLocationVOPrimitives[];
   rows: TRowEntityPrimitives[];

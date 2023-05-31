@@ -5,6 +5,7 @@ import {
   TStatements,
   TExpression,
   TCondition,
+  TArgumentList,
 } from '../../../../src/types.js';
 
 export class DomainRuleBuilder implements IBuilder<TDomainRule> {
@@ -34,8 +35,11 @@ export class DomainRuleBuilder implements IBuilder<TDomainRule> {
     return this;
   }
 
-  public withIsBrokenIfCondition(condition: TExpression): DomainRuleBuilder {
-    this.isBrokenIfCondition = { condition };
+  public withIsBrokenIfCondition(
+    condition: TExpression,
+    errorArguments?: TArgumentList,
+  ): DomainRuleBuilder {
+    this.isBrokenIfCondition = { condition, ...errorArguments };
     return this;
   }
 

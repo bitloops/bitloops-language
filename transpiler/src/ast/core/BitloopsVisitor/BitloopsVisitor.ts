@@ -248,6 +248,7 @@ import { IntegrationEventHandlerHandleMethodNode } from '../intermediate-ast/nod
 import { anonymousFunctionVisitor } from './helpers/anonymousFunctionVisitor.js';
 import { arrowFunctionBodyVisitor } from './helpers/arrowFunctionBodyVisitor.js';
 import { valueObjectConstructorEvaluationVisitor } from './helpers/expression/evaluation/valueObejctConstructorEvaluation.js';
+import { ArgumentListNode } from '../intermediate-ast/nodes/ArgumentList/ArgumentListNode.js';
 
 export type TContextInfo = {
   boundedContextName: string;
@@ -906,6 +907,12 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
 
   visitIsBrokenStatement(ctx: BitloopsParser.IsBrokenStatementContext): any {
     return isBrokenConditionVisitor(this, ctx);
+  }
+
+  visitIsBrokenStatementErrorArgs(
+    ctx: BitloopsParser.IsBrokenStatementErrorArgsContext,
+  ): ArgumentListNode {
+    return this.visit(ctx.methodArguments());
   }
 
   visitApplyRulesStatement(ctx: BitloopsParser.ApplyRulesStatementContext) {

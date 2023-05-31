@@ -14,9 +14,9 @@ import { getTargetFileName } from '../../../../helpers/getTargetFileDestination.
 
 export const getPrimitivesType = (
   primitivesObject: TGetFieldPrimitives,
-  valueObjectName: string,
+  identifierName: string,
 ): string => {
-  const typeName = PrimitivesTypeFactory.getPrimitivesTypeName(valueObjectName);
+  const typeName = PrimitivesTypeFactory.getPrimitivesTypeName(identifierName);
   let resultType = `export type ${typeName} = `;
   resultType += PrimitivesTypeFactory.buildType(primitivesObject);
   return resultType;
@@ -30,6 +30,7 @@ export class PrimitivesTypeFactory {
     {
       guard: PrimitivesObjectTypeGuard.isPrimitiveProperty,
       action: (key: string, type: PrimitiveType): string => {
+        if (type.optional) return `${key}?: ${type.value};\n`;
         return `${key}: ${type.value};\n`;
       },
     },
@@ -37,6 +38,7 @@ export class PrimitivesTypeFactory {
       guard: PrimitivesObjectTypeGuard.isValueObjectType,
       action: (key: string, type: ValueObjectPrimitives): string => {
         const voPrimitivesType = PrimitivesTypeFactory.getPrimitivesTypeName(type.identifier);
+        if (type.optional) return `${key}?: ${voPrimitivesType};\n`;
         return `${key}: ${voPrimitivesType};\n`;
       },
     },
@@ -44,6 +46,7 @@ export class PrimitivesTypeFactory {
       guard: PrimitivesObjectTypeGuard.isArrayType,
       action: (key: string, type: TArrayPropertyValue): string => {
         const arrayTypeResult = this.buildTypeForArray(key, type);
+        if (type.optional) return `${key}?: ${arrayTypeResult};\n`;
         return `${key}: ${arrayTypeResult};\n`;
       },
     },
@@ -51,6 +54,7 @@ export class PrimitivesTypeFactory {
       guard: PrimitivesObjectTypeGuard.isEntityType,
       action: (key: string, type: EntityPrimitives): string => {
         const entityPrimitivesType = PrimitivesTypeFactory.getPrimitivesTypeName(type.identifier);
+        if (type.optional) return `${key}?: ${entityPrimitivesType};\n`;
         return `${key}: ${entityPrimitivesType};\n`;
       },
     },

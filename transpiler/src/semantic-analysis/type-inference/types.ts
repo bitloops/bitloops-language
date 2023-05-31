@@ -31,7 +31,7 @@ export const InferredTypes = {
 type TArray = 'string';
 
 export type TInferredTypes =
-  | typeof InferredTypes[keyof typeof InferredTypes]
+  | (typeof InferredTypes)[keyof typeof InferredTypes]
   | TBitloopsIdentifier
   | TStandardVO
   | TArray;

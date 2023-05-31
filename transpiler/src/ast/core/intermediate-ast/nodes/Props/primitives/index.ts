@@ -19,6 +19,7 @@ import {
 export class PrimitivesObject {
   static getPrimitiveValue(
     type: TBitloopsPrimaryTypeValues,
+    isOptional: boolean,
     tree: IntermediateASTTree,
   ): TGetFieldPrimitivesValue {
     if (BitloopsPrimTypeIdentifiers.isBitloopsPrimitive(type)) {
@@ -29,6 +30,7 @@ export class PrimitivesObject {
       const primitive: PrimitiveType = {
         type: PrimitiveObjectPropertyType.Primitive,
         value: res.output,
+        optional: isOptional,
       };
       return primitive;
     }
@@ -36,6 +38,7 @@ export class PrimitivesObject {
       const primitive: PrimitiveType = {
         type: PrimitiveObjectPropertyType.Primitive,
         value: BitloopsPrimTypeIdentifiers.builtInClassToPrimitiveType(type),
+        optional: isOptional,
       };
       return primitive;
     }
@@ -45,6 +48,7 @@ export class PrimitivesObject {
       const voPrimitivesResult: ValueObjectPrimitives = {
         type: PrimitiveObjectPropertyType.ValueObject,
         identifier: valueObjectIdentifier,
+        optional: isOptional,
       };
       return voPrimitivesResult;
     }
@@ -53,6 +57,7 @@ export class PrimitivesObject {
       const entityPrimitivesResult: EntityPrimitives = {
         type: PrimitiveObjectPropertyType.Entity,
         identifier: entityIdentifier,
+        optional: isOptional,
       };
       return entityPrimitivesResult;
     }
@@ -61,13 +66,15 @@ export class PrimitivesObject {
       return {
         type: PrimitiveObjectPropertyType.StandardVO,
         identifier: result.type,
+        optional: isOptional,
       };
     }
     if (BitloopsPrimTypeIdentifiers.isArrayPrimType(type)) {
       const bitloopsPrimaryTypeValues = type[arrayPrimaryTypeKey];
       return {
         type: PrimitiveObjectPropertyType.Array,
-        value: this.getPrimitiveValue(bitloopsPrimaryTypeValues, tree),
+        value: this.getPrimitiveValue(bitloopsPrimaryTypeValues, false, tree),
+        optional: isOptional,
       };
     }
     throw new Error('Not implemented');

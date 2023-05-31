@@ -371,8 +371,13 @@ domainFieldDeclaration
 ;
 
 isBrokenStatement
-: IsBrokenIf OpenParen expression CloseParen SemiColon
+: IsBrokenIf OpenParen expression isBrokenStatementErrorArgs? CloseParen SemiColon
 ;
+
+isBrokenStatementErrorArgs
+    : Comma methodArguments
+    ;
+
 
 domainRuleBody
 : functionBody isBrokenStatement

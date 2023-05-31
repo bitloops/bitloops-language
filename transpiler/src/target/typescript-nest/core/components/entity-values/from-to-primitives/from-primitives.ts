@@ -55,6 +55,9 @@ class ValueObjectFromPrimitivesMethod {
       PrimitivesObjectTypeGuard.isStandardVOType(propertyValue)
     ) {
       const identifier = propertyValue.identifier;
+      if (propertyValue.optional) {
+        return `${keyToPrepend} ? ${identifier}.fromPrimitives(${keyToPrepend}) : undefined`;
+      }
       return `${identifier}.fromPrimitives(${keyToPrepend})`;
     }
 
@@ -94,6 +97,11 @@ class ValueObjectFromPrimitivesMethod {
       PrimitivesObjectTypeGuard.isArrayType(arrayValue) // if it's a 2d+ array, we need to map the inner array
     ) {
       const variableName = 'x';
+      if (propertyValue.optional) {
+        return `${keyToPrepend} ? ${keyToPrepend}.map((${variableName}) =>
+        ${this.buildFromPrimitivesForProperty(variableName, arrayValue)}
+        ) : undefined`;
+      }
       return `${keyToPrepend}.map((${variableName}) => 
       ${this.buildFromPrimitivesForProperty(variableName, arrayValue)}
       )`;

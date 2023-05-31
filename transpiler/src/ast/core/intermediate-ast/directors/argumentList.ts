@@ -43,6 +43,18 @@ export class ArgumentListDirector {
     return argumentListNode;
   }
 
+  buildArgumentListWithIdentifiers(...identifiers: string[]): ArgumentListNode {
+    const argumentNodes = identifiers.map((identifier) => {
+      const identifierExpression = new ExpressionBuilderDirector().buildIdentifierExpression(
+        identifier,
+      );
+      const argument = new ArgumentDirector().buildArgument(identifierExpression);
+      return argument;
+    });
+    const argumentListNode = new ArgumentListNodeBuilder().withArguments(argumentNodes).build();
+    return argumentListNode;
+  }
+
   buildArgumentListWithThisMemberDotExpression(identifierName: string): ArgumentListNode {
     const memberDotExpression = new ExpressionBuilderDirector().buildThisMemberDotExpression(
       identifierName,

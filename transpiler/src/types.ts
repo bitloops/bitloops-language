@@ -126,13 +126,13 @@ export const bitloopsPrimitivesObj = ArrayUtils.toObject<TBitloopsPrimitives>([
   ...bitloopsPrimitives,
 ]);
 
-export type TBitloopsPrimitives = typeof bitloopsPrimitives[number]; //'string' | 'bool' | 'number';
+export type TBitloopsPrimitives = (typeof bitloopsPrimitives)[number]; //'string' | 'bool' | 'number';
 
 export const BitloopsBuiltInClassNames = {
   UUIDv4: 'UUIDv4',
 } as const;
 export const bitloopsBuiltInClasses = [BitloopsBuiltInClassNames.UUIDv4] as const;
-export type TBitloopsBuiltInClasses = typeof bitloopsBuiltInClasses[number];
+export type TBitloopsBuiltInClasses = (typeof bitloopsBuiltInClasses)[number];
 
 export type TBitloopsIdentifier = string;
 
@@ -186,7 +186,7 @@ export type TDomainRule = {
     domainRuleIdentifier: string;
     error: string;
     statements: TStatements;
-    isBrokenIfCondition: TCondition;
+    isBrokenIfCondition: TCondition & Partial<TArgumentList>;
   } & Partial<TParameterList>;
 };
 

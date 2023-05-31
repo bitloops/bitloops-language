@@ -51,4 +51,4 @@ jobs:
         working-directory: ./transpiler
         env:
           NODE_OPTIONS: '--max_old_space_size=4096'
-        run: npm run test-silent
+        run: yarn test:swc --silent

@@ -4,6 +4,7 @@ import { IsBrokenConditionNodeBuilder } from '../../../../../../src/ast/core/int
 import { ErrorIdentifierNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/ErrorIdentifiers/ErrorIdentifierBuilder.js';
 import { ConditionNodeBuilder } from '../../../../../../src/ast/core/intermediate-ast/builders/statements/ifStatement/ConditionBuilder.js';
 import { IntermediateASTTree } from '../../../../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
+import { ArgumentListNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/ArgumentList/ArgumentListNode.js';
 import { DomainRuleNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/DomainRule/DomainRuleNode.js';
 import { ExpressionNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { ParameterListNode } from '../../../../../../src/ast/core/intermediate-ast/nodes/ParameterList/ParameterListNode.js';
@@ -17,28 +18,37 @@ export class DomainRuleBuilderDirector {
     statements?: StatementListNode;
     isBrokenIfCondition: ExpressionNode;
     errorIdentifier: string;
+    errorArguments?: ArgumentListNode;
   }): DomainRuleNode {
-    const { identifier, parameterList, statements, isBrokenIfCondition, errorIdentifier } = params;
+    const {
+      identifier,
+      parameterList,
+      statements,
+      isBrokenIfCondition,
+      errorIdentifier,
+      errorArguments,
+    } = params;
     const tree = new IntermediateASTTree(new IntermediateASTRootNode());
     const identifierNode = new DomainRuleIdentifierBuilder().withName(identifier).build();
     const conditionNode = new ConditionNodeBuilder().withExpression(isBrokenIfCondition).build();
-    return statements
-      ? new DomainRuleNodeBuilder(tree)
-          .withIdentifier(identifierNode)
-          .withParameters(parameterList)
-          .withStatements(statements)
-          .withIsBrokenCondition(
-            new IsBrokenConditionNodeBuilder().withExpression(conditionNode).build(),
-          )
-          .withErrorThrown(new ErrorIdentifierNodeBuilder().withName(errorIdentifier).build())
-          .build()
-      : new DomainRuleNodeBuilder(tree)
-          .withIdentifier(identifierNode)
-          .withParameters(parameterList)
-          .withIsBrokenCondition(
-            new IsBrokenConditionNodeBuilder().withExpression(conditionNode).build(),
-          )
-          .withErrorThrown(new ErrorIdentifierNodeBuilder().withName(errorIdentifier).build())
-          .build();
+
+    const isBrokenConditionBuilder = new IsBrokenConditionNodeBuilder().withExpression(
+      conditionNode,
+    );
+
+    if (errorArguments) {
+      isBrokenConditionBuilder.withArgumentList(errorArguments);
+    }
+
+    const builder = new DomainRuleNodeBuilder(tree)
+      .withIdentifier(identifierNode)
+      .withParameters(parameterList)
+      .withIsBrokenCondition(isBrokenConditionBuilder.build())
+      .withErrorThrown(new ErrorIdentifierNodeBuilder().withName(errorIdentifier).build());
+
+    if (statements) {
+      builder.withStatements(statements);
+    }
+    return builder.build();
   }
 }

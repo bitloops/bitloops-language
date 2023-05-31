@@ -63,8 +63,9 @@ export class PropsNode extends ClassTypeNode {
     for (const fieldNode of fieldNodes) {
       const identifier = fieldNode.getIdentifierValue();
       const type = fieldNode.getTypeValue();
+      const isOptional = fieldNode.isOptional();
 
-      const propertyValue = PrimitivesObject.getPrimitiveValue(type, tree);
+      const propertyValue = PrimitivesObject.getPrimitiveValue(type, isOptional, tree);
       primitivesValues[identifier] = propertyValue;
     }
 
