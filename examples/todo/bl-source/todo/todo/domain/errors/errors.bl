@@ -1,4 +1,4 @@
-DomainError TodoAlreadyCompletedError(completed: bool, id: string) { 
+DomainError TodoAlreadyCompletedError(id: string) { 
     message: `Todo ${id} is already completed`,
     errorId: 'e09ec42c-4d31-4f7c-b68a-b68a78-b68a655'
 }
@@ -8,7 +8,7 @@ DomainError TitleOutOfBoundsError(title: string) {
     errorId: 'a12ec42c-4d31-4f7c-b68a-b68a78-b68a655'
 }
 
-DomainError TodoAlreadyUncompletedError(completed: bool, id: string) { 
+DomainError TodoAlreadyUncompletedError(id: string) { 
     message: `Todo ${id} is already uncompleted`,
     errorId: '24225fc3-9137-4f2f-a35d-b86f6d4ad68e'
 }

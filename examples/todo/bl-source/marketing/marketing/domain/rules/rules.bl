@@ -1,8 +1,8 @@
 Rule CompletedTodosIsPositiveNumberRule(counter: int32) throws DomainErrors.InvalidTodosCounterError { 
-    isBrokenIf(counter < 0);
+    isBrokenIf(counter < 0, (counter));
 }
 
 Rule ValidEmailRule(email: string) throws DomainErrors.InvalidEmailDomainError {
     const re = /\S+@\S+\.\S+/;
-    isBrokenIf(re.test(email) == false);
+    isBrokenIf(re.test(email) == false, (email));
 }

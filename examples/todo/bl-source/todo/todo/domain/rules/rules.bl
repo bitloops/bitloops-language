@@ -1,11 +1,11 @@
 Rule TitleOutOfBoundsRule(title: string) throws DomainErrors.TitleOutOfBoundsError { 
-    isBrokenIf(title.length > 150 OR title.length < 4);
+    isBrokenIf(title.length > 150 OR title.length < 4, (title));
 }
 
 Rule TodoAlreadyCompletedRule(completed: bool, todoId: string) throws DomainErrors.TodoAlreadyCompletedError { 
-    isBrokenIf(completed);
+    isBrokenIf(completed, (todoId));
 }
 
 Rule TodoAlreadyUncompletedRule(completed: bool, todoId: string) throws DomainErrors.TodoAlreadyUncompletedError { 
-    isBrokenIf(NOT completed);
+    isBrokenIf(NOT completed, (todoId));
 }
