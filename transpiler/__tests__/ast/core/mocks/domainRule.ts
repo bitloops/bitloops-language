@@ -22,6 +22,7 @@ import { DomainRuleBuilder } from '../builders/domainRuleBuilder.js';
 import { ParameterListBuilderDirector } from '../builders/parameterListBuilderDirector.js';
 import { ExpressionBuilderDirector } from '../builders/expressionDirector.js';
 import { ConstDeclarationBuilderDirector } from '../builders/statement/variableDeclarationDirector.js';
+import { ArgumentListBuilderDirector } from '../builders/argumentListBuilderDirector.js';
 
 type DomainRuleDeclarationTestCase = {
   description: string;
@@ -82,6 +83,40 @@ export const validDomainRuleStatementTestCases: DomainRuleDeclarationTestCase[] 
             '<',
           ),
         ),
+      )
+      .withBodyStatements([
+        new ConstDeclarationBuilderDirector().buildConstDeclarationWithMemberDotExpression({
+          name: 'titleLength',
+          rightMembers: ['title', 'length'],
+        }),
+      ])
+      .build(),
+  },
+  {
+    description: 'Domain rule with statement and different error arguments',
+    fileId: 'testFile.bl',
+    inputBLString: `Rule IsValidTitleRule(title: string) throws DomainErrors.InvalidTitleError {
+      const titleLength = title.length;
+      isBrokenIf (titleLength > 150 OR titleLength < 4, (titleLength, title));
+    }`,
+    domainRuleDeclaration: new DomainRuleBuilder()
+      .withIdentifier('IsValidTitleRule')
+      .withParameters(new ParameterListBuilderDirector().buildStringParams('title'))
+      .withThrowsError('DomainErrors.InvalidTitleError')
+      .withIsBrokenIfCondition(
+        new ExpressionBuilderDirector().buildLogicalOrExpression(
+          new ExpressionBuilderDirector().buildRelationalExpression(
+            new ExpressionBuilderDirector().buildIdentifierExpression('titleLength'),
+            new ExpressionBuilderDirector().buildInt32LiteralExpression(150),
+            '>',
+          ),
+          new ExpressionBuilderDirector().buildRelationalExpression(
+            new ExpressionBuilderDirector().buildIdentifierExpression('titleLength'),
+            new ExpressionBuilderDirector().buildInt32LiteralExpression(4),
+            '<',
+          ),
+        ),
+        new ArgumentListBuilderDirector().buildArgumentList(['titleLength', 'title']),
       )
       .withBodyStatements([
         new ConstDeclarationBuilderDirector().buildConstDeclarationWithMemberDotExpression({

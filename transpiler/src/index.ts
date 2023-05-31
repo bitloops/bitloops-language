@@ -8,7 +8,7 @@ import {
   type ParserSyntacticErrors,
   type TParserInputData,
 } from './parser/index.js';
-import { TSymbolTableSemantics } from './semantic-analysis/type-inference/types.js';
+import type { TSymbolTableSemantics } from './semantic-analysis/type-inference/types.js';
 import { TargetGenerator } from './target/index.js';
 import { getTargetFileDestination } from './target/typescript-nest/helpers/getTargetFileDestination.js';
 import Transpiler from './Transpiler.js';

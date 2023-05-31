@@ -1,0 +1,38 @@
+Props MoneyProps {
+    string currency;
+    AmountVO amount; 
+}
+
+ValueObject MoneyVO {
+    static create(props: MoneyProps): (OK(MoneyVO), Errors()) {
+    }
+}
+
+Props AmountProps {
+    int32 value;
+}
+ValueObject AmountVO {
+    static create(props: AmountProps): (OK(AmountVO), Errors()) {
+    }
+}
+
+Props AccountProps {
+    optional UUIDv4 id;
+    optional MoneyVO price;
+    optional RowEntity row;
+    optional RowEntity[] rows;
+}
+
+Root Entity AccountEntity {
+    static create(props: AccountProps): (OK(AccountEntity), Errors()) { }
+}
+
+// **** Row Entity ****
+Props RowProps {
+    optional UUIDv4 id;
+    string description;
+}
+
+Entity RowEntity {
+    static create(props: RowProps): (OK(RowEntity), Errors()) { }
+}

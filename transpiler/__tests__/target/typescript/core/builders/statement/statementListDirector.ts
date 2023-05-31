@@ -4,6 +4,7 @@ import { StatementListNode } from '../../../../../../src/ast/core/intermediate-a
 import { ArgumentListDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/argumentList.js';
 import { ExpressionBuilderDirector } from '../../../../../../src/ast/core/intermediate-ast/directors/expressionNodeBuilderDirector.js';
 import { StatementBuilderDirector } from './statementDirector.js';
+import { ConstDeclarationBuilderDirector } from './constDeclaration.js';
 
 export class StatementListBuilderDirector {
   private builder: StatementListNodeBuilder;
@@ -129,6 +130,20 @@ export class StatementListBuilderDirector {
   ): StatementListNode {
     return this.builder
       .withStatements([new ExpressionBuilderDirector().buildEqualityExpression(rightExp, leftExp)])
+      .build();
+  }
+
+  buildConstDeclarationOfIdentifierExpression(
+    constIdentifier: string,
+    identifierValue: string,
+  ): StatementListNode {
+    return this.builder
+      .withStatements([
+        new ConstDeclarationBuilderDirector().buildIdentifierExpressionConstDeclaration(
+          constIdentifier,
+          identifierValue,
+        ),
+      ])
       .build();
   }
 }

@@ -43,6 +43,7 @@ describe('domain rule tests', () => {
         statements: testCase.statements || null,
         isBrokenIfCondition: testCase.isBrokenIfCondition,
         errorIdentifier: testCase.errorIdentifier,
+        errorArguments: testCase.errorArguments,
       });
       const tree = new IntermediateASTTree(new IntermediateASTRootNode());
 

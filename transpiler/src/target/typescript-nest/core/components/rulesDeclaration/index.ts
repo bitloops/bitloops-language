@@ -22,6 +22,7 @@ import {
   TTargetDependenciesTypeScript,
   TDependencyChildTypescript,
   TParameter,
+  TArgumentList,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
@@ -46,63 +47,87 @@ const getStringWithPrivateBeforeWord = (word: string, stringToBeReplaced: string
   return stringToBeReplaced.replaceAll(word, `private ${word}`);
 };
 
-const initialRuleLangMapping: any = (ruleName: string) =>
-  `export class ${ruleName} implements Domain.IRule { `;
-
-const finalRuleLangMapping: any = '}';
-
-const getErrorStringMapping: any = (errorString: string, paramDependencies: TParameter[]) => {
-  // TODO handle the param dependencies of error differently
-  let errorStringRes = `public Error = new ${errorString}`;
-  errorStringRes += '(';
-  if (paramDependencies && paramDependencies.length > 0) {
-    paramDependencies.forEach((paramDependency) => {
-      errorStringRes += `this.${paramDependency.parameter.value},`;
-    });
-  }
-  errorStringRes += ')';
-  return errorStringRes;
+const getErrorDeclaration = (errorString: string): string => {
+  return `public Error: ${errorString}`;
 };
 
 const getRuleConstructor = (parametersString: string): string => {
   return `constructor${parametersString} {}`;
 };
 
+/**
+ * Loop through the error arguments, if an argument is an identifierExpression and matches one of
+ * the rule parameters, then replace it with this.parameterName
+ *
+ *  @example if - new ExpressionBuilderDirector().buildIdentifierExpression('param1'),
+ * then - this.param1
+ *
+ * TODO As an enhancement and more robust solution, this should be done in model-to-model for ts
+ * by replacing any identifier that equals a parameter, with a this.parameterName member dot Expression
+ */
 const getIsBrokenIfMethod = (
   statementsStringWithThis: string | null,
   isBrokenConditionStringWithThis: string,
-): string => {
-  return `public isBrokenIf(): boolean { ${
-    statementsStringWithThis ?? ''
-  } return ${isBrokenConditionStringWithThis}; }`;
+  errorIdentifier: string,
+  paramDependencies: TParameter[],
+  argumentList: TArgumentList,
+): TTargetDependenciesTypeScript => {
+  const parameterIdentifiers = paramDependencies.map(
+    (paramDependency) => paramDependency.parameter.value,
+  );
+
+  let argumentsResult = '(';
+  const dependencies = [];
+
+  for (const argument of argumentList.argumentList) {
+    const argumentResult = modelToTargetLanguage({
+      type: BitloopsTypesMapping.TArgument,
+      value: argument,
+    });
+    dependencies.push(...argumentResult.dependencies);
+    let argumentIsParam = false;
+    for (const parameterIdentifier of parameterIdentifiers) {
+      if (argumentResult.output === parameterIdentifier) {
+        argumentsResult += `this.${argumentResult.output}`;
+        argumentIsParam = true;
+      }
+    }
+    if (!argumentIsParam) {
+      argumentsResult += argumentResult.output;
+    }
+    argumentsResult += ',';
+  }
+  argumentsResult += ')';
+
+  const output = `public isBrokenIf(): boolean { ${statementsStringWithThis ?? ''} 
+
+  this.Error = new ${errorIdentifier}${argumentsResult};
+  return ${isBrokenConditionStringWithThis}; }`;
+  return { output, dependencies };
 };
 
 export const rulesDeclarationToTargetLanguage = (
   rule: TDomainRule,
 ): TTargetDependenciesTypeScript => {
   let result = '';
-  const dependencies = [];
   const childDependencies: TDependencyChildTypescript[] = RULE_DEPENDENCIES;
   const ruleName = rule.DomainRule.domainRuleIdentifier;
 
-  result += initialRuleLangMapping(ruleName);
-  // const model = modelToTargetLanguage({
-  //   type: BitloopsTypesMapping.TRuleValues,
-  //   value: ruleValues,
-  // });
+  result += `export class ${ruleName} implements Domain.IRule { `;
+
   const model = ruleDeclarationToTargetLanguage(rule);
   result += model.output;
 
   childDependencies.push(...model.dependencies);
+
+  result += '}';
+
   const parentDependencies = getParentDependencies(childDependencies, {
     classType: ClassTypes.DomainRule,
     className: ruleName,
   });
-  dependencies.push(...parentDependencies);
 
-  result += finalRuleLangMapping;
-
-  return { output: result, dependencies };
+  return { output: result, dependencies: parentDependencies };
 };
 
 export const ruleDeclarationToTargetLanguage = (
@@ -128,8 +153,7 @@ export const ruleDeclarationToTargetLanguage = (
   const { error } = rule;
 
   dependencies.push(...getChildDependencies(error));
-  // TODO which params will be inside it?
-  const errorString = getErrorStringMapping(error, rule.parameters, dependencies);
+  const errorDeclaration = getErrorDeclaration(error);
 
   let statements: TTargetDependenciesTypeScript | null = null;
   if (rule.statements && rule.statements.length !== 0) {
@@ -142,11 +166,16 @@ export const ruleDeclarationToTargetLanguage = (
 
   const { isBrokenIfCondition } = rule;
 
+  const { condition, argumentList } = isBrokenIfCondition;
   const isBrokenConditionString = modelToTargetLanguage({
     type: BitloopsTypesMapping.TCondition,
-    value: isBrokenIfCondition,
+    value: { condition },
   });
   dependencies.push(...isBrokenConditionString.dependencies);
+
+  if (argumentList && argumentList.length !== 0) {
+    // TODO handle the argument list of error differently
+  }
 
   // TODO improve this solution - it will have problems with string manipulation
   // add this to isBrokenConditionString and to statementsStringWithThis and constructorParamsWithPrivate
@@ -172,13 +201,22 @@ export const ruleDeclarationToTargetLanguage = (
     });
   }
 
+  const errorArgumentList = argumentList ? { argumentList } : { argumentList: [] };
+
   const isBrokeIfMethod = getIsBrokenIfMethod(
     statementsStringWithThis?.output ?? null,
     isBrokenConditionStringWithThis.output,
+    error,
+    rule.parameters,
+    errorArgumentList,
   );
+  const isBrokeIfMethodOutput = isBrokeIfMethod.output;
+  dependencies.push(...isBrokeIfMethod.dependencies);
   const res = `${constructorParamsWithPrivate}
-  ${errorString}
-  ${isBrokeIfMethod}`;
+
+  ${errorDeclaration}
+
+  ${isBrokeIfMethodOutput}`;
 
   return { output: res, dependencies };
 };

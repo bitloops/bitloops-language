@@ -1,5 +1,5 @@
 import { OriginalAST } from '../../parser/index.js';
-import { TSymbolTableSemantics } from '../../semantic-analysis/type-inference/types.js';
+import type { TSymbolTableSemantics } from '../../semantic-analysis/type-inference/types.js';
 import { IntermediateASTTree } from './intermediate-ast/IntermediateASTTree.js';
 import { TNodeMetadata } from './intermediate-ast/nodes/IntermediateASTNode.js';
 import { ConstDeclarationNode } from './intermediate-ast/nodes/statements/ConstDeclarationNode.js';

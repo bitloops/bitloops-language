@@ -3,12 +3,19 @@ import { TBitloopsPrimaryTypeValues } from '../../../../../types.js';
 import { BitloopsPrimaryTypeNode } from '../BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 import { IdentifierNode } from '../identifier/IdentifierNode.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
+import { OptionalNode } from '../OptionalNode.js';
 
 const NAME = 'field';
 
 export class FieldNode extends IntermediateASTNode {
   constructor(metadata?: TNodeMetadata) {
     super(BitloopsTypesMapping.TVariable, metadata, NAME);
+  }
+
+  isOptional(): boolean {
+    const optionalNode = this.getChildNodeByType<OptionalNode>(BitloopsTypesMapping.TOptional);
+    if (!optionalNode) return false;
+    return optionalNode.isOptional();
   }
 
   getIdentifierNode(): IdentifierNode {

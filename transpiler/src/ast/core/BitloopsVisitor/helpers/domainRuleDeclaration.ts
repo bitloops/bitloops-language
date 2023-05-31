@@ -29,6 +29,7 @@ import { IsBrokenConditionNodeBuilder } from '../../intermediate-ast/builders/Do
 import { ConditionNodeBuilder } from '../../intermediate-ast/builders/statements/ifStatement/ConditionBuilder.js';
 import { ExpressionNode } from '../../intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { ErrorIdentifierNode } from '../../intermediate-ast/nodes/ErrorIdentifiers/ErrorIdentifierNode.js';
+import { ArgumentListNode } from '../../intermediate-ast/nodes/ArgumentList/ArgumentListNode.js';
 
 export const domainRuleDeclarationVisitor = (
   thisVisitor: BitloopsVisitor,
@@ -73,8 +74,14 @@ export const isBrokenConditionVisitor = (
     .build();
 
   const metadata = produceMetadata(ctx, thisVisitor);
-  const isBrokenConditionNode: IsBrokenConditionNode = new IsBrokenConditionNodeBuilder(metadata)
-    .withExpression(conditionNode)
-    .build();
-  return isBrokenConditionNode;
+  const isBrokenConditionNodeBuilder = new IsBrokenConditionNodeBuilder(metadata).withExpression(
+    conditionNode,
+  );
+
+  if (ctx.isBrokenStatementErrorArgs()) {
+    const argumentList: ArgumentListNode = thisVisitor.visit(ctx.isBrokenStatementErrorArgs());
+    // const argumentList = thisVisitor.visit(ctx.methodArguments());
+    isBrokenConditionNodeBuilder.withArgumentList(argumentList);
+  }
+  return isBrokenConditionNodeBuilder.build();
 };
