@@ -13,7 +13,7 @@ import {
 import { ITargetGenerator, TOutputTargetContent } from './target/types.js';
 import { isTargetGeneratorError } from './target/typescript-nest/guards/index.js';
 import type { TranspilerErrors, TTranspileOptions, TTranspileOutput } from './transpilerTypes.js';
-import { TSymbolTableSemantics } from './semantic-analysis/type-inference/types.js';
+import type { TSymbolTableSemantics } from './semantic-analysis/type-inference/types.js';
 import { SemanticAnalyzer } from './semantic-analysis/IntermediateASTValidator.js';
 
 export default class Transpiler {

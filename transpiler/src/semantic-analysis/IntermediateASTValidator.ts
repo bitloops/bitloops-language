@@ -51,7 +51,7 @@ import {
 import { ClassTypeNode } from '../ast/core/intermediate-ast/nodes/ClassTypeNode.js';
 import { TypeInferenceValidator } from './type-inference/TypeInferenceValidator.js';
 // import { isIntermediateASTValidationErrors } from '../index.js';
-import { TSymbolTableSemantics } from './type-inference/types.js';
+import type { TSymbolTableSemantics } from './type-inference/types.js';
 
 const isIntermediateASTValidationErrors = (
   value: void | ValidationError[],
