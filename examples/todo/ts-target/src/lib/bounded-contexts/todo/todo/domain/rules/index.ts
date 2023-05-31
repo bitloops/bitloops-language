@@ -1,10 +1,27 @@
-import { TitleOutOfBoundsRule } from './TitleOutOfBoundsRule';
-import { TodoAlreadyCompletedRule } from './TodoAlreadyCompletedRule';
-import { TodoAlreadyUncompletedRule } from './TodoAlreadyUncompletedRule';
-
-// eslint-disable-next-line @typescript-eslint/no-namespace
-export namespace Rules {
-  export class TitleOutOfBounds extends TitleOutOfBoundsRule {}
-  export class TodoAlreadyCompleted extends TodoAlreadyCompletedRule {}
-  export class TodoAlreadyUncompleted extends TodoAlreadyUncompletedRule {}
+/**
+ *  Bitloops Language
+ *  Copyright (C) 2022 Bitloops S.A.
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ *  For further information you can contact legal(at)bitloops.com.
+ */
+import { TitleOutOfBoundsRule as TitleOutOfBounds } from './title-out-of-bounds.domain-rule';
+import { TodoAlreadyCompletedRule as TodoAlreadyCompleted } from './todo-already-completed.domain-rule';
+import { TodoAlreadyUncompletedRule as TodoAlreadyUncompleted } from './todo-already-uncompleted.domain-rule';
+export namespace DomainRules {
+  export class TitleOutOfBoundsRule extends TitleOutOfBounds {}
+  export class TodoAlreadyCompletedRule extends TodoAlreadyCompleted {}
+  export class TodoAlreadyUncompletedRule extends TodoAlreadyUncompleted {}
 }

@@ -32,9 +32,7 @@ message AddTodoResponse {
 
 message AddTodoErrorResponse {
   oneof error {
-    ErrorResponse unauthorizedError = 1;
-    ErrorResponse systemUnavailableError = 2;
-    ErrorResponse invalidTitleLengthError = 3;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -55,9 +53,7 @@ message CompleteTodoResponse {
 
 message CompleteTodoErrorResponse {
   oneof error {
-    ErrorResponse unauthorizedError = 1;
-    ErrorResponse systemUnavailableError = 2;
-    ErrorResponse todoAlreadyExistsError = 3;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -76,9 +72,7 @@ message DeleteTodoResponse {
 
 message DeleteTodoErrorResponse {
   oneof error {
-    ErrorResponse unauthorizedError = 1;
-    ErrorResponse systemUnavailableError = 2;
-    ErrorResponse todoAlreadyExistsError = 3;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -95,8 +89,7 @@ message GetAllTodosResponse {
 
 message GetAllTodosErrorResponse {
   oneof error {
-    ErrorResponse unauthorizedError = 1;
-    ErrorResponse systemUnavailableError = 2;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -118,10 +111,7 @@ message ModifyTitleTodoResponse {
 
 message ModifyTitleTodoErrorResponse {
   oneof error {
-    ErrorResponse unauthorizedError = 1;
-    ErrorResponse systemUnavailableError = 2;
-    ErrorResponse todoDoesNotExistError = 3;
-    ErrorResponse invalidTitleLengthError = 4;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -140,9 +130,7 @@ message UncompleteTodoResponse {
 
 message UncompleteTodoErrorResponse {
   oneof error {
-    ErrorResponse unauthorizedError = 1;
-    ErrorResponse systemUnavailableError = 2;
-    ErrorResponse todoAlreadyExistsError = 3;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -273,9 +261,7 @@ export const promptProtoRealTimeStreamsMessages = (
   
   message AddTodoErrorResponse {
     oneof error {
-      ErrorResponse unauthorizedError = 1;
-      ErrorResponse systemUnavailableError = 2;
-      ErrorResponse invalidTitleLengthError = 3;
+      ErrorResponse systemUnavailableError = 1;
     }
   }
   
@@ -298,9 +284,7 @@ export const promptProtoRealTimeStreamsMessages = (
   
   message DeleteTodoErrorResponse {
     oneof error {
-      ErrorResponse unauthorizedError = 1;
-      ErrorResponse systemUnavailableError = 2;
-      ErrorResponse todoAlreadyExistsError = 3;
+      ErrorResponse systemUnavailableError = 1;
     }
   }
   
@@ -315,8 +299,7 @@ export const promptProtoRealTimeStreamsMessages = (
   
   message GetAllTodosErrorResponse {
     oneof error {
-      ErrorResponse unauthorizedError = 1;
-      ErrorResponse systemUnavailableError = 2;
+      ErrorResponse systemUnavailableError = 1;
     }
   }
   

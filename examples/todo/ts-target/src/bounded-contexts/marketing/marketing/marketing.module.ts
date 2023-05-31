@@ -1,60 +1,83 @@
+
 import { Module } from '@nestjs/common';
-
-import { MarketingModule as LibMarketingModule } from 'src/lib/bounded-contexts/marketing/marketing/marketing.module';
-import { UserWriteRepository } from './repository/user-write.repository';
-import { UserWriteRepoPortToken } from '@src/lib/bounded-contexts/marketing/marketing/ports/user-write.repo-port';
-import { UserEmailReadRepoPortToken } from '@src/lib/bounded-contexts/marketing/marketing/ports/user-email-read.repo-port';
-import { UserEmailReadRepository } from './repository/user-email-read.repository';
-import { NotificationTemplateReadRepoPortToken } from '@src/lib/bounded-contexts/marketing/marketing/ports/notification-template-read.repo-port.';
-import { NotificationTemplateReadRepository } from './repository/notification-template.repository';
 import {
-  EmailServicePortToken,
-  StreamingCommandBusToken,
-} from '@src/lib/bounded-contexts/marketing/marketing/constants';
-import { MockEmailService } from './service';
-import { MongoModule } from '@bitloops/bl-boilerplate-infra-mongo';
-import { StreamingIntegrationEventHandlers } from '@src/lib/bounded-contexts/marketing/marketing/application/event-handlers';
-import { StreamingCommandHandlers } from '@src/lib/bounded-contexts/marketing/marketing/application/command-handlers';
-import {
-  NatsStreamingCommandBus,
   JetstreamModule,
+  NatsPubSubQueryBus,
+  NatsPubSubIntegrationEventsBus,
+  NatsStreamingCommandBus,
+  NatsStreamingDomainEventBus,
+  NatsStreamingIntegrationEventBus,
 } from '@bitloops/bl-boilerplate-infra-nest-jetstream';
+import { MongoModule } from '@bitloops/bl-boilerplate-infra-mongo';
+import { MarketingModule as LibMarketingModule } from '@lib/bounded-contexts/marketing/marketing/marketing.module';
+import { StreamingIntegrationEventHandlers } from '@lib/bounded-contexts/marketing/marketing/application/event-handlers/integration';
+import { PubSubCommandHandlers, StreamingCommandHandlers } from '@lib/bounded-contexts/marketing/marketing/application/command-handlers';
+import { QueryHandlers } from '@lib/bounded-contexts/marketing/marketing/application/query-handlers';
+import { StreamingDomainEventHandlers } from '@lib/bounded-contexts/marketing/marketing/application/event-handlers/domain';
+import {
+  UserWriteRepoPortToken,
+  EmailServicePortToken,
+  NotificationTemplateReadRepoPortToken,
+  PubSubQueryBusToken,
+  PubSubIntegrationEventBusToken,
+  StreamingCommandBusToken,
+  StreamingDomainEventBusToken,
+  StreamingIntegrationEventBusToken,
+} from '@lib/bounded-contexts/marketing/marketing/constants';
+import { MongoUserWriteRepository } from './repositories/mongo-user-write.repository';
+import { MongoNotificationTemplateReadRepository } from './repositories/mongo-notification-template-read.repository';
+import { MockEmailService } from './services/mock-email.service';
 
-const RepoProviders = [
+const providers = [
   {
     provide: UserWriteRepoPortToken,
-    useClass: UserWriteRepository,
-  },
-  {
-    provide: UserEmailReadRepoPortToken,
-    useClass: UserEmailReadRepository,
+    useClass: MongoUserWriteRepository,
   },
   {
     provide: NotificationTemplateReadRepoPortToken,
-    useClass: NotificationTemplateReadRepository,
+    useClass: MongoNotificationTemplateReadRepository,
   },
   {
     provide: EmailServicePortToken,
     useClass: MockEmailService,
   },
   {
+    provide: PubSubQueryBusToken,
+    useClass: NatsPubSubQueryBus,
+  },
+  {
+    provide: PubSubIntegrationEventBusToken,
+    useClass: NatsPubSubIntegrationEventsBus,
+  },
+  {
     provide: StreamingCommandBusToken,
     useClass: NatsStreamingCommandBus,
   },
+  {
+    provide: StreamingDomainEventBusToken,
+    useClass: NatsStreamingDomainEventBus,
+  },
+  {
+    provide: StreamingIntegrationEventBusToken,
+    useClass: NatsStreamingIntegrationEventBus,
+  }
 ];
 @Module({
   imports: [
     LibMarketingModule.register({
-      inject: [...RepoProviders],
+      inject: [...providers],
       imports: [MongoModule],
     }),
     JetstreamModule.forFeature({
       moduleOfHandlers: MarketingModule,
       streamingIntegrationEventHandlers: [...StreamingIntegrationEventHandlers],
+      streamingDomainEventHandlers: [...StreamingDomainEventHandlers],
       streamingCommandHandlers: [...StreamingCommandHandlers],
+      pubSubCommandHandlers: [...PubSubCommandHandlers],
+      pubSubQueryHandlers: [...QueryHandlers],
     }),
   ],
-  controllers: [],
   exports: [LibMarketingModule],
 })
 export class MarketingModule {}
+

@@ -1,49 +1,44 @@
-import { Application, Either, ok, fail } from '@bitloops/bl-boilerplate-core';
+import { Application, Either, fail, ok } from '@bitloops/bl-boilerplate-core';
+import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 import { SendEmailCommand } from '../../commands/send-email.command';
 import { Inject } from '@nestjs/common';
-import { EmailServicePort } from '../../ports/email-service-port';
 import { EmailServicePortToken } from '../../constants';
-import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
-
-type SendEmailCommandHandlerResponse = Either<
+import { EmailServicePort } from '../../ports/email.service-port';
+export type SendEmailCommandHandlerResponse = Either<
   void,
   Application.Repo.Errors.Unexpected
 >;
-
 export class SendEmailCommandHandler
   implements Application.ICommandHandler<SendEmailCommand, void>
 {
   constructor(
     @Inject(EmailServicePortToken)
-    private readonly emailService: EmailServicePort,
+    private readonly emailService: EmailServicePort
   ) {}
-
   get command() {
     return SendEmailCommand;
   }
-
   get boundedContext(): string {
-    return 'Marketing';
+    return 'marketing';
   }
-
   @Traceable({
-    operation: '[Marketing] SendEmailCommandHandler',
+    operation: 'SendEmailCommandHandler',
     metrics: {
-      name: '[Marketing] SendEmailCommandHandler',
+      name: 'SendEmailCommandHandler',
       category: 'commandHandler',
     },
   })
   async execute(
-    command: SendEmailCommand,
+    command: SendEmailCommand
   ): Promise<SendEmailCommandHandlerResponse> {
-    console.log('SendEmailHandler');
-    const sendOrError = await this.emailService.send({
+    const email = {
       origin: command.origin,
       destination: command.destination,
       content: command.content,
-    });
-    if (sendOrError.isFail()) {
-      return fail(sendOrError.value);
+    };
+    const emailServiceResult = await this.emailService.send(email);
+    if (emailServiceResult.isFail()) {
+      return fail(emailServiceResult.value);
     }
     return ok();
   }

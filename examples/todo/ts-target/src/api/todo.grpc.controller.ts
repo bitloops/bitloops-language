@@ -1,3 +1,4 @@
+import { todo } from '../proto/generated/todo';
 import {
   Controller,
   Inject,
@@ -20,20 +21,26 @@ import {
 } from '@bitloops/bl-boilerplate-infra-nest-auth-passport';
 import { Infra, asyncLocalStorage } from '@bitloops/bl-boilerplate-core';
 import { CorrelationIdInterceptor } from '@bitloops/bl-boilerplate-infra-telemetry';
-import { GetTodosQuery } from '@src/lib/bounded-contexts/todo/todo/queries/get-todos.query';
-import { CompleteTodoCommand } from '@src/lib/bounded-contexts/todo/todo/commands/complete-todo.command';
-import { UncompleteTodoCommand } from '@src/lib/bounded-contexts/todo/todo/commands/uncomplete-todo.command';
-import { ModifyTodoTitleCommand } from '@src/lib/bounded-contexts/todo/todo/commands/modify-title-todo.command';
-import { DeleteTodoCommand } from '@src/lib/bounded-contexts/todo/todo/commands/delete-todo.command';
 import { AuthEnvironmentVariables } from '@src/config/auth.configuration';
+import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 
-import { todo } from '../proto/generated/todo';
-import { AddTodoCommand } from '../lib/bounded-contexts/todo/todo/commands/add-todo.command';
+import { CompleteTodoCommand } from '@lib/bounded-contexts/todo/todo/commands/complete-todo.command';
+
+import { UncompleteTodoCommand } from '@lib/bounded-contexts/todo/todo/commands/uncomplete-todo.command';
+
+import { AddTodoCommand } from '@lib/bounded-contexts/todo/todo/commands/add-todo.command';
+
+import { DeleteTodoCommand } from '@lib/bounded-contexts/todo/todo/commands/delete-todo.command';
+
+import { ModifyTodoTitleCommand } from '@lib/bounded-contexts/todo/todo/commands/modify-todo-title.command';
+
 import { TodoAddedPubSubIntegrationEventHandler } from './pub-sub-handlers/todo-added.integration-handler';
-import { TodoDeletedPubSubIntegrationEventHandler } from './pub-sub-handlers/todo-deleted.integration-handler';
 import { TodoCompletedPubSubIntegrationEventHandler } from './pub-sub-handlers/todo-completed.integration-handler';
-import { TodoUncompletedPubSubIntegrationEventHandler } from './pub-sub-handlers/todo-uncompleted.integration-handler';
+import { TodoDeletedPubSubIntegrationEventHandler } from './pub-sub-handlers/todo-deleted.integration-handler';
 import { TodoModifiedTitlePubSubIntegrationEventHandler } from './pub-sub-handlers/todo-modified-title.integration-handler';
+import { TodoUncompletedPubSubIntegrationEventHandler } from './pub-sub-handlers/todo-uncompleted.integration-handler';
+
+import { GetTodosQuery } from '@lib/bounded-contexts/todo/todo/queries/get-todos.query';
 
 export type Subscribers = {
   [subscriberId: string]: {
@@ -150,109 +157,171 @@ export class TodoGrpcController {
     this.subscribeToPubSubIntegrationEvents();
   }
 
-  async subscribeToPubSubIntegrationEvents() {
-    // Added
-    const addedHandler = new TodoAddedPubSubIntegrationEventHandler(
-      subscriptions,
-      subscribers,
-    );
-    const adddedTopic =
-      NatsPubSubIntegrationEventsBus.getTopicFromHandler(addedHandler);
-    console.log(`Subscribing to PubSub integration event ${adddedTopic}`);
-    await this.pubSubIntegrationEventBus.subscribe(adddedTopic, addedHandler);
+  @GrpcMethod('TodoService', 'Complete')
+  @Traceable({
+    operation: 'CompleteTodoController',
+    serviceName: 'API',
+  })
+  async completeTodo(
+    data: todo.CompleteTodoRequest,
+  ): Promise<todo.CompleteTodoResponse> {
+    const command = new CompleteTodoCommand({ todoId: data.todoId });
+    const result = await this.commandBus.request(command);
+    if (result.isOk) {
+      return new todo.CompleteTodoResponse({});
+    }
+    const error = result.error;
+    return new todo.CompleteTodoResponse({
+      error: new todo.CompleteTodoErrorResponse({
+        systemUnavailableError: new todo.ErrorResponse({
+          code: error.errorId || 'SYSTEM_UNAVAILABLE',
+          message: error.message || 'System unavailable',
+        }),
+      }),
+    });
+  }
 
-    // Deleted
-    const deletedHandler = new TodoDeletedPubSubIntegrationEventHandler(
-      subscriptions,
-      subscribers,
-    );
-    const deletedTopic =
-      NatsPubSubIntegrationEventsBus.getTopicFromHandler(deletedHandler);
-    console.log(`Subscribing to PubSub integration event ${deletedTopic}`);
-    await this.pubSubIntegrationEventBus.subscribe(
-      deletedTopic,
-      deletedHandler,
-    );
-
-    // Completed
-    const completedHandler = new TodoCompletedPubSubIntegrationEventHandler(
-      subscriptions,
-      subscribers,
-    );
-    const completedTopic =
-      NatsPubSubIntegrationEventsBus.getTopicFromHandler(completedHandler);
-    console.log(`Subscribing to PubSub integration event ${completedTopic}`);
-    await this.pubSubIntegrationEventBus.subscribe(
-      completedTopic,
-      completedHandler,
-    );
-
-    // Uncompleted
-    const uncompletedHandler = new TodoUncompletedPubSubIntegrationEventHandler(
-      subscriptions,
-      subscribers,
-    );
-    const uncompletedTopic =
-      NatsPubSubIntegrationEventsBus.getTopicFromHandler(uncompletedHandler);
-    console.log(`Subscribing to PubSub integration event ${uncompletedTopic}`);
-    await this.pubSubIntegrationEventBus.subscribe(
-      uncompletedTopic,
-      uncompletedHandler,
-    );
-
-    // ModifiedTitle
-    const modifiedTitleHandler =
-      new TodoModifiedTitlePubSubIntegrationEventHandler(
-        subscriptions,
-        subscribers,
-      );
-    const modifiedTitleTopic =
-      NatsPubSubIntegrationEventsBus.getTopicFromHandler(modifiedTitleHandler);
-    console.log(
-      `Subscribing to PubSub integration event ${modifiedTitleTopic}`,
-    );
-    await this.pubSubIntegrationEventBus.subscribe(
-      modifiedTitleTopic,
-      modifiedTitleHandler,
-    );
+  @GrpcMethod('TodoService', 'Uncomplete')
+  @Traceable({
+    operation: 'UncompleteTodoController',
+    serviceName: 'API',
+  })
+  async uncompleteTodo(
+    data: todo.UncompleteTodoRequest,
+  ): Promise<todo.UncompleteTodoResponse> {
+    const command = new UncompleteTodoCommand({ id: data.id });
+    const result = await this.commandBus.request(command);
+    if (result.isOk) {
+      return new todo.UncompleteTodoResponse({});
+    }
+    const error = result.error;
+    return new todo.UncompleteTodoResponse({
+      error: new todo.UncompleteTodoErrorResponse({
+        systemUnavailableError: new todo.ErrorResponse({
+          code: error.errorId || 'SYSTEM_UNAVAILABLE',
+          message: error.message || 'System unavailable',
+        }),
+      }),
+    });
   }
 
   @GrpcMethod('TodoService', 'Add')
-  async addTodo(
-    data: todo.AddTodoRequest,
-    // metadata: Metadata,
-    // call: ServerUnaryCall<todo.AddTodoRequest, todo.AddTodoResponse>,
-  ): Promise<todo.AddTodoResponse> {
-    // const context = asyncLocalStorage.getStore()?.get('context');
+  @Traceable({
+    operation: 'AddTodoController',
+    serviceName: 'API',
+  })
+  async addTodo(data: todo.AddTodoRequest): Promise<todo.AddTodoResponse> {
     const command = new AddTodoCommand({ title: data.title });
-    const results = await this.commandBus.request(command);
-    if (results.isOk) {
+    const result = await this.commandBus.request(command);
+    if (result.isOk) {
       return new todo.AddTodoResponse({
-        ok: new todo.AddTodoOKResponse({ id: results.data }),
-      });
-    } else {
-      const error = results.error;
-      console.error('Error while creating todo:', error?.message);
-      return new todo.AddTodoResponse({
-        error: new todo.AddTodoErrorResponse({
-          invalidTitleLengthError: new todo.ErrorResponse({
-            code: error?.code || 'INVALID_TITLE_LENGTH_ERROR',
-            message: error?.message || 'The title is too long.',
-          }),
-        }),
+        ok: new todo.AddTodoOKResponse({ id: result.data }),
       });
     }
+    const error = result.error;
+    return new todo.AddTodoResponse({
+      error: new todo.AddTodoErrorResponse({
+        systemUnavailableError: new todo.ErrorResponse({
+          code: error.errorId || 'SYSTEM_UNAVAILABLE',
+          message: error.message || 'System unavailable',
+        }),
+      }),
+    });
+  }
+
+  @GrpcMethod('TodoService', 'Delete')
+  @Traceable({
+    operation: 'DeleteTodoController',
+    serviceName: 'API',
+  })
+  async deleteTodo(
+    data: todo.DeleteTodoRequest,
+  ): Promise<todo.DeleteTodoResponse> {
+    const command = new DeleteTodoCommand({ id: data.id });
+    const result = await this.commandBus.request(command);
+    if (result.isOk) {
+      return new todo.DeleteTodoResponse({
+        ok: new todo.DeleteTodoOKResponse(),
+      });
+    }
+    const error = result.error;
+    return new todo.DeleteTodoResponse({
+      error: new todo.DeleteTodoErrorResponse({
+        systemUnavailableError: new todo.ErrorResponse({
+          code: error.errorId || 'SYSTEM_UNAVAILABLE',
+          message: error.message || 'System unavailable',
+        }),
+      }),
+    });
+  }
+
+  @GrpcMethod('TodoService', 'ModifyTitle')
+  @Traceable({
+    operation: 'ModifyTodoTitleController',
+    serviceName: 'API',
+  })
+  async modifyTodoTitle(
+    data: todo.ModifyTitleTodoRequest,
+  ): Promise<todo.ModifyTitleTodoResponse> {
+    const command = new ModifyTodoTitleCommand({
+      id: data.id,
+      title: data.title,
+    });
+    const result = await this.commandBus.request(command);
+    if (result.isOk) {
+      return new todo.ModifyTitleTodoResponse({
+        ok: new todo.ModifyTitleTodoOKResponse(),
+      });
+    }
+    const error = result.error;
+    return new todo.ModifyTitleTodoResponse({
+      error: new todo.ModifyTitleTodoErrorResponse({
+        systemUnavailableError: new todo.ErrorResponse({
+          code: error.errorId || 'SYSTEM_UNAVAILABLE',
+          message: error.message || 'System unavailable',
+        }),
+      }),
+    });
+  }
+
+  @GrpcMethod('TodoService', 'On')
+  async on(
+    request: todo.OnTodoRequest,
+    metadata: Metadata,
+    call: ServerWritableStream<todo.OnTodoRequest, todo.Todo>,
+  ) {
+    const { subscriberId, events } = request;
+    await new Promise((resolve) => {
+      const topics = events.map((i) => {
+        switch (i) {
+          case todo.TODO_EVENTS.ADDED:
+            return TodoAddedPubSubIntegrationEventHandler.name;
+          case todo.TODO_EVENTS.COMPLETED:
+            return TodoCompletedPubSubIntegrationEventHandler.name;
+          case todo.TODO_EVENTS.DELETED:
+            return TodoDeletedPubSubIntegrationEventHandler.name;
+          case todo.TODO_EVENTS.MODIFIED_TITLE:
+            return TodoModifiedTitlePubSubIntegrationEventHandler.name;
+          case todo.TODO_EVENTS.UNCOMPLETED:
+            return TodoUncompletedPubSubIntegrationEventHandler.name;
+        }
+      });
+      subscribe(subscriberId, topics, call, resolve);
+    });
   }
 
   @GrpcMethod('TodoService', 'GetAll')
+  @Traceable({
+    operation: 'GetAllTodosController',
+    serviceName: 'API',
+  })
   async getAll(
     data: todo.GetAllTodosRequest,
     metadata: Metadata,
-    // call: ServerUnaryCall<todo.GetAllTodosRequest, todo.GetAllTodosResponse>,
   ): Promise<todo.GetAllTodosResponse> {
-    const results = await this.queryBus.request(new GetTodosQuery());
-    if (results.isOk) {
-      const mappedData = results.data.map((i) => ({
+    const result = await this.queryBus.request(new GetTodosQuery());
+    if (result.isOk) {
+      const mappedData = result.data.map((i) => ({
         id: i.id,
         title: i.title,
         completed: i.completed,
@@ -267,128 +336,20 @@ export class TodoGrpcController {
           todos: mappedData.map((i) => new todo.Todo(i)),
         }),
       });
-    } else {
-      const error = results.error;
-      console.error('Error while fetching todos:', error?.message);
-      return new todo.GetAllTodosResponse({
-        error: new todo.GetAllTodosErrorResponse({
-          systemUnavailableError: new todo.ErrorResponse({
-            code: error?.code || 'SYSTEM_UNAVAILABLE_ERROR',
-            message: error?.message || 'The system is unavailable.',
-          }),
-        }),
-      });
     }
-  }
-
-  @GrpcMethod('TodoService', 'Complete')
-  async completeTodo(
-    data: todo.CompleteTodoRequest,
-    // metadata: Metadata,
-  ): Promise<todo.CompleteTodoResponse> {
-    const command = new CompleteTodoCommand({ todoId: data.id });
-    const result = await this.commandBus.request(command);
-    if (result.isOk) {
-      return new todo.CompleteTodoResponse({
-        ok: new todo.CompleteTodoOKResponse(),
-      });
-    } else {
-      const error = result.error;
-      console.error('Error while completing todo:', error?.message);
-      return new todo.CompleteTodoResponse({
-        error: new todo.CompleteTodoErrorResponse({
-          systemUnavailableError: new todo.ErrorResponse({
-            code: error?.code || 'SYSTEM_UNAVAILABLE_ERROR',
-            message: error?.message || 'The system is unavailable.',
-          }),
+    const error = result.error;
+    return new todo.GetAllTodosResponse({
+      error: new todo.GetAllTodosErrorResponse({
+        systemUnavailableError: new todo.ErrorResponse({
+          code: error.errorId || 'SYSTEM_UNAVAILABLE',
+          message: error.message || 'System unavailable',
         }),
-      });
-    }
-  }
-
-  @GrpcMethod('TodoService', 'Uncomplete')
-  async uncompleteTodo(
-    data: todo.CompleteTodoRequest,
-  ): Promise<todo.UncompleteTodoResponse> {
-    const command = new UncompleteTodoCommand({ id: data.id });
-    const result = await this.commandBus.request(command);
-    if (result.isOk) {
-      return new todo.UncompleteTodoResponse({
-        ok: new todo.UncompleteTodoOKResponse(),
-      });
-    } else {
-      const error = result.error;
-      console.error('Error while uncompleting todo:', error?.message);
-      return new todo.UncompleteTodoResponse({
-        error: new todo.UncompleteTodoErrorResponse({
-          systemUnavailableError: new todo.ErrorResponse({
-            code: error?.code || 'SYSTEM_UNAVAILABLE_ERROR',
-            message: error?.message || 'The system is unavailable.',
-          }),
-        }),
-      });
-    }
-  }
-
-  @GrpcMethod('TodoService', 'Delete')
-  async deleteTodo(
-    data: todo.DeleteTodoRequest,
-  ): Promise<todo.DeleteTodoResponse> {
-    const command = new DeleteTodoCommand({ id: data.id });
-    const result = await this.commandBus.request(command);
-    if (result.isOk) {
-      return new todo.DeleteTodoResponse({
-        ok: new todo.DeleteTodoOKResponse(),
-      });
-    } else {
-      const error = result.error;
-      console.error('Error while deleting todo:', error?.message);
-      return new todo.DeleteTodoResponse({
-        error: new todo.DeleteTodoErrorResponse({
-          systemUnavailableError: new todo.ErrorResponse({
-            code: error?.code || 'SYSTEM_UNAVAILABLE_ERROR',
-            message: error?.message || 'The system is unavailable.',
-          }),
-        }),
-      });
-    }
-  }
-
-  @GrpcMethod('TodoService', 'ModifyTitle')
-  async modifyTitle(
-    data: todo.ModifyTitleTodoRequest,
-  ): Promise<todo.ModifyTitleTodoResponse> {
-    const command = new ModifyTodoTitleCommand({
-      id: data.id,
-      title: data.title,
+      }),
     });
-    const result = await this.commandBus.request(command);
-    if (result.isOk) {
-      return new todo.ModifyTitleTodoResponse({
-        ok: new todo.ModifyTitleTodoOKResponse(),
-      });
-    } else {
-      const error = result.error;
-      console.error('Error while  todo:', error?.message);
-      return new todo.ModifyTitleTodoResponse({
-        error: new todo.ModifyTitleTodoErrorResponse({
-          systemUnavailableError: new todo.ErrorResponse({
-            code: error?.code || 'SYSTEM_UNAVAILABLE_ERROR',
-            message: error?.message || 'The system is unavailable.',
-          }),
-        }),
-      });
-    }
   }
 
   @GrpcMethod('TodoService', 'InitializeSubscriptionConnection')
   async initializeSubscriptionConnection(): Promise<todo.InitializeConnectionResponse> {
-    // request: todo.InitializeConnectionRequest,
-    // metadata: Metadata,
-    // call: ServerUnaryCall<
-    //   todo.InitializeConnectionRequest,
-    //   todo.InitializeConnectionResponse
-    // >,
     const ctx = await asyncLocalStorage.getStore()?.get('context');
     const authToken = ctx.jwt;
     const userId = ctx.userId;
@@ -407,11 +368,6 @@ export class TodoGrpcController {
   async keepSubscriptionAlive(
     request: todo.KeepSubscriptionAliveRequest,
   ): Promise<todo.KeepSubscriptionAliveResponse> {
-    // metadata: Metadata,
-    // call: ServerUnaryCall<
-    //   todo.InitializeConnectionRequest,
-    //   todo.InitializeConnectionResponse
-    // >,
     const subscriberId = request.subscriberId;
     const subscriber = subscribers[subscriberId];
     if (!subscriber) {
@@ -462,29 +418,84 @@ export class TodoGrpcController {
     return response;
   }
 
-  @GrpcMethod('TodoService', 'On')
-  async on(
-    request: todo.OnTodoRequest,
-    metadata: Metadata,
-    call: ServerWritableStream<todo.OnTodoRequest, todo.Todo>,
-  ) {
-    const { subscriberId, events } = request;
-    await new Promise((resolve) => {
-      const topics = events.map((i) => {
-        switch (i) {
-          case todo.TODO_EVENTS.ADDED:
-            return TodoAddedPubSubIntegrationEventHandler.name;
-          case todo.TODO_EVENTS.DELETED:
-            return TodoDeletedPubSubIntegrationEventHandler.name;
-          case todo.TODO_EVENTS.MODIFIED_TITLE:
-            return TodoModifiedTitlePubSubIntegrationEventHandler.name;
-          case todo.TODO_EVENTS.COMPLETED:
-            return TodoCompletedPubSubIntegrationEventHandler.name;
-          case todo.TODO_EVENTS.UNCOMPLETED:
-            return TodoUncompletedPubSubIntegrationEventHandler.name;
-        }
-      });
-      subscribe(subscriberId, topics, call, resolve);
-    });
+  async subscribeToPubSubIntegrationEvents() {
+    const todoAddedPubSubIntegrationEventHandler =
+      new TodoAddedPubSubIntegrationEventHandler(subscriptions, subscribers);
+    const todoAddedPubSubIntegrationEventHandlerTopic =
+      NatsPubSubIntegrationEventsBus.getTopicFromHandler(
+        todoAddedPubSubIntegrationEventHandler,
+      );
+    console.log(
+      `Subscribing to PubSub integration event ${todoAddedPubSubIntegrationEventHandlerTopic}`,
+    );
+    await this.pubSubIntegrationEventBus.subscribe(
+      todoAddedPubSubIntegrationEventHandlerTopic,
+      todoAddedPubSubIntegrationEventHandler,
+    );
+
+    const todoCompletedPubSubIntegrationEventHandler =
+      new TodoCompletedPubSubIntegrationEventHandler(
+        subscriptions,
+        subscribers,
+      );
+    const todoCompletedPubSubIntegrationEventHandlerTopic =
+      NatsPubSubIntegrationEventsBus.getTopicFromHandler(
+        todoCompletedPubSubIntegrationEventHandler,
+      );
+    console.log(
+      `Subscribing to PubSub integration event ${todoCompletedPubSubIntegrationEventHandlerTopic}`,
+    );
+    await this.pubSubIntegrationEventBus.subscribe(
+      todoCompletedPubSubIntegrationEventHandlerTopic,
+      todoCompletedPubSubIntegrationEventHandler,
+    );
+
+    const todoDeletedPubSubIntegrationEventHandler =
+      new TodoDeletedPubSubIntegrationEventHandler(subscriptions, subscribers);
+    const todoDeletedPubSubIntegrationEventHandlerTopic =
+      NatsPubSubIntegrationEventsBus.getTopicFromHandler(
+        todoDeletedPubSubIntegrationEventHandler,
+      );
+    console.log(
+      `Subscribing to PubSub integration event ${todoDeletedPubSubIntegrationEventHandlerTopic}`,
+    );
+    await this.pubSubIntegrationEventBus.subscribe(
+      todoDeletedPubSubIntegrationEventHandlerTopic,
+      todoDeletedPubSubIntegrationEventHandler,
+    );
+
+    const todoModifiedTitlePubSubIntegrationEventHandler =
+      new TodoModifiedTitlePubSubIntegrationEventHandler(
+        subscriptions,
+        subscribers,
+      );
+    const todoModifiedTitlePubSubIntegrationEventHandlerTopic =
+      NatsPubSubIntegrationEventsBus.getTopicFromHandler(
+        todoModifiedTitlePubSubIntegrationEventHandler,
+      );
+    console.log(
+      `Subscribing to PubSub integration event ${todoModifiedTitlePubSubIntegrationEventHandlerTopic}`,
+    );
+    await this.pubSubIntegrationEventBus.subscribe(
+      todoModifiedTitlePubSubIntegrationEventHandlerTopic,
+      todoModifiedTitlePubSubIntegrationEventHandler,
+    );
+
+    const todoUncompletedPubSubIntegrationEventHandler =
+      new TodoUncompletedPubSubIntegrationEventHandler(
+        subscriptions,
+        subscribers,
+      );
+    const todoUncompletedPubSubIntegrationEventHandlerTopic =
+      NatsPubSubIntegrationEventsBus.getTopicFromHandler(
+        todoUncompletedPubSubIntegrationEventHandler,
+      );
+    console.log(
+      `Subscribing to PubSub integration event ${todoUncompletedPubSubIntegrationEventHandlerTopic}`,
+    );
+    await this.pubSubIntegrationEventBus.subscribe(
+      todoUncompletedPubSubIntegrationEventHandlerTopic,
+      todoUncompletedPubSubIntegrationEventHandler,
+    );
   }
 }

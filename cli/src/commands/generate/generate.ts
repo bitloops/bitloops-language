@@ -83,7 +83,7 @@ const generateInfra = async (source: ICollection): Promise<void> => {
     );
 
     // throbber = ora(purpleColor('🔨 Waiting for ai generation to complete... ')).start();
-    console.log('🔨 Waiting for ai generation to complete... ');
+    console.log('🔨 Waiting for AI generation to complete... ');
 
     const infraCodeGenerator: IInfraCodeGenerator = new CliInfraCodeGenerator(
       apiKey,

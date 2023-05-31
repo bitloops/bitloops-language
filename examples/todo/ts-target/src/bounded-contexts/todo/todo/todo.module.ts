@@ -1,66 +1,74 @@
+
 import { Module } from '@nestjs/common';
-import { TodoWriteRepository } from './repository/todo-write.repository';
-import { TodoReadRepository } from './repository/todo-read.repository';
-import { TodoModule as LibTodoModule } from 'src/lib/bounded-contexts/todo/todo/todo.module';
-import { TodoWriteRepoPortToken } from '@src/lib/bounded-contexts/todo/todo/ports/TodoWriteRepoPort';
-import { TodoReadRepoPortToken } from '@src/lib/bounded-contexts/todo/todo/ports/TodoReadRepoPort';
-import { MongoModule } from '@bitloops/bl-boilerplate-infra-mongo';
-import { PubSubCommandHandlers } from '@src/lib/bounded-contexts/todo/todo/application/command-handlers';
-import { PubSubQueryHandlers } from '@src/lib/bounded-contexts/todo/todo/application/query-handlers';
-import {
-  StreamingDomainEventHandlers,
-  StreamingIntegrationEventHandlers,
-} from '@src/lib/bounded-contexts/todo/todo/application/event-handlers';
-import {
-  StreamingDomainEventBusToken,
-  StreamingIntegrationEventBusToken,
-  PubSubIntegrationEventBusToken,
-} from '@src/lib/bounded-contexts/todo/todo/constants';
 import {
   JetstreamModule,
+  NatsPubSubQueryBus,
+  NatsPubSubIntegrationEventsBus,
+  NatsStreamingCommandBus,
   NatsStreamingDomainEventBus,
   NatsStreamingIntegrationEventBus,
-  NatsPubSubIntegrationEventsBus,
 } from '@bitloops/bl-boilerplate-infra-nest-jetstream';
+import { MongoModule } from '@bitloops/bl-boilerplate-infra-mongo';
+import { TodoModule as LibTodoModule } from '@lib/bounded-contexts/todo/todo/todo.module';
+import { StreamingIntegrationEventHandlers } from '@lib/bounded-contexts/todo/todo/application/event-handlers/integration';
+import { PubSubCommandHandlers, StreamingCommandHandlers } from '@lib/bounded-contexts/todo/todo/application/command-handlers';
+import { QueryHandlers } from '@lib/bounded-contexts/todo/todo/application/query-handlers';
+import { StreamingDomainEventHandlers } from '@lib/bounded-contexts/todo/todo/application/event-handlers/domain';
+import {
+  TodoWriteRepoPortToken,
+  TodoReadRepoPortToken,
+  PubSubQueryBusToken,
+  PubSubIntegrationEventBusToken,
+  StreamingCommandBusToken,
+  StreamingDomainEventBusToken,
+  StreamingIntegrationEventBusToken,
+} from '@lib/bounded-contexts/todo/todo/constants';
+import { MongoTodoWriteRepository } from './repositories/mongo-todo-write.repository';
+import { MongoTodoReadRepository } from './repositories/mongo-todo-read.repository';
 
 const providers = [
   {
     provide: TodoWriteRepoPortToken,
-    useClass: TodoWriteRepository,
+    useClass: MongoTodoWriteRepository,
   },
   {
     provide: TodoReadRepoPortToken,
-    useClass: TodoReadRepository,
+    useClass: MongoTodoReadRepository,
   },
   {
-    provide: StreamingIntegrationEventBusToken,
-    useClass: NatsStreamingIntegrationEventBus,
+    provide: PubSubQueryBusToken,
+    useClass: NatsPubSubQueryBus,
+  },
+  {
+    provide: PubSubIntegrationEventBusToken,
+    useClass: NatsPubSubIntegrationEventsBus,
+  },
+  {
+    provide: StreamingCommandBusToken,
+    useClass: NatsStreamingCommandBus,
   },
   {
     provide: StreamingDomainEventBusToken,
     useClass: NatsStreamingDomainEventBus,
   },
   {
-    provide: PubSubIntegrationEventBusToken,
-    useClass: NatsPubSubIntegrationEventsBus,
+    provide: StreamingIntegrationEventBusToken,
+    useClass: NatsStreamingIntegrationEventBus,
   },
 ];
 @Module({
   imports: [
     LibTodoModule.register({
-      imports: [
-        MongoModule,
-        JetstreamModule.forFeature({
-          moduleOfHandlers: TodoModule,
-          pubSubCommandHandlers: [...PubSubCommandHandlers],
-          pubSubQueryHandlers: [...PubSubQueryHandlers],
-          streamingDomainEventHandlers: [...StreamingDomainEventHandlers],
-          streamingIntegrationEventHandlers: [
-            ...StreamingIntegrationEventHandlers,
-          ],
-        }),
-      ],
       inject: [...providers],
+      imports: [MongoModule],
+    }),
+    JetstreamModule.forFeature({
+      moduleOfHandlers: TodoModule,
+      streamingIntegrationEventHandlers: [...StreamingIntegrationEventHandlers],
+      streamingDomainEventHandlers: [...StreamingDomainEventHandlers],
+      streamingCommandHandlers: [...StreamingCommandHandlers],
+      pubSubCommandHandlers: [...PubSubCommandHandlers],
+      pubSubQueryHandlers: [...QueryHandlers],
     }),
   ],
   exports: [LibTodoModule],

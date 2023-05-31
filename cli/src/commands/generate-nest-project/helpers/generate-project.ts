@@ -18,6 +18,7 @@ export const generateNestProjectProcess = async (projectName: string): Promise<v
       // console.log(`child process exited with code ${code}`);
       if (code === 0) {
         resolve();
+        return;
       }
       console.log('Have you installed NestJS CLI?');
       reject();

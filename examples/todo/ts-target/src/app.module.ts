@@ -1,7 +1,8 @@
-import { Module } from '@nestjs/common';
-import { TodoModule } from './bounded-contexts/todo/todo/todo.module';
+
+  import { Module } from '@nestjs/common';
+  import { AuthenticationModule } from './bounded-contexts/iam/authentication/authentication.module';
 import { MarketingModule } from './bounded-contexts/marketing/marketing/marketing.module';
-import { IamModule } from './bounded-contexts/iam/iam/iam.module';
+import { TodoModule } from './bounded-contexts/todo/todo/todo.module';
 import {
   JetstreamModule,
   NatsStreamingMessageBus,
@@ -22,10 +23,10 @@ import { TracingModule } from '@bitloops/bl-boilerplate-infra-telemetry';
     }),
     JetstreamModule.forRoot({
       servers: [
-        `nats://${process.env.NATS_HOST ?? 'localhost'}:${
-          process.env.NATS_PORT ?? 4222
-        }`,
-      ],
+    `nats://${process.env.NATS_HOST ?? 'localhost'}:${
+      process.env.NATS_PORT ?? 4222
+    }`,
+  ],
     }),
     PostgresModule.forRoot({
       database: process.env.PG_IAM_DATABASE ?? 'iam',
@@ -37,16 +38,16 @@ import { TracingModule } from '@bitloops/bl-boilerplate-infra-telemetry';
     }),
     MongoModule.forRoot({
       url: `mongodb://${process.env.MONGO_HOST || 'localhost'}:${
-        process.env.MONGO_PORT || 30001
-      }/?directConnection=true&replicaSet=my-replica-set`,
+    process.env.MONGO_PORT || 30001
+  }/?directConnection=true&replicaSet=my-replica-set`,
     }),
-
-    TodoModule,
-    MarketingModule,
-    IamModule,
+    AuthenticationModule,
+MarketingModule,
+TodoModule,
     TracingModule.register({
       messageBus: NatsStreamingMessageBus,
     }),
   ],
 })
 export class AppModule {}
+  

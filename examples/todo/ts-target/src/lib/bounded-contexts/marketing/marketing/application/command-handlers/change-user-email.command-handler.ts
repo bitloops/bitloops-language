@@ -1,60 +1,61 @@
 import {
   Application,
-  ok,
   Either,
   Domain,
   fail,
+  ok,
 } from '@bitloops/bl-boilerplate-core';
-import { Inject } from '@nestjs/common';
-import { ChangeUserEmailCommand } from '../../commands/change-user-email.command';
-import { UserReadModel } from '../../domain/read-models/user-email.read-model';
-import {
-  UserEmailReadRepoPort,
-  UserEmailReadRepoPortToken,
-} from '../../ports/user-email-read.repo-port';
 import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
-
-type UpdateUserEmailCommandHandlerResponse = Either<
+import { ApplicationErrors } from '../errors/index';
+import { DomainErrors } from '../../domain/errors/index';
+import { ChangeUserEmailCommand } from '../../commands/change-user-email.command';
+import { Inject } from '@nestjs/common';
+import { UserWriteRepoPortToken } from '../../constants';
+import { UserWriteRepoPort } from '../../ports/user-write.repo-port';
+export type ChangeUserEmailCommandHandlerResponse = Either<
   void,
-  Application.Repo.Errors.Unexpected
+  | Application.Repo.Errors.Unexpected
+  | ApplicationErrors.UserNotFoundError
+  | DomainErrors.InvalidEmailDomainError
 >;
-
 export class ChangeUserEmailCommandHandler
   implements Application.ICommandHandler<ChangeUserEmailCommand, void>
 {
   constructor(
-    @Inject(UserEmailReadRepoPortToken)
-    private userEmailRepo: UserEmailReadRepoPort,
+    @Inject(UserWriteRepoPortToken)
+    private readonly userRepo: UserWriteRepoPort
   ) {}
-
   get command() {
     return ChangeUserEmailCommand;
   }
-
   get boundedContext(): string {
-    return 'Marketing';
+    return 'marketing';
   }
-
   @Traceable({
-    operation: '[Marketing] ChangeUserEmailCommandHandler',
+    operation: 'ChangeUserEmailCommandHandler',
     metrics: {
-      name: '[Marketing] ChangeUserEmailCommandHandler',
+      name: 'ChangeUserEmailCommandHandler',
       category: 'commandHandler',
     },
   })
   async execute(
-    command: ChangeUserEmailCommand,
-  ): Promise<UpdateUserEmailCommandHandlerResponse> {
-    console.log('ChangeUserEmailCommandHandler');
+    command: ChangeUserEmailCommand
+  ): Promise<ChangeUserEmailCommandHandlerResponse> {
     const requestUserId = new Domain.UUIDv4(command.userId);
-    const userIdEmail = new UserReadModel(
-      requestUserId.toString(),
-      command.email,
-    );
-
-    const updateOrError = await this.userEmailRepo.update(userIdEmail);
-    if (updateOrError.isFail()) {
-      return fail(updateOrError.value);
+    const userFound = await this.userRepo.getById(requestUserId);
+    if (userFound.isFail()) {
+      return fail(userFound.value);
+    }
+    if (!userFound.value) {
+      return fail(new ApplicationErrors.UserNotFoundError(command.userId));
+    }
+    const changeEmailResult = userFound.value.changeEmail(command.email);
+    if (changeEmailResult.isFail()) {
+      return fail(changeEmailResult.value);
+    }
+    const updateResult = await this.userRepo.update(userFound.value);
+    if (updateResult.isFail()) {
+      return fail(updateResult.value);
     }
     return ok();
   }

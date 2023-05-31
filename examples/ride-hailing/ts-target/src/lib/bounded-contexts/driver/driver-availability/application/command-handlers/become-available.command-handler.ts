@@ -23,7 +23,7 @@ export class BecomeAvailableCommandHandler
 {
   constructor(
     @Inject(DriverAvailabilityWriteRepoPortToken)
-    private readonly driverAvailabilityRepository: DriverAvailabilityWriteRepoPort
+    private readonly driverAvailabilityRepository: DriverAvailabilityWriteRepoPort,
   ) {}
   get command() {
     return BecomeAvailableCommand;
@@ -39,16 +39,16 @@ export class BecomeAvailableCommandHandler
     },
   })
   async execute(
-    command: BecomeAvailableCommand
+    command: BecomeAvailableCommand,
   ): Promise<BecomeAvailableCommandHandlerResponse> {
     const uuid = new Domain.UUIDv4(command.id);
     const driverAvailability = await this.driverAvailabilityRepository.getById(
-      uuid
+      uuid,
     );
     if (driverAvailability.isFail()) {
       return fail(driverAvailability.value);
     }
-    if (driverAvailability.value === null) {
+    if (!driverAvailability.value) {
       return fail(new ApplicationErrors.DriverNotFoundError(command.id));
     }
     const result = driverAvailability.value.becomeAvailable();

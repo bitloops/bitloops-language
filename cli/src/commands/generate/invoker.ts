@@ -83,10 +83,7 @@ export class Invoker {
     const segments = this.commands.length;
     const progressBar = new SingleBar(
       {
-        format:
-          'Generation Progress |' +
-          purpleColor('{bar}') +
-          '| {percentage}% || {value}/{total} Files',
+        format: 'Progress |' + purpleColor('{bar}') + '| {percentage}% || {value}/{total} Files',
       },
       Presets.shades_classic,
     );

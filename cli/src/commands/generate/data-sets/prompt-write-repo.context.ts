@@ -366,6 +366,7 @@ ${messageInstructions('marketing', 'marketing', 'user-write.repo-port.ts', 'Mong
     ${CodeSnippets.closeTypescript()}
     ${messageInstructions(boundedContext, module, fileName, concretionType)}
     For this example, authorization is not needed, so you don't need to worry about the JWT, and you can omit the user id checks.
+    Also if the concretion is Postgres, don't bother with created_at and updated_at fields.
     `,
     },
   ];

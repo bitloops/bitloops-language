@@ -115,8 +115,7 @@ message AddTodoResponse {
 
 message AddTodoErrorResponse {
   oneof error {
-    ErrorResponse titleOutOfBoundsError = 1;
-    ErrorResponse unexpectedError = 2;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -138,9 +137,7 @@ message ModifyTitleTodoResponse {
 
 message ModifyTitleTodoErrorResponse {
   oneof error {
-    ErrorResponse todoNotFoundError = 1;
-    ErrorResponse unexpectedError = 2;
-    ErrorResponse titleOutOfBoundsError = 3;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -159,9 +156,7 @@ message CompleteTodoResponse {
 
 message CompleteTodoErrorResponse {
   oneof error {
-    ErrorResponse todoNotFoundError = 1;
-    ErrorResponse unexpectedError = 2;
-    ErrorResponse todoAlreadyCompletedError = 3;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -178,7 +173,7 @@ message GetAllTodosResponse {
 
 message GetAllTodosErrorResponse {
   oneof error {
-    ErrorResponse unexpectedError = 1;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -248,23 +243,21 @@ const messageInstructionsQuery = (
   This result has an \`result.isOk\` boolean value so we don't need to try-catch.
   In case result.isOk === true -> The response data is under \`result.data\`,
   else the error object is under \`result.error\`.
-  Each error object has errorId and message properties with string values.
-  We use the errorId to distinguish between different errors.
+  In the case of error we return the error that corresponds to the systemUnavailableError key only and ignore the rest.
 
 
-  You should generate only the method of the controller, and any needed imports 
+  You should generate only the method of the controller and an import
   separated with ${GrpcControllerBuilder.IMPORTS_METHODS_SEPARATOR}, in the following format.
   ${CodeSnippets.openTypescript()}
-  <Imports>
+  <Import-of-query>
   ${GrpcControllerBuilder.IMPORTS_METHODS_SEPARATOR}
   <Method>
   ${CodeSnippets.closeTypescript()}
 
-  As imports, you only add the import of the command and of any possible errors.
-  Don't import Inject. It's already imported.
-  You can use this information for that:
+  You should only import the query and nothing else, using the information that:
   boundedContextName: ${boundedContextName}
   moduleName: ${moduleName}
+  The boundedContextName and the moduleName can be the same, but they can also be different. So be careful.
   
   Create only the method for the provided query and ignore any remaining rpcs.
 `;
@@ -288,7 +281,7 @@ export const promptApiGrpcControllerQuery = (
     content:
       messageInstructionsQuery(QUERIES[0], QUERY_HANDLERS[0], PROTOBUF, 'todo', {
         boundedContextName: 'todo',
-        moduleName: 'todo-module',
+        moduleName: 'my-todo',
       }) +
       ` 
   You should use each rpc's response to return the response like this.
@@ -309,8 +302,7 @@ export const promptApiGrpcControllerQuery = (
     role: 'assistant',
     content: `
     ${CodeSnippets.openTypescript()}
-  import { Application } from '@bitloops/bl-boilerplate-core';
-  import { GetTodosQuery } from '@lib/bounded-contexts/todo/todo-module/queries/get-todos.query';
+  import { GetTodosQuery } from '@lib/bounded-contexts/todo/my-todo/queries/get-todos.query';
 
   ${GrpcControllerBuilder.IMPORTS_METHODS_SEPARATOR}
   @GrpcMethod('TodoService', 'GetAll')
@@ -341,28 +333,14 @@ export const promptApiGrpcControllerQuery = (
       });
     } 
     const error = result.error;
-    switch (error.errorId) {
-      case Application.Repo.Errors.Unexpected.errorId: {
-        return new todo.GetAllTodosResponse({
-          error: new todo.GetAllTodosErrorResponse({
-            unexpectedError: new todo.ErrorResponse({
-              code: error.errorId,
-              message: error.message,
-            }),
-          }),
-        });
-      }
-      default: {
-        return new todo.GetAllTodosResponse({
-          error: new todo.GetAllTodosErrorResponse({
-            unexpectedError: new todo.ErrorResponse({
-              code: error.errorId,
-              message: error.message,
-            }),
-          }),
-        });
-      }
-    }
+    return new todo.GetAllTodosResponse({
+      error: new todo.GetAllTodosErrorResponse({
+        systemUnavailableError: new todo.ErrorResponse({
+          code: error.errorId || 'SYSTEM_UNAVAILABLE',
+          message: error.message || 'System unavailable',
+        }),
+      }),
+    });
   }
   ${CodeSnippets.closeTypescript()}
   `,
