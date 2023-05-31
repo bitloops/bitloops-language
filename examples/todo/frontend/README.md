@@ -16,8 +16,17 @@ The grpc-web SSE implementation has significant limitation for long running conn
 
 ## Launch the app using the Dockerfile
 
-`docker build -t todo-frontend .`
-`docker run -dp 3000:3000 todo-frontend`
+To build the image:
+
+```bash
+docker build -t todo-frontend .
+```
+
+To run the container:
+
+```bash
+docker run -dp 3000:3000 todo-frontend
+```
 
 ## Available Scripts
 
