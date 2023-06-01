@@ -35,7 +35,7 @@ export class NestProjectUpdate {
         '@bitloops/bl-boilerplate-core': '^0.4.0',
         '@bitloops/bl-boilerplate-infra-mongo': '^0.1.2',
         '@bitloops/bl-boilerplate-infra-nest-auth-passport': '^0.2.0',
-        '@bitloops/bl-boilerplate-infra-nest-jetstream': '^0.0.3',
+        '@bitloops/bl-boilerplate-infra-nest-jetstream': '^0.0.5',
         '@bitloops/bl-boilerplate-infra-postgres': '^0.1.1',
         '@bitloops/bl-boilerplate-infra-telemetry': '^0.1.3',
         '@nestjs/platform-fastify': '^9.4.0',

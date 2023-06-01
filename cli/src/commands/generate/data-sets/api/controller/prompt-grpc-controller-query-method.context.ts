@@ -336,8 +336,8 @@ export const promptApiGrpcControllerQuery = (
     return new todo.GetAllTodosResponse({
       error: new todo.GetAllTodosErrorResponse({
         systemUnavailableError: new todo.ErrorResponse({
-          code: error.errorId || 'SYSTEM_UNAVAILABLE',
-          message: error.message || 'System unavailable',
+          code: error?.errorId || 'SYSTEM_UNAVAILABLE',
+          message: error?.message || 'System unavailable',
         }),
       }),
     });

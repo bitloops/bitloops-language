@@ -357,8 +357,8 @@ export const promptApiGrpcControllerCommand = (
     return new ${packageName}.AddTodoResponse({
       error: new ${packageName}.AddTodoErrorResponse({
         systemUnavailableError: new ${packageName}.ErrorResponse({
-          code: error.errorId || 'SYSTEM_UNAVAILABLE',
-          message: error.message || 'System unavailable',
+          code: error?.errorId || 'SYSTEM_UNAVAILABLE',
+          message: error?.message || 'System unavailable',
         }),
       }),
     });

@@ -1117,10 +1117,10 @@
     passport-local "^1.0.0"
     rxjs "^7.8.0"
 
-"@bitloops/bl-boilerplate-infra-nest-jetstream@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@bitloops/bl-boilerplate-infra-nest-jetstream/-/bl-boilerplate-infra-nest-jetstream-0.0.3.tgz#4e60df2a403605c8d0280b0b0c2f1bfd9e84afa6"
-  integrity sha512-PD+WLb4sw+M3ZIXL+FXAX5dDKt5xZD0C/M1GSQkeELEBeWlxL+fTpgQGVQRdHVrB8WqVe66a5q3FJXF8UFuwAg==
+"@bitloops/bl-boilerplate-infra-nest-jetstream@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@bitloops/bl-boilerplate-infra-nest-jetstream/-/bl-boilerplate-infra-nest-jetstream-0.0.5.tgz#76e3da735a4d479fac32e2a7e368a327046c0607"
+  integrity sha512-+3ycaEkNCesRKPiQZeE7IucRhYgBC0cnuhOYlK+mmLdpHAJBEpSyrXX4gxmTt6cYvIKiuMnML24vgZGmNi/N7w==
   dependencies:
     async-mutex "^0.4.0"
     nats "^2.13.1"
