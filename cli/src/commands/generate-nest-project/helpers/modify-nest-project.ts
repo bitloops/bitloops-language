@@ -77,6 +77,8 @@ export class NestProjectUpdate {
         'ts-loader': '^9.2.3',
         'ts-node': '^10.0.0',
         'tsconfig-paths': '4.1.1',
+        'protoc-gen-js': '^3.21.2',
+        '@protobuf-ts/protoc': '^2.9.0',
         typescript: '4.9.5',
       },
     };
@@ -116,6 +118,7 @@ COPY . .
 #      BUILD      
 # Install dependencies (--immutable makes sure the exact versions in the lockfile gets installed)
 RUN yarn install --immutable
+RUN yarn proto
 # Build the app
 RUN yarn build
 #      RUN        
