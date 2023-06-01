@@ -8,6 +8,8 @@ services:
       - '3000:3000'
     networks:
       - bitloops
+    depends_on:
+      - todo-backend
 
   todo-backend:
     build:
@@ -17,6 +19,10 @@ services:
       - '8082:8082'
     networks:
       - bitloops
+    depends_on:
+      - bl-mongo
+      - bl-postgres
+      - bl-nats
 
   bl-mongo:
     image: mongo:5
