@@ -38,6 +38,7 @@
           return ok(
             UserEntity.fromPrimitives({
               ...user,
+              id: user.id,
             }),
           );
         }

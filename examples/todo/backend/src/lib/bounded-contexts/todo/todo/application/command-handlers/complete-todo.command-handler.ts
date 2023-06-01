@@ -49,9 +49,9 @@ export class CompleteTodoCommandHandler
     if (!todoEntity.value) {
       return fail(new ApplicationErrors.TodoNotFoundError(command.todoId));
     }
-    const result_561163 = todoEntity.value.complete();
-    if (result_561163.isFail()) {
-      return fail(result_561163.value);
+    const result_484453 = todoEntity.value.complete();
+    if (result_484453.isFail()) {
+      return fail(result_484453.value);
     }
     const updateResult = await this.todoRepo.update(todoEntity.value);
     if (updateResult.isFail()) {

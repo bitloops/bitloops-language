@@ -34,13 +34,13 @@ import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
   
   import { DeleteTodoCommand } from '@lib/bounded-contexts/todo/todo/commands/delete-todo.command';
   
-  import { AddTodoCommand } from '@lib/bounded-contexts/todo/todo/commands/add-todo.command';
+  import { UncompleteTodoCommand } from '@lib/bounded-contexts/todo/todo/commands/uncomplete-todo.command';
   
   import { CompleteTodoCommand } from '@lib/bounded-contexts/todo/todo/commands/complete-todo.command';
   
-  import { UncompleteTodoCommand } from '@lib/bounded-contexts/todo/todo/commands/uncomplete-todo.command';
-  
   import { ModifyTodoTitleCommand } from '@lib/bounded-contexts/todo/todo/commands/modify-todo-title.command';
+  
+  import { AddTodoCommand } from '@lib/bounded-contexts/todo/todo/commands/add-todo.command';
   
   import { GetTodosQuery } from '@lib/bounded-contexts/todo/todo/queries/get-todos.query';
 
@@ -205,58 +205,8 @@ export class TodoGrpcController {
     return new todo.DeleteTodoResponse({
       error: new todo.DeleteTodoErrorResponse({
         systemUnavailableError: new todo.ErrorResponse({
-          code: error.errorId || 'SYSTEM_UNAVAILABLE',
-          message: error.message || 'System unavailable',
-        }),
-      }),
-    });
-  }
-
-  
-  @GrpcMethod('TodoService', 'Add')
-  @Traceable({
-    operation: 'AddTodoController',
-    serviceName: 'API',
-  })
-  async addTodo(data: todo.AddTodoRequest): Promise<todo.AddTodoResponse> {
-    const command = new AddTodoCommand({ title: data.title });
-    const result = await this.commandBus.request(command);
-    if (result.isOk) {
-      return new todo.AddTodoResponse({
-        ok: new todo.AddTodoOKResponse({ id: result.data }),
-      });
-    } 
-    const error = result.error;
-    return new todo.AddTodoResponse({
-      error: new todo.AddTodoErrorResponse({
-        systemUnavailableError: new todo.ErrorResponse({
-          code: error.errorId || 'SYSTEM_UNAVAILABLE',
-          message: error.message || 'System unavailable',
-        }),
-      }),
-    });
-  }
-
-  
-  @GrpcMethod('TodoService', 'Complete')
-  @Traceable({
-    operation: 'CompleteTodoController',
-    serviceName: 'API',
-  })
-  async completeTodo(data: todo.CompleteTodoRequest): Promise<todo.CompleteTodoResponse> {
-    const command = new CompleteTodoCommand({ todoId: data.id });
-    const result = await this.commandBus.request(command);
-    if (result.isOk) {
-      return new todo.CompleteTodoResponse({
-        ok: new todo.CompleteTodoOKResponse(),
-      });
-    } 
-    const error = result.error;
-    return new todo.CompleteTodoResponse({
-      error: new todo.CompleteTodoErrorResponse({
-        systemUnavailableError: new todo.ErrorResponse({
-          code: error.errorId || 'SYSTEM_UNAVAILABLE',
-          message: error.message || 'System unavailable',
+          code: error?.errorId || 'SYSTEM_UNAVAILABLE',
+          message: error?.message || 'System unavailable',
         }),
       }),
     });
@@ -280,13 +230,37 @@ export class TodoGrpcController {
     return new todo.UncompleteTodoResponse({
       error: new todo.UncompleteTodoErrorResponse({
         systemUnavailableError: new todo.ErrorResponse({
-          code: error.errorId || 'SYSTEM_UNAVAILABLE',
-          message: error.message || 'System unavailable',
+          code: error?.errorId || 'SYSTEM_UNAVAILABLE',
+          message: error?.message || 'System unavailable',
         }),
       }),
     });
   }
 
+  
+  @GrpcMethod('TodoService', 'Complete')
+  @Traceable({
+    operation: 'CompleteTodoController',
+    serviceName: 'API',
+  })
+  async completeTodo(data: todo.CompleteTodoRequest): Promise<todo.CompleteTodoResponse> {
+    const command = new CompleteTodoCommand({ todoId: data.todoId });
+    const result = await this.commandBus.request(command);
+    if (result.isOk) {
+      return new todo.CompleteTodoResponse({
+        ok: new todo.CompleteTodoOKResponse(),
+      });
+    }
+    const error = result.error;
+    return new todo.CompleteTodoResponse({
+      error: new todo.CompleteTodoErrorResponse({
+        systemUnavailableError: new todo.ErrorResponse({
+          code: error?.errorId || 'SYSTEM_UNAVAILABLE',
+          message: error?.message || 'System unavailable',
+        }),
+      }),
+    });
+  }
   
   @GrpcMethod('TodoService', 'ModifyTitle')
   @Traceable({
@@ -305,8 +279,33 @@ export class TodoGrpcController {
     return new todo.ModifyTitleTodoResponse({
       error: new todo.ModifyTitleTodoErrorResponse({
         systemUnavailableError: new todo.ErrorResponse({
-          code: error.errorId || 'SYSTEM_UNAVAILABLE',
-          message: error.message || 'System unavailable',
+          code: error?.errorId || 'SYSTEM_UNAVAILABLE',
+          message: error?.message || 'System unavailable',
+        }),
+      }),
+    });
+  }
+
+  
+  @GrpcMethod('TodoService', 'Add')
+  @Traceable({
+    operation: 'AddTodoController',
+    serviceName: 'API',
+  })
+  async addTodo(data: todo.AddTodoRequest): Promise<todo.AddTodoResponse> {
+    const command = new AddTodoCommand({ title: data.title });
+    const result = await this.commandBus.request(command);
+    if (result.isOk) {
+      return new todo.AddTodoResponse({
+        ok: new todo.AddTodoOKResponse({ id: result.data }),
+      });
+    } 
+    const error = result.error;
+    return new todo.AddTodoResponse({
+      error: new todo.AddTodoErrorResponse({
+        systemUnavailableError: new todo.ErrorResponse({
+          code: error?.errorId || 'SYSTEM_UNAVAILABLE',
+          message: error?.message || 'System unavailable',
         }),
       }),
     });
@@ -344,8 +343,8 @@ export class TodoGrpcController {
     return new todo.GetAllTodosResponse({
       error: new todo.GetAllTodosErrorResponse({
         systemUnavailableError: new todo.ErrorResponse({
-          code: error.errorId || 'SYSTEM_UNAVAILABLE',
-          message: error.message || 'System unavailable',
+          code: error?.errorId || 'SYSTEM_UNAVAILABLE',
+          message: error?.message || 'System unavailable',
         }),
       }),
     });

@@ -1,4 +1,4 @@
-FROM node:19-alpine 
+FROM node:16 
 # Set the working directory to /app inside the container
 WORKDIR /app
 # Copy app files
@@ -6,6 +6,7 @@ COPY . .
 #      BUILD      
 # Install dependencies (--immutable makes sure the exact versions in the lockfile gets installed)
 RUN yarn install --immutable
+RUN yarn proto
 # Build the app
 RUN yarn build
 #      RUN        

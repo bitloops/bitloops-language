@@ -34,7 +34,6 @@ export class TodoDeletedPubSubIntegrationEventHandler implements Application.IHa
           const todoObject = new todo.Todo({
             id: event.todoId,
             userId: event.userId,
-            completed: false,
           });
           const message = new todo.OnEvent({
             onDeleted: todoObject,

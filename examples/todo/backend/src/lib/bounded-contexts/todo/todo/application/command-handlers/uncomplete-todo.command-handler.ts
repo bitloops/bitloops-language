@@ -49,9 +49,9 @@ export class UncompleteTodoCommandHandler
     if (!todoEntity.value) {
       return fail(new ApplicationErrors.TodoNotFoundError(command.id));
     }
-    const result_184116 = todoEntity.value.uncomplete();
-    if (result_184116.isFail()) {
-      return fail(result_184116.value);
+    const result_267372 = todoEntity.value.uncomplete();
+    if (result_267372.isFail()) {
+      return fail(result_267372.value);
     }
     const updateResult = await this.todoRepo.update(todoEntity.value);
     if (updateResult.isFail()) {
