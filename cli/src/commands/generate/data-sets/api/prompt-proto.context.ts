@@ -337,6 +337,8 @@ const messageInstructions = (
   ${CodeSnippets.closeTypescript()}
 
   Remove the Entity suffix when naming the message.
+
+  The fields names should be in camelCase.
 `;
   // TODO Fix this, primitives type now is not complete since it has other types inside it
 };
@@ -492,6 +494,10 @@ message Todo {
   },
   {
     role: 'user',
-    content: messageInstructions(packageName, serviceName, handlers, commands, queries, entities),
+    content:
+      messageInstructions(packageName, serviceName, handlers, commands, queries, entities) +
+      `
+Don't add createdAt or updatedAt fields anywhere.
+    `,
   },
 ];

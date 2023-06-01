@@ -175,6 +175,8 @@ const messageInstructions = (protobuf: string, integrationEventNames: string[]):
   The OnTodoRequest will have the subscriberId, and an array of events the user wants to subscribe to.
   Define an enum of all possible events mentioned above.
   You should keep existing messages intact. 
+
+  The fields names should be in camelCase.
 `;
 
   // Create one event only for every rpc based on commands of CQRS included in the service.
@@ -318,6 +320,11 @@ export const promptProtoRealTimeStreamsMessages = (
   },
   {
     role: 'user',
-    content: messageInstructions(protobuf, integrationEventNames),
+    content:
+      messageInstructions(protobuf, integrationEventNames) +
+      `
+Don't add createdAt or updatedAt fields anywhere.
+
+    `,
   },
 ];
