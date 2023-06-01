@@ -110,7 +110,7 @@ export class NestProjectUpdate {
 
   private createDockerFile(): void {
     const dockerFilePath = join(this.projectRootPath, 'Dockerfile');
-    const dockerFileContent = `FROM node:19-alpine 
+    const dockerFileContent = `FROM node:16
 # Set the working directory to /app inside the container
 WORKDIR /app
 # Copy app files
