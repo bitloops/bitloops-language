@@ -69,6 +69,19 @@ export class EntityValuesNode extends IntermediateASTNode {
     return publicMethodTypes;
   }
 
+  public getPrivateMethodTypes(): Record<string, BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode> {
+    const privateMethods = this.getPrivateMethods();
+    let privateMethodTypes: Record<string, BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode> = {};
+    for (const privateMethod of privateMethods) {
+      const privateMethodType = privateMethod.getReturnType();
+      privateMethodTypes = {
+        ...privateMethodType,
+        [privateMethod.getMethodName()]: privateMethodType,
+      };
+    }
+    return privateMethodTypes;
+  }
+
   public getPropsIdentifier(): string {
     const domainCreateNode = this.getDomainCreateMethod();
     const parameterNode = domainCreateNode.getParameterNode();
@@ -82,14 +95,14 @@ export class EntityValuesNode extends IntermediateASTNode {
     const domainCreate = this.getDomainCreateMethod();
     domainCreate.addToSymbolTable(symbolTableManager);
 
-    const publicMethodList = this.getPublicMethodList();
-    if (publicMethodList) {
-      publicMethodList.addToSymbolTable(symbolTableManager);
-    }
-
     const privateMethodList = this.getPrivateMethodList();
     if (privateMethodList) {
       privateMethodList.addToSymbolTable(symbolTableManager);
+    }
+
+    const publicMethodList = this.getPublicMethodList();
+    if (publicMethodList) {
+      publicMethodList.addToSymbolTable(symbolTableManager);
     }
   }
 }
