@@ -25,9 +25,6 @@ export class TodoModifiedTitlePubSubIntegrationEventHandler implements Applicati
     console.log(
       '[TodoModifiedTitleIntegrationEvent]: Successfully received TodoModifiedTitle PubSub IntegrationEvent',
     );
-    const { payload } = event;
-
-    const { userId } = payload;
     const subscription = this.subscriptions[TodoModifiedTitlePubSubIntegrationEventHandler.name];
     const subscriptionsSubscribers = subscription?.subscribers;
     if (subscriptionsSubscribers) {
@@ -35,9 +32,9 @@ export class TodoModifiedTitlePubSubIntegrationEventHandler implements Applicati
         const call = this.subscribers[subscriber]?.call;
         if (call) {
           const todoObject = new todo.Todo({
-            id: payload.todoId,
-            title: payload.title,
-            userId: payload.userId,
+            id: event.todoId,
+            title: event.title,
+            userId: event.userId,
             completed: false,
           });
           const message = new todo.OnEvent({

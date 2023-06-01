@@ -384,7 +384,7 @@ function App(props: { service: TodoServiceClient }): JSX.Element {
 
   async function completeTodo(id: string) {
     const request = new CompleteTodoRequest();
-    request.setTodoid(id);
+    request.setId(id);
     try {
       await service.complete(request, {
         authorization: `Bearer ${user?.access_token}`,

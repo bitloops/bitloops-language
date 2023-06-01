@@ -253,7 +253,7 @@ export class CliInfraCodeGenerator implements IInfraCodeGenerator {
         boundedContextName: currentCommand.boundedContextName,
         moduleName: currentCommand.moduleName,
       };
-      client.makeOpenAIRequest(
+      client.makeGPT4Request(
         promptApiGrpcControllerCommand(
           currentCommand.content,
           currentCommand.commandHandlerContent,
@@ -280,7 +280,7 @@ export class CliInfraCodeGenerator implements IInfraCodeGenerator {
         boundedContextName: currentQuery.boundedContextName,
         moduleName: currentQuery.moduleName,
       };
-      client.makeOpenAIRequest(
+      client.makeGPT4Request(
         promptApiGrpcControllerQuery(
           currentQuery.content,
           currentQuery.queryHandlerContent,

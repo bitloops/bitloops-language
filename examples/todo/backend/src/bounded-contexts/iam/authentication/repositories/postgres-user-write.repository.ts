@@ -11,22 +11,15 @@
       import { Pool } from 'pg';
       import { UserEntity } from '@lib/bounded-contexts/iam/authentication/domain/user.entity';
       import { UserWriteRepoPort } from '@lib/bounded-contexts/iam/authentication/ports/user-write.repo-port';
-      import { ConfigService } from '@nestjs/config';
-      import { AuthEnvironmentVariables } from '@src/config/auth.configuration';
       import { StreamingDomainEventBusToken } from '@lib/bounded-contexts/iam/authentication/constants';
       
       @Injectable()
       export class PostgresUserWriteRepository implements UserWriteRepoPort {
-        private JWT_SECRET: string;
-      
         constructor(
           @Inject('POSTGRES_DB_CONNECTION') private client: Pool,
           @Inject(StreamingDomainEventBusToken)
           private readonly domainEventBus: Infra.EventBus.IEventBus,
-          private configService: ConfigService<AuthEnvironmentVariables, true>,
-        ) {
-          this.JWT_SECRET = this.configService.get('jwtSecret', { infer: true });
-        }
+        ) {}
       
         @Application.Repo.Decorators.ReturnUnexpectedError()
         async getById(

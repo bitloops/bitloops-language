@@ -11,7 +11,7 @@ import {
 import { MongoModule } from '@bitloops/bl-boilerplate-infra-mongo';
 import { MarketingModule as LibMarketingModule } from '@lib/bounded-contexts/marketing/marketing/marketing.module';
 import { StreamingIntegrationEventHandlers } from '@lib/bounded-contexts/marketing/marketing/application/event-handlers/integration';
-import { PubSubCommandHandlers, StreamingCommandHandlers } from '@lib/bounded-contexts/marketing/marketing/application/command-handlers';
+import { PubSubCommandHandlers, StreamingCommandHandlers } from '@lib/bounded-contexts/marketing/marketing/application/command-handlers'; 
 import { QueryHandlers } from '@lib/bounded-contexts/marketing/marketing/application/query-handlers';
 import { StreamingDomainEventHandlers } from '@lib/bounded-contexts/marketing/marketing/application/event-handlers/domain';
 import {

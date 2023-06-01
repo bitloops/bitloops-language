@@ -276,8 +276,8 @@ export namespace AddTodoOKResponse {
 }
 
 export class CompleteTodoRequest extends jspb.Message {
-  getTodoid(): string;
-  setTodoid(value: string): CompleteTodoRequest;
+  getId(): string;
+  setId(value: string): CompleteTodoRequest;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CompleteTodoRequest.AsObject;
@@ -289,7 +289,7 @@ export class CompleteTodoRequest extends jspb.Message {
 
 export namespace CompleteTodoRequest {
   export type AsObject = {
-    todoid: string,
+    id: string,
   }
 }
 
@@ -458,6 +458,101 @@ export class DeleteTodoOKResponse extends jspb.Message {
 
 export namespace DeleteTodoOKResponse {
   export type AsObject = {
+  }
+}
+
+export class GetAllTodosRequest extends jspb.Message {
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllTodosRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllTodosRequest): GetAllTodosRequest.AsObject;
+  static serializeBinaryToWriter(message: GetAllTodosRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllTodosRequest;
+  static deserializeBinaryFromReader(message: GetAllTodosRequest, reader: jspb.BinaryReader): GetAllTodosRequest;
+}
+
+export namespace GetAllTodosRequest {
+  export type AsObject = {
+  }
+}
+
+export class GetAllTodosResponse extends jspb.Message {
+  getOk(): GetAllTodosOKResponse | undefined;
+  setOk(value?: GetAllTodosOKResponse): GetAllTodosResponse;
+  hasOk(): boolean;
+  clearOk(): GetAllTodosResponse;
+
+  getError(): GetAllTodosErrorResponse | undefined;
+  setError(value?: GetAllTodosErrorResponse): GetAllTodosResponse;
+  hasError(): boolean;
+  clearError(): GetAllTodosResponse;
+
+  getResultCase(): GetAllTodosResponse.ResultCase;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllTodosResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllTodosResponse): GetAllTodosResponse.AsObject;
+  static serializeBinaryToWriter(message: GetAllTodosResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllTodosResponse;
+  static deserializeBinaryFromReader(message: GetAllTodosResponse, reader: jspb.BinaryReader): GetAllTodosResponse;
+}
+
+export namespace GetAllTodosResponse {
+  export type AsObject = {
+    ok?: GetAllTodosOKResponse.AsObject,
+    error?: GetAllTodosErrorResponse.AsObject,
+  }
+
+  export enum ResultCase { 
+    RESULT_NOT_SET = 0,
+    OK = 1,
+    ERROR = 2,
+  }
+}
+
+export class GetAllTodosErrorResponse extends jspb.Message {
+  getSystemunavailableerror(): ErrorResponse | undefined;
+  setSystemunavailableerror(value?: ErrorResponse): GetAllTodosErrorResponse;
+  hasSystemunavailableerror(): boolean;
+  clearSystemunavailableerror(): GetAllTodosErrorResponse;
+
+  getErrorCase(): GetAllTodosErrorResponse.ErrorCase;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllTodosErrorResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllTodosErrorResponse): GetAllTodosErrorResponse.AsObject;
+  static serializeBinaryToWriter(message: GetAllTodosErrorResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllTodosErrorResponse;
+  static deserializeBinaryFromReader(message: GetAllTodosErrorResponse, reader: jspb.BinaryReader): GetAllTodosErrorResponse;
+}
+
+export namespace GetAllTodosErrorResponse {
+  export type AsObject = {
+    systemunavailableerror?: ErrorResponse.AsObject,
+  }
+
+  export enum ErrorCase { 
+    ERROR_NOT_SET = 0,
+    SYSTEMUNAVAILABLEERROR = 1,
+  }
+}
+
+export class GetAllTodosOKResponse extends jspb.Message {
+  getTodosList(): Array<Todo>;
+  setTodosList(value: Array<Todo>): GetAllTodosOKResponse;
+  clearTodosList(): GetAllTodosOKResponse;
+  addTodos(value?: Todo, index?: number): Todo;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllTodosOKResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllTodosOKResponse): GetAllTodosOKResponse.AsObject;
+  static serializeBinaryToWriter(message: GetAllTodosOKResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllTodosOKResponse;
+  static deserializeBinaryFromReader(message: GetAllTodosOKResponse, reader: jspb.BinaryReader): GetAllTodosOKResponse;
+}
+
+export namespace GetAllTodosOKResponse {
+  export type AsObject = {
+    todosList: Array<Todo.AsObject>,
   }
 }
 
@@ -648,101 +743,6 @@ export class UncompleteTodoOKResponse extends jspb.Message {
 
 export namespace UncompleteTodoOKResponse {
   export type AsObject = {
-  }
-}
-
-export class GetAllTodosRequest extends jspb.Message {
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): GetAllTodosRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: GetAllTodosRequest): GetAllTodosRequest.AsObject;
-  static serializeBinaryToWriter(message: GetAllTodosRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): GetAllTodosRequest;
-  static deserializeBinaryFromReader(message: GetAllTodosRequest, reader: jspb.BinaryReader): GetAllTodosRequest;
-}
-
-export namespace GetAllTodosRequest {
-  export type AsObject = {
-  }
-}
-
-export class GetAllTodosResponse extends jspb.Message {
-  getOk(): GetAllTodosOKResponse | undefined;
-  setOk(value?: GetAllTodosOKResponse): GetAllTodosResponse;
-  hasOk(): boolean;
-  clearOk(): GetAllTodosResponse;
-
-  getError(): GetAllTodosErrorResponse | undefined;
-  setError(value?: GetAllTodosErrorResponse): GetAllTodosResponse;
-  hasError(): boolean;
-  clearError(): GetAllTodosResponse;
-
-  getResultCase(): GetAllTodosResponse.ResultCase;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): GetAllTodosResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: GetAllTodosResponse): GetAllTodosResponse.AsObject;
-  static serializeBinaryToWriter(message: GetAllTodosResponse, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): GetAllTodosResponse;
-  static deserializeBinaryFromReader(message: GetAllTodosResponse, reader: jspb.BinaryReader): GetAllTodosResponse;
-}
-
-export namespace GetAllTodosResponse {
-  export type AsObject = {
-    ok?: GetAllTodosOKResponse.AsObject,
-    error?: GetAllTodosErrorResponse.AsObject,
-  }
-
-  export enum ResultCase { 
-    RESULT_NOT_SET = 0,
-    OK = 1,
-    ERROR = 2,
-  }
-}
-
-export class GetAllTodosErrorResponse extends jspb.Message {
-  getSystemunavailableerror(): ErrorResponse | undefined;
-  setSystemunavailableerror(value?: ErrorResponse): GetAllTodosErrorResponse;
-  hasSystemunavailableerror(): boolean;
-  clearSystemunavailableerror(): GetAllTodosErrorResponse;
-
-  getErrorCase(): GetAllTodosErrorResponse.ErrorCase;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): GetAllTodosErrorResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: GetAllTodosErrorResponse): GetAllTodosErrorResponse.AsObject;
-  static serializeBinaryToWriter(message: GetAllTodosErrorResponse, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): GetAllTodosErrorResponse;
-  static deserializeBinaryFromReader(message: GetAllTodosErrorResponse, reader: jspb.BinaryReader): GetAllTodosErrorResponse;
-}
-
-export namespace GetAllTodosErrorResponse {
-  export type AsObject = {
-    systemunavailableerror?: ErrorResponse.AsObject,
-  }
-
-  export enum ErrorCase { 
-    ERROR_NOT_SET = 0,
-    SYSTEMUNAVAILABLEERROR = 1,
-  }
-}
-
-export class GetAllTodosOKResponse extends jspb.Message {
-  getTodosList(): Array<Todo>;
-  setTodosList(value: Array<Todo>): GetAllTodosOKResponse;
-  clearTodosList(): GetAllTodosOKResponse;
-  addTodos(value?: Todo, index?: number): Todo;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): GetAllTodosOKResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: GetAllTodosOKResponse): GetAllTodosOKResponse.AsObject;
-  static serializeBinaryToWriter(message: GetAllTodosOKResponse, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): GetAllTodosOKResponse;
-  static deserializeBinaryFromReader(message: GetAllTodosOKResponse, reader: jspb.BinaryReader): GetAllTodosOKResponse;
-}
-
-export namespace GetAllTodosOKResponse {
-  export type AsObject = {
-    todosList: Array<Todo.AsObject>,
   }
 }
 

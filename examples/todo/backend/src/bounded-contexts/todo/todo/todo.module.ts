@@ -64,10 +64,10 @@ const providers = [
     }),
     JetstreamModule.forFeature({
       moduleOfHandlers: TodoModule,
-      streamingIntegrationEventHandlers: [...StreamingIntegrationEventHandlers],
-      streamingDomainEventHandlers: [...StreamingDomainEventHandlers],
       streamingCommandHandlers: [...StreamingCommandHandlers],
       pubSubCommandHandlers: [...PubSubCommandHandlers],
+      streamingDomainEventHandlers: [...StreamingDomainEventHandlers],
+      streamingIntegrationEventHandlers: [...StreamingIntegrationEventHandlers],
       pubSubQueryHandlers: [...QueryHandlers],
     }),
   ],

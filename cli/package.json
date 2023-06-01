@@ -78,7 +78,8 @@
     "encode": "./node_modules/.bin/env-cmd -f .env ./node_modules/.bin/bitloops-gherkin encode -t",
     "caxa": "npx caxa --input \"/Users/vasilis/Code/Bitloops/bitloops-language-cli\"  --output \"/Users/vasilis/Code/Bitloops/bitloops-language-cli/dist/Bitloops Language.app\" -- \"{{caxa}}/node_modules/.bin/node\" \"{{caxa}}/lib/src/index.js\" \"transpile\"",
     "esbuild-single-cjs": "yarn build && yarn esbuild ./src/index.ts --bundle --platform=node --outfile=pkg-dist/index.cjs --external:figlet --external:path --loader:.flf=file --loader:.tlf=file",
-    "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write"
+    "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
+    "prepublishOnly": "yarn build"
   },
   "author": "Bitloops S.A.",
   "license": "GPL-3.0",

@@ -25,9 +25,6 @@ export class TodoAddedPubSubIntegrationEventHandler implements Application.IHand
     console.log(
       '[TodoAddedIntegrationEvent]: Successfully received TodoAdded PubSub IntegrationEvent',
     );
-    const { payload } = event;
-
-    const { userId } = payload;
     const subscription = this.subscriptions[TodoAddedPubSubIntegrationEventHandler.name];
     const subscriptionsSubscribers = subscription?.subscribers;
     if (subscriptionsSubscribers) {
@@ -35,9 +32,9 @@ export class TodoAddedPubSubIntegrationEventHandler implements Application.IHand
         const call = this.subscribers[subscriber]?.call;
         if (call) {
           const todoObject = new todo.Todo({
-            id: payload.todoId,
-            title: payload.title,
-            userId: payload.userId,
+            id: event.todoId,
+            title: event.title,
+            userId: event.userId,
             completed: false,
           });
           const message = new todo.OnEvent({

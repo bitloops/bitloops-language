@@ -25,9 +25,6 @@ export class TodoDeletedPubSubIntegrationEventHandler implements Application.IHa
     console.log(
       '[TodoDeletedIntegrationEvent]: Successfully received TodoDeleted PubSub IntegrationEvent',
     );
-    const { payload } = event;
-
-    const { userId } = payload;
     const subscription = this.subscriptions[TodoDeletedPubSubIntegrationEventHandler.name];
     const subscriptionsSubscribers = subscription?.subscribers;
     if (subscriptionsSubscribers) {
@@ -35,8 +32,9 @@ export class TodoDeletedPubSubIntegrationEventHandler implements Application.IHa
         const call = this.subscribers[subscriber]?.call;
         if (call) {
           const todoObject = new todo.Todo({
-            id: payload.todoId,
-            userId: payload.userId,
+            id: event.todoId,
+            userId: event.userId,
+            completed: false,
           });
           const message = new todo.OnEvent({
             onDeleted: todoObject,

@@ -77,7 +77,7 @@
   }
   
   message CompleteTodoRequest {
-    string todoId = 1;
+    string id = 1;
   }
   
   message CompleteTodoResponse {
@@ -113,6 +113,25 @@
   }
   
   message DeleteTodoOKResponse {}
+  
+  message GetAllTodosRequest {}
+  
+  message GetAllTodosResponse {
+    oneof result {
+      GetAllTodosOKResponse ok = 1;
+      GetAllTodosErrorResponse error = 2;
+    }
+  }
+  
+  message GetAllTodosErrorResponse {
+    oneof error {
+      ErrorResponse systemUnavailableError = 1;
+    }
+  }
+  
+  message GetAllTodosOKResponse {
+    repeated Todo todos = 1;
+  }
   
   message ModifyTitleTodoRequest {
     string id = 1;
@@ -152,25 +171,6 @@
   }
   
   message UncompleteTodoOKResponse {}
-  
-  message GetAllTodosRequest {}
-  
-  message GetAllTodosResponse {
-    oneof result {
-      GetAllTodosOKResponse ok = 1;
-      GetAllTodosErrorResponse error = 2;
-    }
-  }
-  
-  message GetAllTodosErrorResponse {
-    oneof error {
-      ErrorResponse systemUnavailableError = 1;
-    }
-  }
-  
-  message GetAllTodosOKResponse {
-    repeated Todo todos = 1;
-  }
   
   message Todo {
     string id = 1;

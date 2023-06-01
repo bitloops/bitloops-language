@@ -328,6 +328,8 @@ const messageInstructions = (
   Ignore the error response of each handler and add only the systemUnavailableError key.
   You also need to add the ErrorResponse message.
   Create one rpc per handler(command or query)
+  The Error Response of each handler will have only one key, the systemUnavailableError.
+  ErrorResponse systemUnavailableError = 1;
   
   You can create the Entity Message and its props using the primitives of these Entities
   ${CodeSnippets.openTypescript()}

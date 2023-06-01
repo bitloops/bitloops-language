@@ -25,9 +25,6 @@ export class TodoUncompletedPubSubIntegrationEventHandler implements Application
     console.log(
       '[TodoUncompletedIntegrationEvent]: Successfully received TodoUncompleted PubSub IntegrationEvent',
     );
-    const { payload } = event;
-
-    const { userId } = payload;
     const subscription = this.subscriptions[TodoUncompletedPubSubIntegrationEventHandler.name];
     const subscriptionsSubscribers = subscription?.subscribers;
     if (subscriptionsSubscribers) {
@@ -35,9 +32,8 @@ export class TodoUncompletedPubSubIntegrationEventHandler implements Application
         const call = this.subscribers[subscriber]?.call;
         if (call) {
           const todoObject = new todo.Todo({
-            id: payload.todoId,
-            title: '',
-            userId: payload.userId,
+            id: event.todoId,
+            userId: event.userId,
             completed: false,
           });
           const message = new todo.OnEvent({

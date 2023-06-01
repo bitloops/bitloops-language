@@ -62,6 +62,14 @@ services:
     networks:
       - bitloops
 
+  bl-envoy:
+    build:
+      context: ./envoy
+    ports:
+      - '8080:8080'
+    networks:
+      - bitloops
+
 volumes:
   bl-mongo_data:
   bl-nats_data:
