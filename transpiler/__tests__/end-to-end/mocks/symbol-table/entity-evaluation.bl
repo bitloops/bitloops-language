@@ -3,12 +3,21 @@ ApplicationError AccountNotFoundError(accountId: string)  {
     errorId: 'fedb1f53-6e89-429d-bc63-8f3adfc4b407',
 }
 Command WithdrawMoneyCommand {
-    string accountId;
-    int32 amount;
+    string[] accountId;
+    BalanceVO[] balance;
 }
 Props AccountProps {
-    string accountId;
-    int32 balance;
+    string[] accountId;
+    BalanceVO[] balance;
+}
+
+ValueObject BalanceVO {
+    static create(props: BalanceProps): (OK(BalanceVO), Errors()) {
+    }
+}
+
+Props BalanceProps {
+    int32 amount;
 }
 
 Entity AccountEntity {
@@ -22,7 +31,7 @@ CommandHandler WithdrawMoneyCommandHandler (accountRepo: AccountWriteRepoPort) {
        ApplicationErrors.AccountNotFoundError
        )) {
     
-    const accountEntity = AccountEntity.create({ accountId: command.accountId, balance: 0 }).ifError();
+    const accountEntity = AccountEntity.create({ accountId: command.accountId, balance: command.balance }).ifError();
      return accountEntity;
    }
  }
