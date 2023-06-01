@@ -45,46 +45,34 @@ export class GrpcControllerBuilder {
   }
 
   private static createImports(importsForMethods: string, packageName: string): string {
-    // Imports for methods may contain duplicates, so we need to remove them
-    // This will only work on exact duplicates for now
-    const imports = importsForMethods
-      .split('\n')
-      .filter((value, index, self) => self.indexOf(value) === index)
-      .map((x) => x.trim())
-      .join('\n');
-
-    const packageImport = `import { ${packageName} } from '../proto/generated/${packageName}'`;
     return `
-    ${imports.includes(packageImport) ? '' : packageImport}
-
-  import {
-    Controller,
-    Inject,
-    Injectable,
-    UseGuards,
-    UseInterceptors,
-  } from '@nestjs/common';
-  import { RpcException, GrpcMethod } from '@nestjs/microservices';
-  import { ConfigService } from '@nestjs/config';
-  import { Metadata, ServerWritableStream } from '@grpc/grpc-js';
-  import { v4 as uuid } from 'uuid';
-  import * as jwtwebtoken from 'jsonwebtoken';
-  import {
-    BUSES_TOKENS,
-    NatsPubSubIntegrationEventsBus,
-  } from '@bitloops/bl-boilerplate-infra-nest-jetstream';
-  import {
-    AsyncLocalStorageInterceptor,
-    JwtGrpcAuthGuard,
-  } from '@bitloops/bl-boilerplate-infra-nest-auth-passport';
-  import { Infra, asyncLocalStorage } from '@bitloops/bl-boilerplate-core';
-  import { CorrelationIdInterceptor } from '@bitloops/bl-boilerplate-infra-telemetry';
-  import { AuthEnvironmentVariables } from '@src/config/auth.configuration';
-  import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
-  ${imports}
-
-
-    `;
+import { ${packageName} } from '../proto/generated/${packageName}'
+import {
+  Controller,
+  Inject,
+  Injectable,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
+import { RpcException, GrpcMethod } from '@nestjs/microservices';
+import { ConfigService } from '@nestjs/config';
+import { Metadata, ServerWritableStream } from '@grpc/grpc-js';
+import { v4 as uuid } from 'uuid';
+import * as jwtwebtoken from 'jsonwebtoken';
+import {
+  BUSES_TOKENS,
+  NatsPubSubIntegrationEventsBus,
+} from '@bitloops/bl-boilerplate-infra-nest-jetstream';
+import {
+  AsyncLocalStorageInterceptor,
+  JwtGrpcAuthGuard,
+} from '@bitloops/bl-boilerplate-infra-nest-auth-passport';
+import { Infra, asyncLocalStorage } from '@bitloops/bl-boilerplate-core';
+import { CorrelationIdInterceptor } from '@bitloops/bl-boilerplate-infra-telemetry';
+import { AuthEnvironmentVariables } from '@src/config/auth.configuration';
+import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
+${importsForMethods}
+`;
   }
 
   private static createSubscribeToPubSubIntegrationEvents(integrationEvents: string[]): string {

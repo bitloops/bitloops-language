@@ -1,14 +1,15 @@
+
 syntax = "proto3";
 
 package todo;
 
 service TodoService {
-	rpc Add(AddTodoRequest) returns (AddTodoResponse);
-  rpc Complete (CompleteTodoRequest) returns (CompleteTodoResponse);
-  rpc Uncomplete (UncompleteTodoRequest) returns (UncompleteTodoResponse);
-  rpc ModifyTitle (ModifyTitleTodoRequest) returns (ModifyTitleTodoResponse);
-  rpc Delete (DeleteTodoRequest) returns (DeleteTodoResponse);
-	rpc GetAll(GetAllTodosRequest) returns (GetAllTodosResponse);
+  rpc Add(AddTodoRequest) returns (AddTodoResponse);
+  rpc Complete(CompleteTodoRequest) returns (CompleteTodoResponse);
+  rpc Delete(DeleteTodoRequest) returns (DeleteTodoResponse);
+  rpc ModifyTitle(ModifyTitleTodoRequest) returns (ModifyTitleTodoResponse);
+  rpc Uncomplete(UncompleteTodoRequest) returns (UncompleteTodoResponse);
+  rpc GetAll(GetAllTodosRequest) returns (GetAllTodosResponse);
   rpc InitializeSubscriptionConnection(InitializeConnectionRequest) returns (InitializeConnectionResponse);
   rpc KeepSubscriptionAlive(KeepSubscriptionAliveRequest) returns (KeepSubscriptionAliveResponse);
   rpc On(OnTodoRequest) returns (stream OnEvent);
@@ -29,9 +30,9 @@ message KeepSubscriptionAliveResponse {
 enum TODO_EVENTS {
   ADDED = 0;
   COMPLETED = 1;
-  UNCOMPLETED = 2;
+  DELETED = 2;
   MODIFIED_TITLE = 3;
-  DELETED = 4;
+  UNCOMPLETED = 4;
 }
 
 message OnTodoRequest {
@@ -43,9 +44,9 @@ message OnEvent {
   oneof event {
     Todo onAdded = 1;
     Todo onCompleted = 2;
-    Todo onUncompleted = 3;
+    Todo onDeleted = 3;
     Todo onModifiedTitle = 4;
-    Todo onDeleted = 5;
+    Todo onUncompleted = 5;
   }
 }
 
@@ -55,7 +56,7 @@ message ErrorResponse {
 }
 
 message AddTodoRequest {
-	string title = 1;
+  string title = 1;
 }
 
 message AddTodoResponse {
@@ -67,9 +68,7 @@ message AddTodoResponse {
 
 message AddTodoErrorResponse {
   oneof error {
-    ErrorResponse unauthorizedError = 1;
-    ErrorResponse systemUnavailableError = 2;
-    ErrorResponse invalidTitleLengthError = 3;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -90,13 +89,11 @@ message CompleteTodoResponse {
 
 message CompleteTodoErrorResponse {
   oneof error {
-    ErrorResponse unauthorizedError = 1;
-    ErrorResponse systemUnavailableError = 2;
-    ErrorResponse todoAlreadyExistsError = 3;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
-message DeleteTodoOKResponse {}
+message CompleteTodoOKResponse {}
 
 message DeleteTodoRequest {
   string id = 1;
@@ -111,13 +108,11 @@ message DeleteTodoResponse {
 
 message DeleteTodoErrorResponse {
   oneof error {
-    ErrorResponse unauthorizedError = 1;
-    ErrorResponse systemUnavailableError = 2;
-    ErrorResponse todoAlreadyExistsError = 3;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
-message CompleteTodoOKResponse {}
+message DeleteTodoOKResponse {}
 
 message GetAllTodosRequest {}
 
@@ -130,8 +125,7 @@ message GetAllTodosResponse {
 
 message GetAllTodosErrorResponse {
   oneof error {
-    ErrorResponse unauthorizedError = 1;
-    ErrorResponse systemUnavailableError = 2;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -153,10 +147,7 @@ message ModifyTitleTodoResponse {
 
 message ModifyTitleTodoErrorResponse {
   oneof error {
-    ErrorResponse unauthorizedError = 1;
-    ErrorResponse systemUnavailableError = 2;
-    ErrorResponse todoDoesNotExistError = 3;
-    ErrorResponse invalidTitleLengthError = 4;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -175,9 +166,7 @@ message UncompleteTodoResponse {
 
 message UncompleteTodoErrorResponse {
   oneof error {
-    ErrorResponse unauthorizedError = 1;
-    ErrorResponse systemUnavailableError = 2;
-    ErrorResponse todoAlreadyExistsError = 3;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 

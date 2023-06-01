@@ -15,8 +15,8 @@ import { PubSubCommandHandlers, StreamingCommandHandlers } from '@lib/bounded-co
 import { QueryHandlers } from '@lib/bounded-contexts/driver/driver-availability/application/query-handlers';
 import { StreamingDomainEventHandlers } from '@lib/bounded-contexts/driver/driver-availability/application/event-handlers/domain';
 import {
-  DriverAvailabilityReadRepoPortToken,
   DriverAvailabilityWriteRepoPortToken,
+  DriverAvailabilityReadRepoPortToken,
   PubSubQueryBusToken,
   PubSubIntegrationEventBusToken,
   StreamingCommandBusToken,
@@ -28,12 +28,12 @@ import { MongoDriverAvailabilityWriteRepository } from './repositories/mongo-dri
 
 const providers = [
   {
-    provide: DriverAvailabilityReadRepoPortToken,
-    useClass: MongoDriverAvailabilityReadRepository,
-  },
-  {
     provide: DriverAvailabilityWriteRepoPortToken,
     useClass: MongoDriverAvailabilityWriteRepository,
+  },
+  {
+    provide: DriverAvailabilityReadRepoPortToken,
+    useClass: MongoDriverAvailabilityReadRepository,
   },
   {
     provide: PubSubQueryBusToken,

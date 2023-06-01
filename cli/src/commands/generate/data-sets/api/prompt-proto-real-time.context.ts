@@ -32,9 +32,7 @@ message AddTodoResponse {
 
 message AddTodoErrorResponse {
   oneof error {
-    ErrorResponse unauthorizedError = 1;
-    ErrorResponse systemUnavailableError = 2;
-    ErrorResponse invalidTitleLengthError = 3;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -55,9 +53,7 @@ message CompleteTodoResponse {
 
 message CompleteTodoErrorResponse {
   oneof error {
-    ErrorResponse unauthorizedError = 1;
-    ErrorResponse systemUnavailableError = 2;
-    ErrorResponse todoAlreadyExistsError = 3;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -76,9 +72,7 @@ message DeleteTodoResponse {
 
 message DeleteTodoErrorResponse {
   oneof error {
-    ErrorResponse unauthorizedError = 1;
-    ErrorResponse systemUnavailableError = 2;
-    ErrorResponse todoAlreadyExistsError = 3;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -95,8 +89,7 @@ message GetAllTodosResponse {
 
 message GetAllTodosErrorResponse {
   oneof error {
-    ErrorResponse unauthorizedError = 1;
-    ErrorResponse systemUnavailableError = 2;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -118,10 +111,7 @@ message ModifyTitleTodoResponse {
 
 message ModifyTitleTodoErrorResponse {
   oneof error {
-    ErrorResponse unauthorizedError = 1;
-    ErrorResponse systemUnavailableError = 2;
-    ErrorResponse todoDoesNotExistError = 3;
-    ErrorResponse invalidTitleLengthError = 4;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -140,9 +130,7 @@ message UncompleteTodoResponse {
 
 message UncompleteTodoErrorResponse {
   oneof error {
-    ErrorResponse unauthorizedError = 1;
-    ErrorResponse systemUnavailableError = 2;
-    ErrorResponse todoAlreadyExistsError = 3;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -187,6 +175,8 @@ const messageInstructions = (protobuf: string, integrationEventNames: string[]):
   The OnTodoRequest will have the subscriberId, and an array of events the user wants to subscribe to.
   Define an enum of all possible events mentioned above.
   You should keep existing messages intact. 
+
+  The fields names should be in camelCase.
 `;
 
   // Create one event only for every rpc based on commands of CQRS included in the service.
@@ -273,9 +263,7 @@ export const promptProtoRealTimeStreamsMessages = (
   
   message AddTodoErrorResponse {
     oneof error {
-      ErrorResponse unauthorizedError = 1;
-      ErrorResponse systemUnavailableError = 2;
-      ErrorResponse invalidTitleLengthError = 3;
+      ErrorResponse systemUnavailableError = 1;
     }
   }
   
@@ -298,9 +286,7 @@ export const promptProtoRealTimeStreamsMessages = (
   
   message DeleteTodoErrorResponse {
     oneof error {
-      ErrorResponse unauthorizedError = 1;
-      ErrorResponse systemUnavailableError = 2;
-      ErrorResponse todoAlreadyExistsError = 3;
+      ErrorResponse systemUnavailableError = 1;
     }
   }
   
@@ -315,8 +301,7 @@ export const promptProtoRealTimeStreamsMessages = (
   
   message GetAllTodosErrorResponse {
     oneof error {
-      ErrorResponse unauthorizedError = 1;
-      ErrorResponse systemUnavailableError = 2;
+      ErrorResponse systemUnavailableError = 1;
     }
   }
   
@@ -335,6 +320,11 @@ export const promptProtoRealTimeStreamsMessages = (
   },
   {
     role: 'user',
-    content: messageInstructions(protobuf, integrationEventNames),
+    content:
+      messageInstructions(protobuf, integrationEventNames) +
+      `
+Don't add createdAt or updatedAt fields anywhere.
+
+    `,
   },
 ];

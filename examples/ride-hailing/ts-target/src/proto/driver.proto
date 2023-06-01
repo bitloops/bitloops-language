@@ -76,10 +76,6 @@ message GetDriverAvailabilityErrorResponse {
 }
 
 message GetDriverAvailabilityOKResponse {
-  DriverAvailability driverAvailability = 1;
-}
-
-message DriverAvailability {
   string id = 1;
   AccountStatus accountStatus = 2;
   AvailabilityStatus availabilityStatus = 3;
@@ -90,7 +86,7 @@ message DriverAvailability {
 
 message AccountStatus {
   bool isActive = 1;
-  bool isBlocked = 2;
+  bool isVerified = 2;
 }
 
 message AvailabilityStatus {
@@ -99,4 +95,13 @@ message AvailabilityStatus {
 
 message BlockReason {
   string reason = 1;
+}
+
+message DriverAvailability {
+  string id = 1;
+  AccountStatus accountStatus = 2;
+  AvailabilityStatus availabilityStatus = 3;
+  BlockReason blockReason = 4;
+  google.protobuf.Timestamp createdAt = 5;
+  google.protobuf.Timestamp updatedAt = 6;
 }

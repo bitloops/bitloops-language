@@ -15,10 +15,10 @@ import {
 import { DomainRules } from './rules/index';
 import { DomainErrors } from './errors/index';
 export type TDriverAvailabilityEntityPrimitives = {
-  id: string;
+  id?: string;
   accountStatus: TAccountStatusVOPrimitives;
   availabilityStatus: TAvailabilityStatusVOPrimitives;
-  blockReason: TBlockReasonVOPrimitives;
+  blockReason?: TBlockReasonVOPrimitives;
 };
 export class DriverAvailabilityEntity extends Domain.Aggregate<DriverAvailabilityProps> {
   private constructor(props: DriverAvailabilityProps) {
@@ -73,7 +73,9 @@ export class DriverAvailabilityEntity extends Domain.Aggregate<DriverAvailabilit
       availabilityStatus: AvailabilityStatusVO.fromPrimitives(
         data.availabilityStatus
       ),
-      blockReason: BlockReasonVO.fromPrimitives(data.blockReason),
+      blockReason: data.blockReason
+        ? BlockReasonVO.fromPrimitives(data.blockReason)
+        : undefined,
     };
     return new DriverAvailabilityEntity(DriverAvailabilityEntityProps);
   }
@@ -82,7 +84,7 @@ export class DriverAvailabilityEntity extends Domain.Aggregate<DriverAvailabilit
       id: this.id.toString(),
       accountStatus: this.accountStatus.toPrimitives(),
       availabilityStatus: this.availabilityStatus.toPrimitives(),
-      blockReason: this.blockReason.toPrimitives(),
+      blockReason: this.blockReason?.toPrimitives(),
     };
   }
 }

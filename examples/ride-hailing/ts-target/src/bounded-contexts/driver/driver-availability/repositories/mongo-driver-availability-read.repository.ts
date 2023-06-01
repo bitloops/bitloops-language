@@ -1,5 +1,5 @@
 
-import { Injectable, Inject } from '@nestjs/common';
+    import { Injectable, Inject } from '@nestjs/common';
 import { Collection, MongoClient } from 'mongodb';
 import * as jwtwebtoken from 'jsonwebtoken';
 import { DriverAvailabilityReadRepoPort } from '@lib/bounded-contexts/driver/driver-availability/ports/driver-availability-read.repo-port';
@@ -18,7 +18,8 @@ export class MongoDriverAvailabilityReadRepository
   implements DriverAvailabilityReadRepoPort
 {
   private collectionName =
-    process.env.MONGO_DB_TODO_COLLECTION || 'driverAvailability';
+    process.env.MONGO_DB_DRIVER_AVAILABILITY_COLLECTION ||
+    'driverAvailability';
   private dbName = process.env.MONGO_DB_DATABASE || 'driver';
   private collection: Collection;
   private JWT_SECRET: string;

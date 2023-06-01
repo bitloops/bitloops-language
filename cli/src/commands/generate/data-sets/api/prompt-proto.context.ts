@@ -325,8 +325,11 @@ const messageInstructions = (
     string message = 2;
   }
   ${CodeSnippets.closeProto()}
+  Ignore the error response of each handler and add only the systemUnavailableError key.
   You also need to add the ErrorResponse message.
   Create one rpc per handler(command or query)
+  The Error Response of each handler will have only one key, the systemUnavailableError.
+  ErrorResponse systemUnavailableError = 1;
   
   You can create the Entity Message and its props using the primitives of these Entities
   ${CodeSnippets.openTypescript()}
@@ -334,6 +337,8 @@ const messageInstructions = (
   ${CodeSnippets.closeTypescript()}
 
   Remove the Entity suffix when naming the message.
+
+  The fields names should be in camelCase.
 `;
   // TODO Fix this, primitives type now is not complete since it has other types inside it
 };
@@ -412,8 +417,7 @@ message AddTodoResponse {
 
 message AddTodoErrorResponse {
   oneof error {
-    ErrorResponse unexpectedError = 1;
-    ErrorResponse titleOutOfBoundsError = 2;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -434,8 +438,7 @@ message CompleteTodoResponse {
 
 message CompleteTodoErrorResponse {
   oneof error {
-    ErrorResponse todoAlreadyCompletedError = 1;
-    ErrorResponse todoNotFoundError = 2;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -455,8 +458,7 @@ message ModifyTitleTodoResponse {
 
 message ModifyTitleTodoErrorResponse {
   oneof error {
-    ErrorResponse titleOutOfBoundsError = 1;
-    ErrorResponse unexpectedError = 2;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -473,15 +475,13 @@ message GetAllTodosResponse {
 
 message GetAllTodosErrorResponse {
   oneof error {
-    ErrorResponse unauthorizedError = 1;
-    ErrorResponse systemUnavailableError = 2;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
 message GetAllTodosOKResponse {
   repeated Todo todos = 1;
 }
-
 
 message Todo {
   string id = 1;
@@ -494,6 +494,10 @@ message Todo {
   },
   {
     role: 'user',
-    content: messageInstructions(packageName, serviceName, handlers, commands, queries, entities),
+    content:
+      messageInstructions(packageName, serviceName, handlers, commands, queries, entities) +
+      `
+Don't add createdAt or updatedAt fields anywhere.
+    `,
   },
 ];

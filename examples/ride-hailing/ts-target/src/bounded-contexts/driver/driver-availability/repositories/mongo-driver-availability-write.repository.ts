@@ -45,10 +45,10 @@
             return ok(null);
           }
       
-          const { _id, ...driverAvailability } = result as any;
+          const { _id, ...availability } = result as any;
           return ok(
             DriverAvailabilityEntity.fromPrimitives({
-              ...driverAvailability,
+              ...availability,
               id: _id.toString(),
             }),
           );
@@ -56,46 +56,47 @@
       
         @Application.Repo.Decorators.ReturnUnexpectedError()
         async update(
-          driverAvailability: DriverAvailabilityEntity,
+          availability: DriverAvailabilityEntity,
         ): Promise<Either<void, Application.Repo.Errors.Unexpected>> {
-          const { id, ...driverAvailabilityInfo } = driverAvailability.toPrimitives();
+          const { id, ...availabilityInfo } = availability.toPrimitives();
           await this.collection.updateOne(
             {
               _id: id as any,
             },
             {
-              $set: driverAvailabilityInfo,
+              $set: availabilityInfo,
             },
           );
       
-          this.domainEventBus.publish(driverAvailability.domainEvents);
+          this.domainEventBus.publish(availability.domainEvents);
           return ok();
         }
       
         @Application.Repo.Decorators.ReturnUnexpectedError()
         async delete(
-          driverAvailability: DriverAvailabilityEntity,
+          availability: DriverAvailabilityEntity,
         ): Promise<Either<void, Application.Repo.Errors.Unexpected>> {
-          const { id } = driverAvailability.toPrimitives();
+          const { id } = availability.toPrimitives();
           await this.collection.deleteOne({
             _id: id as any,
           });
       
-          this.domainEventBus.publish(driverAvailability.domainEvents);
+          this.domainEventBus.publish(availability.domainEvents);
           return ok();
         }
       
         @Application.Repo.Decorators.ReturnUnexpectedError()
         async save(
-          driverAvailability: DriverAvailabilityEntity,
+          availability: DriverAvailabilityEntity,
         ): Promise<Either<void, Application.Repo.Errors.Unexpected>> {
-          const createdDriverAvailability = driverAvailability.toPrimitives();
+          const createdAvailability = availability.toPrimitives();
+      
           await this.collection.insertOne({
-            _id: createdDriverAvailability.id as any,
-            ...createdDriverAvailability,
+            _id: createdAvailability.id as any,
+            ...createdAvailability,
           });
       
-          this.domainEventBus.publish(driverAvailability.domainEvents);
+          this.domainEventBus.publish(availability.domainEvents);
           return ok();
         }
       }

@@ -26,7 +26,7 @@ export class OpenAIGPT4RequestCommand implements Command {
       const completion = await this.client.createChatCompletion({
         model: this.model,
         messages: this.params,
-        temperature: 0.2,
+        temperature: 0,
       });
       // console.log('completion usage: ', completion.data.usage);
       // console.log(completion.data.choices[0].message.content);

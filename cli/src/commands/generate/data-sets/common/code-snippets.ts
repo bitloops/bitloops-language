@@ -40,17 +40,26 @@ export class CodeSnippets {
   }
 
   static sanitizeProto(promptResponse: string): string {
+    let code = promptResponse;
     const protoOpen = CodeSnippets.openProto();
-    if (!promptResponse.includes(protoOpen)) {
-      return promptResponse;
+    if (promptResponse.includes(protoOpen)) {
+      const protoClose = CodeSnippets.closeProto();
+      // Extract code between protoOpen and protoClose
+      code = promptResponse.substring(
+        promptResponse.indexOf(protoOpen) + protoOpen.length,
+        promptResponse.lastIndexOf(protoClose),
+      );
     }
-    const protoClose = CodeSnippets.closeProto();
 
-    // Return code between tsOpen and tsClose
-    const code = promptResponse.substring(
-      promptResponse.indexOf(protoOpen) + protoOpen.length,
-      promptResponse.lastIndexOf(protoClose),
-    );
+    const backticksCount = (code.match(/```/g) || []).length;
+    if (backticksCount === 2) {
+      const backtickStart = '```proto';
+      const backtickEnd = '```';
+      return code.substring(
+        code.indexOf(backtickStart) + backtickStart.length,
+        code.lastIndexOf(backtickEnd),
+      );
+    }
 
     return code;
   }

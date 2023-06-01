@@ -79,6 +79,10 @@ const messageInstructions = (
   Where <repo-name> and <service-name> are all in kebab-case. They start with the type, followed  by the name:
   For example, for <fileName> = 'user-write.repo-port.ts' and <concretionType> = 'Mongo', 
   import { MongoUserWriteRepository } from 'repositories/mongo-user-write.repository' 
+  
+  When you write the 
+  moduleOfHandlers: <ModuleName>
+  the ModuleName should be in PascalCase, starting with a capital character.
   `;
 };
 export const promptModuleMessages = (

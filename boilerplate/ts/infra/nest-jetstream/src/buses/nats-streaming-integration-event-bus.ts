@@ -87,18 +87,27 @@ export class NatsStreamingIntegrationEventBus implements Infra.EventBus.IEventBu
       const sub = await this.js.subscribe(subject, opts);
       (async () => {
         for await (const m of sub) {
-          const integrationEvent = jsonCodec.decode(m.data) as any;
+          try {
+            const integrationEvent = jsonCodec.decode(m.data) as any;
 
-          const contextData = ContextPropagation.createStoreFromMessageHeaders(m.headers);
-          const reply = await this.asyncLocalStorage.run(contextData, async () => {
-            return handler.handle(integrationEvent);
-          });
+            const contextData = ContextPropagation.createStoreFromMessageHeaders(m.headers);
+            const reply = await this.asyncLocalStorage.run(contextData, async () => {
+              return handler.handle(integrationEvent);
+            });
 
-          if (reply.isFail && reply.isFail() && reply.value.nakable) {
-            m.nak();
-          } else m.ack();
+            if (reply.isFail && reply.isFail() && reply.value.nakable) {
+              m.nak();
+            } else m.ack();
 
-          this.logger.log(`[${sub.getProcessed()}]: ${JSON.stringify(jsonCodec.decode(m.data))}`);
+            this.logger.log(`[${sub.getProcessed()}]: ${JSON.stringify(jsonCodec.decode(m.data))}`);
+          } catch (err) {
+            // Depending on your use case, you might want to rethrow the error,
+            // nack the message, or handle the error in another way.
+            this.logger.error(
+              `[${subject}]: Error handling integration event:, ${JSON.stringify(err)}`,
+            );
+            m.ack();
+          }
         }
       })();
     } catch (err) {

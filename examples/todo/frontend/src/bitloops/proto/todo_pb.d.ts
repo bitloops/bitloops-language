@@ -112,20 +112,20 @@ export class OnEvent extends jspb.Message {
   hasOncompleted(): boolean;
   clearOncompleted(): OnEvent;
 
-  getOnuncompleted(): Todo | undefined;
-  setOnuncompleted(value?: Todo): OnEvent;
-  hasOnuncompleted(): boolean;
-  clearOnuncompleted(): OnEvent;
+  getOndeleted(): Todo | undefined;
+  setOndeleted(value?: Todo): OnEvent;
+  hasOndeleted(): boolean;
+  clearOndeleted(): OnEvent;
 
   getOnmodifiedtitle(): Todo | undefined;
   setOnmodifiedtitle(value?: Todo): OnEvent;
   hasOnmodifiedtitle(): boolean;
   clearOnmodifiedtitle(): OnEvent;
 
-  getOndeleted(): Todo | undefined;
-  setOndeleted(value?: Todo): OnEvent;
-  hasOndeleted(): boolean;
-  clearOndeleted(): OnEvent;
+  getOnuncompleted(): Todo | undefined;
+  setOnuncompleted(value?: Todo): OnEvent;
+  hasOnuncompleted(): boolean;
+  clearOnuncompleted(): OnEvent;
 
   getEventCase(): OnEvent.EventCase;
 
@@ -141,18 +141,18 @@ export namespace OnEvent {
   export type AsObject = {
     onadded?: Todo.AsObject,
     oncompleted?: Todo.AsObject,
-    onuncompleted?: Todo.AsObject,
-    onmodifiedtitle?: Todo.AsObject,
     ondeleted?: Todo.AsObject,
+    onmodifiedtitle?: Todo.AsObject,
+    onuncompleted?: Todo.AsObject,
   }
 
   export enum EventCase { 
     EVENT_NOT_SET = 0,
     ONADDED = 1,
     ONCOMPLETED = 2,
-    ONUNCOMPLETED = 3,
+    ONDELETED = 3,
     ONMODIFIEDTITLE = 4,
-    ONDELETED = 5,
+    ONUNCOMPLETED = 5,
   }
 }
 
@@ -231,20 +231,10 @@ export namespace AddTodoResponse {
 }
 
 export class AddTodoErrorResponse extends jspb.Message {
-  getUnauthorizederror(): ErrorResponse | undefined;
-  setUnauthorizederror(value?: ErrorResponse): AddTodoErrorResponse;
-  hasUnauthorizederror(): boolean;
-  clearUnauthorizederror(): AddTodoErrorResponse;
-
   getSystemunavailableerror(): ErrorResponse | undefined;
   setSystemunavailableerror(value?: ErrorResponse): AddTodoErrorResponse;
   hasSystemunavailableerror(): boolean;
   clearSystemunavailableerror(): AddTodoErrorResponse;
-
-  getInvalidtitlelengtherror(): ErrorResponse | undefined;
-  setInvalidtitlelengtherror(value?: ErrorResponse): AddTodoErrorResponse;
-  hasInvalidtitlelengtherror(): boolean;
-  clearInvalidtitlelengtherror(): AddTodoErrorResponse;
 
   getErrorCase(): AddTodoErrorResponse.ErrorCase;
 
@@ -258,16 +248,12 @@ export class AddTodoErrorResponse extends jspb.Message {
 
 export namespace AddTodoErrorResponse {
   export type AsObject = {
-    unauthorizederror?: ErrorResponse.AsObject,
     systemunavailableerror?: ErrorResponse.AsObject,
-    invalidtitlelengtherror?: ErrorResponse.AsObject,
   }
 
   export enum ErrorCase { 
     ERROR_NOT_SET = 0,
-    UNAUTHORIZEDERROR = 1,
-    SYSTEMUNAVAILABLEERROR = 2,
-    INVALIDTITLELENGTHERROR = 3,
+    SYSTEMUNAVAILABLEERROR = 1,
   }
 }
 
@@ -342,20 +328,10 @@ export namespace CompleteTodoResponse {
 }
 
 export class CompleteTodoErrorResponse extends jspb.Message {
-  getUnauthorizederror(): ErrorResponse | undefined;
-  setUnauthorizederror(value?: ErrorResponse): CompleteTodoErrorResponse;
-  hasUnauthorizederror(): boolean;
-  clearUnauthorizederror(): CompleteTodoErrorResponse;
-
   getSystemunavailableerror(): ErrorResponse | undefined;
   setSystemunavailableerror(value?: ErrorResponse): CompleteTodoErrorResponse;
   hasSystemunavailableerror(): boolean;
   clearSystemunavailableerror(): CompleteTodoErrorResponse;
-
-  getTodoalreadyexistserror(): ErrorResponse | undefined;
-  setTodoalreadyexistserror(value?: ErrorResponse): CompleteTodoErrorResponse;
-  hasTodoalreadyexistserror(): boolean;
-  clearTodoalreadyexistserror(): CompleteTodoErrorResponse;
 
   getErrorCase(): CompleteTodoErrorResponse.ErrorCase;
 
@@ -369,29 +345,25 @@ export class CompleteTodoErrorResponse extends jspb.Message {
 
 export namespace CompleteTodoErrorResponse {
   export type AsObject = {
-    unauthorizederror?: ErrorResponse.AsObject,
     systemunavailableerror?: ErrorResponse.AsObject,
-    todoalreadyexistserror?: ErrorResponse.AsObject,
   }
 
   export enum ErrorCase { 
     ERROR_NOT_SET = 0,
-    UNAUTHORIZEDERROR = 1,
-    SYSTEMUNAVAILABLEERROR = 2,
-    TODOALREADYEXISTSERROR = 3,
+    SYSTEMUNAVAILABLEERROR = 1,
   }
 }
 
-export class DeleteTodoOKResponse extends jspb.Message {
+export class CompleteTodoOKResponse extends jspb.Message {
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): DeleteTodoOKResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: DeleteTodoOKResponse): DeleteTodoOKResponse.AsObject;
-  static serializeBinaryToWriter(message: DeleteTodoOKResponse, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): DeleteTodoOKResponse;
-  static deserializeBinaryFromReader(message: DeleteTodoOKResponse, reader: jspb.BinaryReader): DeleteTodoOKResponse;
+  toObject(includeInstance?: boolean): CompleteTodoOKResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: CompleteTodoOKResponse): CompleteTodoOKResponse.AsObject;
+  static serializeBinaryToWriter(message: CompleteTodoOKResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): CompleteTodoOKResponse;
+  static deserializeBinaryFromReader(message: CompleteTodoOKResponse, reader: jspb.BinaryReader): CompleteTodoOKResponse;
 }
 
-export namespace DeleteTodoOKResponse {
+export namespace CompleteTodoOKResponse {
   export type AsObject = {
   }
 }
@@ -449,20 +421,10 @@ export namespace DeleteTodoResponse {
 }
 
 export class DeleteTodoErrorResponse extends jspb.Message {
-  getUnauthorizederror(): ErrorResponse | undefined;
-  setUnauthorizederror(value?: ErrorResponse): DeleteTodoErrorResponse;
-  hasUnauthorizederror(): boolean;
-  clearUnauthorizederror(): DeleteTodoErrorResponse;
-
   getSystemunavailableerror(): ErrorResponse | undefined;
   setSystemunavailableerror(value?: ErrorResponse): DeleteTodoErrorResponse;
   hasSystemunavailableerror(): boolean;
   clearSystemunavailableerror(): DeleteTodoErrorResponse;
-
-  getTodoalreadyexistserror(): ErrorResponse | undefined;
-  setTodoalreadyexistserror(value?: ErrorResponse): DeleteTodoErrorResponse;
-  hasTodoalreadyexistserror(): boolean;
-  clearTodoalreadyexistserror(): DeleteTodoErrorResponse;
 
   getErrorCase(): DeleteTodoErrorResponse.ErrorCase;
 
@@ -476,29 +438,25 @@ export class DeleteTodoErrorResponse extends jspb.Message {
 
 export namespace DeleteTodoErrorResponse {
   export type AsObject = {
-    unauthorizederror?: ErrorResponse.AsObject,
     systemunavailableerror?: ErrorResponse.AsObject,
-    todoalreadyexistserror?: ErrorResponse.AsObject,
   }
 
   export enum ErrorCase { 
     ERROR_NOT_SET = 0,
-    UNAUTHORIZEDERROR = 1,
-    SYSTEMUNAVAILABLEERROR = 2,
-    TODOALREADYEXISTSERROR = 3,
+    SYSTEMUNAVAILABLEERROR = 1,
   }
 }
 
-export class CompleteTodoOKResponse extends jspb.Message {
+export class DeleteTodoOKResponse extends jspb.Message {
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): CompleteTodoOKResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: CompleteTodoOKResponse): CompleteTodoOKResponse.AsObject;
-  static serializeBinaryToWriter(message: CompleteTodoOKResponse, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): CompleteTodoOKResponse;
-  static deserializeBinaryFromReader(message: CompleteTodoOKResponse, reader: jspb.BinaryReader): CompleteTodoOKResponse;
+  toObject(includeInstance?: boolean): DeleteTodoOKResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: DeleteTodoOKResponse): DeleteTodoOKResponse.AsObject;
+  static serializeBinaryToWriter(message: DeleteTodoOKResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): DeleteTodoOKResponse;
+  static deserializeBinaryFromReader(message: DeleteTodoOKResponse, reader: jspb.BinaryReader): DeleteTodoOKResponse;
 }
 
-export namespace CompleteTodoOKResponse {
+export namespace DeleteTodoOKResponse {
   export type AsObject = {
   }
 }
@@ -552,11 +510,6 @@ export namespace GetAllTodosResponse {
 }
 
 export class GetAllTodosErrorResponse extends jspb.Message {
-  getUnauthorizederror(): ErrorResponse | undefined;
-  setUnauthorizederror(value?: ErrorResponse): GetAllTodosErrorResponse;
-  hasUnauthorizederror(): boolean;
-  clearUnauthorizederror(): GetAllTodosErrorResponse;
-
   getSystemunavailableerror(): ErrorResponse | undefined;
   setSystemunavailableerror(value?: ErrorResponse): GetAllTodosErrorResponse;
   hasSystemunavailableerror(): boolean;
@@ -574,14 +527,12 @@ export class GetAllTodosErrorResponse extends jspb.Message {
 
 export namespace GetAllTodosErrorResponse {
   export type AsObject = {
-    unauthorizederror?: ErrorResponse.AsObject,
     systemunavailableerror?: ErrorResponse.AsObject,
   }
 
   export enum ErrorCase { 
     ERROR_NOT_SET = 0,
-    UNAUTHORIZEDERROR = 1,
-    SYSTEMUNAVAILABLEERROR = 2,
+    SYSTEMUNAVAILABLEERROR = 1,
   }
 }
 
@@ -662,25 +613,10 @@ export namespace ModifyTitleTodoResponse {
 }
 
 export class ModifyTitleTodoErrorResponse extends jspb.Message {
-  getUnauthorizederror(): ErrorResponse | undefined;
-  setUnauthorizederror(value?: ErrorResponse): ModifyTitleTodoErrorResponse;
-  hasUnauthorizederror(): boolean;
-  clearUnauthorizederror(): ModifyTitleTodoErrorResponse;
-
   getSystemunavailableerror(): ErrorResponse | undefined;
   setSystemunavailableerror(value?: ErrorResponse): ModifyTitleTodoErrorResponse;
   hasSystemunavailableerror(): boolean;
   clearSystemunavailableerror(): ModifyTitleTodoErrorResponse;
-
-  getTododoesnotexisterror(): ErrorResponse | undefined;
-  setTododoesnotexisterror(value?: ErrorResponse): ModifyTitleTodoErrorResponse;
-  hasTododoesnotexisterror(): boolean;
-  clearTododoesnotexisterror(): ModifyTitleTodoErrorResponse;
-
-  getInvalidtitlelengtherror(): ErrorResponse | undefined;
-  setInvalidtitlelengtherror(value?: ErrorResponse): ModifyTitleTodoErrorResponse;
-  hasInvalidtitlelengtherror(): boolean;
-  clearInvalidtitlelengtherror(): ModifyTitleTodoErrorResponse;
 
   getErrorCase(): ModifyTitleTodoErrorResponse.ErrorCase;
 
@@ -694,18 +630,12 @@ export class ModifyTitleTodoErrorResponse extends jspb.Message {
 
 export namespace ModifyTitleTodoErrorResponse {
   export type AsObject = {
-    unauthorizederror?: ErrorResponse.AsObject,
     systemunavailableerror?: ErrorResponse.AsObject,
-    tododoesnotexisterror?: ErrorResponse.AsObject,
-    invalidtitlelengtherror?: ErrorResponse.AsObject,
   }
 
   export enum ErrorCase { 
     ERROR_NOT_SET = 0,
-    UNAUTHORIZEDERROR = 1,
-    SYSTEMUNAVAILABLEERROR = 2,
-    TODODOESNOTEXISTERROR = 3,
-    INVALIDTITLELENGTHERROR = 4,
+    SYSTEMUNAVAILABLEERROR = 1,
   }
 }
 
@@ -776,20 +706,10 @@ export namespace UncompleteTodoResponse {
 }
 
 export class UncompleteTodoErrorResponse extends jspb.Message {
-  getUnauthorizederror(): ErrorResponse | undefined;
-  setUnauthorizederror(value?: ErrorResponse): UncompleteTodoErrorResponse;
-  hasUnauthorizederror(): boolean;
-  clearUnauthorizederror(): UncompleteTodoErrorResponse;
-
   getSystemunavailableerror(): ErrorResponse | undefined;
   setSystemunavailableerror(value?: ErrorResponse): UncompleteTodoErrorResponse;
   hasSystemunavailableerror(): boolean;
   clearSystemunavailableerror(): UncompleteTodoErrorResponse;
-
-  getTodoalreadyexistserror(): ErrorResponse | undefined;
-  setTodoalreadyexistserror(value?: ErrorResponse): UncompleteTodoErrorResponse;
-  hasTodoalreadyexistserror(): boolean;
-  clearTodoalreadyexistserror(): UncompleteTodoErrorResponse;
 
   getErrorCase(): UncompleteTodoErrorResponse.ErrorCase;
 
@@ -803,16 +723,12 @@ export class UncompleteTodoErrorResponse extends jspb.Message {
 
 export namespace UncompleteTodoErrorResponse {
   export type AsObject = {
-    unauthorizederror?: ErrorResponse.AsObject,
     systemunavailableerror?: ErrorResponse.AsObject,
-    todoalreadyexistserror?: ErrorResponse.AsObject,
   }
 
   export enum ErrorCase { 
     ERROR_NOT_SET = 0,
-    UNAUTHORIZEDERROR = 1,
-    SYSTEMUNAVAILABLEERROR = 2,
-    TODOALREADYEXISTSERROR = 3,
+    SYSTEMUNAVAILABLEERROR = 1,
   }
 }
 
@@ -863,7 +779,7 @@ export namespace Todo {
 export enum TODO_EVENTS { 
   ADDED = 0,
   COMPLETED = 1,
-  UNCOMPLETED = 2,
+  DELETED = 2,
   MODIFIED_TITLE = 3,
-  DELETED = 4,
+  UNCOMPLETED = 4,
 }

@@ -89,21 +89,30 @@ export class NatsStreamingDomainEventBus implements Infra.EventBus.IEventBus {
       const sub = await this.js.subscribe(subject, opts);
       (async () => {
         for await (const m of sub) {
-          const domainEvent = jsonCodec.decode(m.data) as any;
-          // domainEvent.data = Domain.EventData.fromPrimitives(domainEvent.data);
+          try {
+            const domainEvent = jsonCodec.decode(m.data) as any;
+            // domainEvent.data = Domain.EventData.fromPrimitives(domainEvent.data);
 
-          const contextData = ContextPropagation.createStoreFromMessageHeaders(m.headers);
-          const reply = await this.asyncLocalStorage.run(contextData, async () => {
-            return handler.handle(domainEvent);
-          });
-          // TODO check type
-          if (reply.isFail && reply.isFail() && reply.value.nakable) {
-            m.nak();
-          } else m.ack();
+            const contextData = ContextPropagation.createStoreFromMessageHeaders(m.headers);
+            const reply = await this.asyncLocalStorage.run(contextData, async () => {
+              return handler.handle(domainEvent);
+            });
+            // TODO check type
+            if (reply.isFail && reply.isFail() && reply.value.nakable) {
+              m.nak();
+            } else m.ack();
 
-          this.logger.log(
-            `[Domain Event ${sub.getProcessed()}]: ${JSON.stringify(jsonCodec.decode(m.data))}`,
-          );
+            this.logger.log(
+              `[Domain Event ${sub.getProcessed()}]: ${JSON.stringify(jsonCodec.decode(m.data))}`,
+            );
+          } catch (err) {
+            // Depending on your use case, you might want to rethrow the error,
+            // nack the message, or handle the error in another way.
+            this.logger.error(
+              `[Domain Event ${subject}]: Error handling domain event: ${JSON.stringify(err)}`,
+            );
+            m.ack();
+          }
         }
       })();
     } catch (err) {

@@ -1,18 +1,13 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { NatsConnection, JSONCodec, headers, Msg, MsgHdrs } from 'nats';
 import { Application, Infra } from '@bitloops/bl-boilerplate-core';
-import {
-  ASYNC_LOCAL_STORAGE,
-  ProvidersConstants,
-} from '../jetstream.constants';
+import { ASYNC_LOCAL_STORAGE, ProvidersConstants } from '../jetstream.constants';
 import { ContextPropagation } from './utils/context-propagation';
 
 const jsonCodec = JSONCodec();
 
 @Injectable()
-export class NatsPubSubCommandBus
-  implements Infra.CommandBus.IPubSubCommandBus
-{
+export class NatsPubSubCommandBus implements Infra.CommandBus.IPubSubCommandBus {
   private readonly logger = new Logger(NatsPubSubCommandBus.name);
   private nc: NatsConnection;
   private static commandPrefix = 'Commands_';
@@ -48,10 +43,7 @@ export class NatsPubSubCommandBus
     const topic = NatsPubSubCommandBus.getTopicFromCommandInstance(command);
 
     this.logger.log('Requesting in haha :' + topic);
-    console.log(
-      'this.asyncLocalStorage.getStore()',
-      this.asyncLocalStorage.getStore(),
-    );
+    console.log('this.asyncLocalStorage.getStore()', this.asyncLocalStorage.getStore());
     command.correlationId = this.getCorelationId();
     command.context = this.getContext();
     // command
@@ -69,24 +61,25 @@ export class NatsPubSubCommandBus
     }
   }
 
-  async pubSubSubscribe(
-    subject: string,
-    handler: Application.ICommandHandler<any, any>,
-  ) {
+  async pubSubSubscribe(subject: string, handler: Application.ICommandHandler<any, any>) {
     try {
       this.logger.log('Subscribing to:' + subject);
       const sub = this.nc.subscribe(subject);
       (async () => {
         for await (const m of sub) {
-          const command = jsonCodec.decode(m.data);
+          try {
+            const command = jsonCodec.decode(m.data);
 
-          const contextData = ContextPropagation.createStoreFromMessageHeaders(
-            m.headers,
-          );
+            const contextData = ContextPropagation.createStoreFromMessageHeaders(m.headers);
 
-          await this.asyncLocalStorage.run(contextData, async () => {
-            return this.handleReceivedCommand(handler, command, m);
-          });
+            await this.asyncLocalStorage.run(contextData, async () => {
+              return this.handleReceivedCommand(handler, command, m);
+            });
+          } catch (err) {
+            this.logger.error(
+              `[${subject}]Error in command-bus subscribe:: ${JSON.stringify(err)}`,
+            );
+          }
         }
       })();
     } catch (err) {
@@ -109,9 +102,7 @@ export class NatsPubSubCommandBus
     return h;
   }
 
-  static getTopicFromHandler(
-    handler: Application.ICommandHandler<any, any>,
-  ): string {
+  static getTopicFromHandler(handler: Application.ICommandHandler<any, any>): string {
     const command = handler.command;
     const boundedContext = handler.boundedContext;
 

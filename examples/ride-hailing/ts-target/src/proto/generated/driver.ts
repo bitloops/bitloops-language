@@ -3,6 +3,7 @@
  * compiler version: 3.21.12
  * source: driver.proto
  * git: https://github.com/thesayyn/protoc-gen-ts */
+import * as dependency_1 from "./google/protobuf/timestamp";
 import * as pb_1 from "google-protobuf";
 import * as grpc_1 from "@grpc/grpc-js";
 export namespace driver {
@@ -1066,80 +1067,12 @@ export namespace driver {
     export class GetDriverAvailabilityOKResponse extends pb_1.Message {
         #one_of_decls: number[][] = [];
         constructor(data?: any[] | {
-            driverAvailability?: DriverAvailability;
-        }) {
-            super();
-            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
-            if (!Array.isArray(data) && typeof data == "object") {
-                if ("driverAvailability" in data && data.driverAvailability != undefined) {
-                    this.driverAvailability = data.driverAvailability;
-                }
-            }
-        }
-        get driverAvailability() {
-            return pb_1.Message.getWrapperField(this, DriverAvailability, 1) as DriverAvailability;
-        }
-        set driverAvailability(value: DriverAvailability) {
-            pb_1.Message.setWrapperField(this, 1, value);
-        }
-        get has_driverAvailability() {
-            return pb_1.Message.getField(this, 1) != null;
-        }
-        static fromObject(data: {
-            driverAvailability?: ReturnType<typeof DriverAvailability.prototype.toObject>;
-        }): GetDriverAvailabilityOKResponse {
-            const message = new GetDriverAvailabilityOKResponse({});
-            if (data.driverAvailability != null) {
-                message.driverAvailability = DriverAvailability.fromObject(data.driverAvailability);
-            }
-            return message;
-        }
-        toObject() {
-            const data: {
-                driverAvailability?: ReturnType<typeof DriverAvailability.prototype.toObject>;
-            } = {};
-            if (this.driverAvailability != null) {
-                data.driverAvailability = this.driverAvailability.toObject();
-            }
-            return data;
-        }
-        serialize(): Uint8Array;
-        serialize(w: pb_1.BinaryWriter): void;
-        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
-            const writer = w || new pb_1.BinaryWriter();
-            if (this.has_driverAvailability)
-                writer.writeMessage(1, this.driverAvailability, () => this.driverAvailability.serialize(writer));
-            if (!w)
-                return writer.getResultBuffer();
-        }
-        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): GetDriverAvailabilityOKResponse {
-            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new GetDriverAvailabilityOKResponse();
-            while (reader.nextField()) {
-                if (reader.isEndGroup())
-                    break;
-                switch (reader.getFieldNumber()) {
-                    case 1:
-                        reader.readMessage(message.driverAvailability, () => message.driverAvailability = DriverAvailability.deserialize(reader));
-                        break;
-                    default: reader.skipField();
-                }
-            }
-            return message;
-        }
-        serializeBinary(): Uint8Array {
-            return this.serialize();
-        }
-        static deserializeBinary(bytes: Uint8Array): GetDriverAvailabilityOKResponse {
-            return GetDriverAvailabilityOKResponse.deserialize(bytes);
-        }
-    }
-    export class DriverAvailability extends pb_1.Message {
-        #one_of_decls: number[][] = [];
-        constructor(data?: any[] | {
             id?: string;
             accountStatus?: AccountStatus;
             availabilityStatus?: AvailabilityStatus;
             blockReason?: BlockReason;
+            createdAt?: dependency_1.google.protobuf.Timestamp;
+            updatedAt?: dependency_1.google.protobuf.Timestamp;
         }) {
             super();
             pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
@@ -1155,6 +1088,12 @@ export namespace driver {
                 }
                 if ("blockReason" in data && data.blockReason != undefined) {
                     this.blockReason = data.blockReason;
+                }
+                if ("createdAt" in data && data.createdAt != undefined) {
+                    this.createdAt = data.createdAt;
+                }
+                if ("updatedAt" in data && data.updatedAt != undefined) {
+                    this.updatedAt = data.updatedAt;
                 }
             }
         }
@@ -1191,13 +1130,33 @@ export namespace driver {
         get has_blockReason() {
             return pb_1.Message.getField(this, 4) != null;
         }
+        get createdAt() {
+            return pb_1.Message.getWrapperField(this, dependency_1.google.protobuf.Timestamp, 5) as dependency_1.google.protobuf.Timestamp;
+        }
+        set createdAt(value: dependency_1.google.protobuf.Timestamp) {
+            pb_1.Message.setWrapperField(this, 5, value);
+        }
+        get has_createdAt() {
+            return pb_1.Message.getField(this, 5) != null;
+        }
+        get updatedAt() {
+            return pb_1.Message.getWrapperField(this, dependency_1.google.protobuf.Timestamp, 6) as dependency_1.google.protobuf.Timestamp;
+        }
+        set updatedAt(value: dependency_1.google.protobuf.Timestamp) {
+            pb_1.Message.setWrapperField(this, 6, value);
+        }
+        get has_updatedAt() {
+            return pb_1.Message.getField(this, 6) != null;
+        }
         static fromObject(data: {
             id?: string;
             accountStatus?: ReturnType<typeof AccountStatus.prototype.toObject>;
             availabilityStatus?: ReturnType<typeof AvailabilityStatus.prototype.toObject>;
             blockReason?: ReturnType<typeof BlockReason.prototype.toObject>;
-        }): DriverAvailability {
-            const message = new DriverAvailability({});
+            createdAt?: ReturnType<typeof dependency_1.google.protobuf.Timestamp.prototype.toObject>;
+            updatedAt?: ReturnType<typeof dependency_1.google.protobuf.Timestamp.prototype.toObject>;
+        }): GetDriverAvailabilityOKResponse {
+            const message = new GetDriverAvailabilityOKResponse({});
             if (data.id != null) {
                 message.id = data.id;
             }
@@ -1210,6 +1169,12 @@ export namespace driver {
             if (data.blockReason != null) {
                 message.blockReason = BlockReason.fromObject(data.blockReason);
             }
+            if (data.createdAt != null) {
+                message.createdAt = dependency_1.google.protobuf.Timestamp.fromObject(data.createdAt);
+            }
+            if (data.updatedAt != null) {
+                message.updatedAt = dependency_1.google.protobuf.Timestamp.fromObject(data.updatedAt);
+            }
             return message;
         }
         toObject() {
@@ -1218,6 +1183,8 @@ export namespace driver {
                 accountStatus?: ReturnType<typeof AccountStatus.prototype.toObject>;
                 availabilityStatus?: ReturnType<typeof AvailabilityStatus.prototype.toObject>;
                 blockReason?: ReturnType<typeof BlockReason.prototype.toObject>;
+                createdAt?: ReturnType<typeof dependency_1.google.protobuf.Timestamp.prototype.toObject>;
+                updatedAt?: ReturnType<typeof dependency_1.google.protobuf.Timestamp.prototype.toObject>;
             } = {};
             if (this.id != null) {
                 data.id = this.id;
@@ -1230,6 +1197,12 @@ export namespace driver {
             }
             if (this.blockReason != null) {
                 data.blockReason = this.blockReason.toObject();
+            }
+            if (this.createdAt != null) {
+                data.createdAt = this.createdAt.toObject();
+            }
+            if (this.updatedAt != null) {
+                data.updatedAt = this.updatedAt.toObject();
             }
             return data;
         }
@@ -1245,11 +1218,15 @@ export namespace driver {
                 writer.writeMessage(3, this.availabilityStatus, () => this.availabilityStatus.serialize(writer));
             if (this.has_blockReason)
                 writer.writeMessage(4, this.blockReason, () => this.blockReason.serialize(writer));
+            if (this.has_createdAt)
+                writer.writeMessage(5, this.createdAt, () => this.createdAt.serialize(writer));
+            if (this.has_updatedAt)
+                writer.writeMessage(6, this.updatedAt, () => this.updatedAt.serialize(writer));
             if (!w)
                 return writer.getResultBuffer();
         }
-        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): DriverAvailability {
-            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new DriverAvailability();
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): GetDriverAvailabilityOKResponse {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new GetDriverAvailabilityOKResponse();
             while (reader.nextField()) {
                 if (reader.isEndGroup())
                     break;
@@ -1266,6 +1243,12 @@ export namespace driver {
                     case 4:
                         reader.readMessage(message.blockReason, () => message.blockReason = BlockReason.deserialize(reader));
                         break;
+                    case 5:
+                        reader.readMessage(message.createdAt, () => message.createdAt = dependency_1.google.protobuf.Timestamp.deserialize(reader));
+                        break;
+                    case 6:
+                        reader.readMessage(message.updatedAt, () => message.updatedAt = dependency_1.google.protobuf.Timestamp.deserialize(reader));
+                        break;
                     default: reader.skipField();
                 }
             }
@@ -1274,44 +1257,62 @@ export namespace driver {
         serializeBinary(): Uint8Array {
             return this.serialize();
         }
-        static deserializeBinary(bytes: Uint8Array): DriverAvailability {
-            return DriverAvailability.deserialize(bytes);
+        static deserializeBinary(bytes: Uint8Array): GetDriverAvailabilityOKResponse {
+            return GetDriverAvailabilityOKResponse.deserialize(bytes);
         }
     }
     export class AccountStatus extends pb_1.Message {
         #one_of_decls: number[][] = [];
         constructor(data?: any[] | {
-            status?: string;
+            isActive?: boolean;
+            isVerified?: boolean;
         }) {
             super();
             pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
             if (!Array.isArray(data) && typeof data == "object") {
-                if ("status" in data && data.status != undefined) {
-                    this.status = data.status;
+                if ("isActive" in data && data.isActive != undefined) {
+                    this.isActive = data.isActive;
+                }
+                if ("isVerified" in data && data.isVerified != undefined) {
+                    this.isVerified = data.isVerified;
                 }
             }
         }
-        get status() {
-            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
+        get isActive() {
+            return pb_1.Message.getFieldWithDefault(this, 1, false) as boolean;
         }
-        set status(value: string) {
+        set isActive(value: boolean) {
             pb_1.Message.setField(this, 1, value);
         }
+        get isVerified() {
+            return pb_1.Message.getFieldWithDefault(this, 2, false) as boolean;
+        }
+        set isVerified(value: boolean) {
+            pb_1.Message.setField(this, 2, value);
+        }
         static fromObject(data: {
-            status?: string;
+            isActive?: boolean;
+            isVerified?: boolean;
         }): AccountStatus {
             const message = new AccountStatus({});
-            if (data.status != null) {
-                message.status = data.status;
+            if (data.isActive != null) {
+                message.isActive = data.isActive;
+            }
+            if (data.isVerified != null) {
+                message.isVerified = data.isVerified;
             }
             return message;
         }
         toObject() {
             const data: {
-                status?: string;
+                isActive?: boolean;
+                isVerified?: boolean;
             } = {};
-            if (this.status != null) {
-                data.status = this.status;
+            if (this.isActive != null) {
+                data.isActive = this.isActive;
+            }
+            if (this.isVerified != null) {
+                data.isVerified = this.isVerified;
             }
             return data;
         }
@@ -1319,8 +1320,10 @@ export namespace driver {
         serialize(w: pb_1.BinaryWriter): void;
         serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
             const writer = w || new pb_1.BinaryWriter();
-            if (this.status.length)
-                writer.writeString(1, this.status);
+            if (this.isActive != false)
+                writer.writeBool(1, this.isActive);
+            if (this.isVerified != false)
+                writer.writeBool(2, this.isVerified);
             if (!w)
                 return writer.getResultBuffer();
         }
@@ -1331,7 +1334,10 @@ export namespace driver {
                     break;
                 switch (reader.getFieldNumber()) {
                     case 1:
-                        message.status = reader.readString();
+                        message.isActive = reader.readBool();
+                        break;
+                    case 2:
+                        message.isVerified = reader.readBool();
                         break;
                     default: reader.skipField();
                 }
@@ -1348,37 +1354,37 @@ export namespace driver {
     export class AvailabilityStatus extends pb_1.Message {
         #one_of_decls: number[][] = [];
         constructor(data?: any[] | {
-            status?: string;
+            isAvailable?: boolean;
         }) {
             super();
             pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
             if (!Array.isArray(data) && typeof data == "object") {
-                if ("status" in data && data.status != undefined) {
-                    this.status = data.status;
+                if ("isAvailable" in data && data.isAvailable != undefined) {
+                    this.isAvailable = data.isAvailable;
                 }
             }
         }
-        get status() {
-            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
+        get isAvailable() {
+            return pb_1.Message.getFieldWithDefault(this, 1, false) as boolean;
         }
-        set status(value: string) {
+        set isAvailable(value: boolean) {
             pb_1.Message.setField(this, 1, value);
         }
         static fromObject(data: {
-            status?: string;
+            isAvailable?: boolean;
         }): AvailabilityStatus {
             const message = new AvailabilityStatus({});
-            if (data.status != null) {
-                message.status = data.status;
+            if (data.isAvailable != null) {
+                message.isAvailable = data.isAvailable;
             }
             return message;
         }
         toObject() {
             const data: {
-                status?: string;
+                isAvailable?: boolean;
             } = {};
-            if (this.status != null) {
-                data.status = this.status;
+            if (this.isAvailable != null) {
+                data.isAvailable = this.isAvailable;
             }
             return data;
         }
@@ -1386,8 +1392,8 @@ export namespace driver {
         serialize(w: pb_1.BinaryWriter): void;
         serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
             const writer = w || new pb_1.BinaryWriter();
-            if (this.status.length)
-                writer.writeString(1, this.status);
+            if (this.isAvailable != false)
+                writer.writeBool(1, this.isAvailable);
             if (!w)
                 return writer.getResultBuffer();
         }
@@ -1398,7 +1404,7 @@ export namespace driver {
                     break;
                 switch (reader.getFieldNumber()) {
                     case 1:
-                        message.status = reader.readString();
+                        message.isAvailable = reader.readBool();
                         break;
                     default: reader.skipField();
                 }
@@ -1477,6 +1483,203 @@ export namespace driver {
         }
         static deserializeBinary(bytes: Uint8Array): BlockReason {
             return BlockReason.deserialize(bytes);
+        }
+    }
+    export class DriverAvailability extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {
+            id?: string;
+            accountStatus?: AccountStatus;
+            availabilityStatus?: AvailabilityStatus;
+            blockReason?: BlockReason;
+            createdAt?: dependency_1.google.protobuf.Timestamp;
+            updatedAt?: dependency_1.google.protobuf.Timestamp;
+        }) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("id" in data && data.id != undefined) {
+                    this.id = data.id;
+                }
+                if ("accountStatus" in data && data.accountStatus != undefined) {
+                    this.accountStatus = data.accountStatus;
+                }
+                if ("availabilityStatus" in data && data.availabilityStatus != undefined) {
+                    this.availabilityStatus = data.availabilityStatus;
+                }
+                if ("blockReason" in data && data.blockReason != undefined) {
+                    this.blockReason = data.blockReason;
+                }
+                if ("createdAt" in data && data.createdAt != undefined) {
+                    this.createdAt = data.createdAt;
+                }
+                if ("updatedAt" in data && data.updatedAt != undefined) {
+                    this.updatedAt = data.updatedAt;
+                }
+            }
+        }
+        get id() {
+            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
+        }
+        set id(value: string) {
+            pb_1.Message.setField(this, 1, value);
+        }
+        get accountStatus() {
+            return pb_1.Message.getWrapperField(this, AccountStatus, 2) as AccountStatus;
+        }
+        set accountStatus(value: AccountStatus) {
+            pb_1.Message.setWrapperField(this, 2, value);
+        }
+        get has_accountStatus() {
+            return pb_1.Message.getField(this, 2) != null;
+        }
+        get availabilityStatus() {
+            return pb_1.Message.getWrapperField(this, AvailabilityStatus, 3) as AvailabilityStatus;
+        }
+        set availabilityStatus(value: AvailabilityStatus) {
+            pb_1.Message.setWrapperField(this, 3, value);
+        }
+        get has_availabilityStatus() {
+            return pb_1.Message.getField(this, 3) != null;
+        }
+        get blockReason() {
+            return pb_1.Message.getWrapperField(this, BlockReason, 4) as BlockReason;
+        }
+        set blockReason(value: BlockReason) {
+            pb_1.Message.setWrapperField(this, 4, value);
+        }
+        get has_blockReason() {
+            return pb_1.Message.getField(this, 4) != null;
+        }
+        get createdAt() {
+            return pb_1.Message.getWrapperField(this, dependency_1.google.protobuf.Timestamp, 5) as dependency_1.google.protobuf.Timestamp;
+        }
+        set createdAt(value: dependency_1.google.protobuf.Timestamp) {
+            pb_1.Message.setWrapperField(this, 5, value);
+        }
+        get has_createdAt() {
+            return pb_1.Message.getField(this, 5) != null;
+        }
+        get updatedAt() {
+            return pb_1.Message.getWrapperField(this, dependency_1.google.protobuf.Timestamp, 6) as dependency_1.google.protobuf.Timestamp;
+        }
+        set updatedAt(value: dependency_1.google.protobuf.Timestamp) {
+            pb_1.Message.setWrapperField(this, 6, value);
+        }
+        get has_updatedAt() {
+            return pb_1.Message.getField(this, 6) != null;
+        }
+        static fromObject(data: {
+            id?: string;
+            accountStatus?: ReturnType<typeof AccountStatus.prototype.toObject>;
+            availabilityStatus?: ReturnType<typeof AvailabilityStatus.prototype.toObject>;
+            blockReason?: ReturnType<typeof BlockReason.prototype.toObject>;
+            createdAt?: ReturnType<typeof dependency_1.google.protobuf.Timestamp.prototype.toObject>;
+            updatedAt?: ReturnType<typeof dependency_1.google.protobuf.Timestamp.prototype.toObject>;
+        }): DriverAvailability {
+            const message = new DriverAvailability({});
+            if (data.id != null) {
+                message.id = data.id;
+            }
+            if (data.accountStatus != null) {
+                message.accountStatus = AccountStatus.fromObject(data.accountStatus);
+            }
+            if (data.availabilityStatus != null) {
+                message.availabilityStatus = AvailabilityStatus.fromObject(data.availabilityStatus);
+            }
+            if (data.blockReason != null) {
+                message.blockReason = BlockReason.fromObject(data.blockReason);
+            }
+            if (data.createdAt != null) {
+                message.createdAt = dependency_1.google.protobuf.Timestamp.fromObject(data.createdAt);
+            }
+            if (data.updatedAt != null) {
+                message.updatedAt = dependency_1.google.protobuf.Timestamp.fromObject(data.updatedAt);
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                id?: string;
+                accountStatus?: ReturnType<typeof AccountStatus.prototype.toObject>;
+                availabilityStatus?: ReturnType<typeof AvailabilityStatus.prototype.toObject>;
+                blockReason?: ReturnType<typeof BlockReason.prototype.toObject>;
+                createdAt?: ReturnType<typeof dependency_1.google.protobuf.Timestamp.prototype.toObject>;
+                updatedAt?: ReturnType<typeof dependency_1.google.protobuf.Timestamp.prototype.toObject>;
+            } = {};
+            if (this.id != null) {
+                data.id = this.id;
+            }
+            if (this.accountStatus != null) {
+                data.accountStatus = this.accountStatus.toObject();
+            }
+            if (this.availabilityStatus != null) {
+                data.availabilityStatus = this.availabilityStatus.toObject();
+            }
+            if (this.blockReason != null) {
+                data.blockReason = this.blockReason.toObject();
+            }
+            if (this.createdAt != null) {
+                data.createdAt = this.createdAt.toObject();
+            }
+            if (this.updatedAt != null) {
+                data.updatedAt = this.updatedAt.toObject();
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.id.length)
+                writer.writeString(1, this.id);
+            if (this.has_accountStatus)
+                writer.writeMessage(2, this.accountStatus, () => this.accountStatus.serialize(writer));
+            if (this.has_availabilityStatus)
+                writer.writeMessage(3, this.availabilityStatus, () => this.availabilityStatus.serialize(writer));
+            if (this.has_blockReason)
+                writer.writeMessage(4, this.blockReason, () => this.blockReason.serialize(writer));
+            if (this.has_createdAt)
+                writer.writeMessage(5, this.createdAt, () => this.createdAt.serialize(writer));
+            if (this.has_updatedAt)
+                writer.writeMessage(6, this.updatedAt, () => this.updatedAt.serialize(writer));
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): DriverAvailability {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new DriverAvailability();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        message.id = reader.readString();
+                        break;
+                    case 2:
+                        reader.readMessage(message.accountStatus, () => message.accountStatus = AccountStatus.deserialize(reader));
+                        break;
+                    case 3:
+                        reader.readMessage(message.availabilityStatus, () => message.availabilityStatus = AvailabilityStatus.deserialize(reader));
+                        break;
+                    case 4:
+                        reader.readMessage(message.blockReason, () => message.blockReason = BlockReason.deserialize(reader));
+                        break;
+                    case 5:
+                        reader.readMessage(message.createdAt, () => message.createdAt = dependency_1.google.protobuf.Timestamp.deserialize(reader));
+                        break;
+                    case 6:
+                        reader.readMessage(message.updatedAt, () => message.updatedAt = dependency_1.google.protobuf.Timestamp.deserialize(reader));
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): DriverAvailability {
+            return DriverAvailability.deserialize(bytes);
         }
     }
     interface GrpcUnaryServiceInterface<P, R> {

@@ -47,16 +47,16 @@ export class CliInfraCodeGenerator implements IInfraCodeGenerator {
   }): Promise<TGeneratedInfra> {
     const { componentsInfo, exposedGrpcComponents } = params;
     const client = new Client(this.apiKey);
-    console.log('Generating bounded contexts...');
+    console.log('Generating Bounded Contexts...');
     await this.promptAiResultsFirstRound(client, componentsInfo, exposedGrpcComponents);
     let responses = await client.getResponses();
 
     if (this.needsGrpcStreamEvents(exposedGrpcComponents)) {
-      console.log('Generating protobuf file stream events...');
+      console.log('Generating Protobuf file stream events...');
       this.promptAiResultsSecondRound(client, responses, exposedGrpcComponents);
       responses = await client.getResponses();
     }
-    console.log('Generating api controllers...');
+    console.log('Generating API controllers...');
     await this.promptAiResultsThirdRound(client, responses, exposedGrpcComponents);
     responses = await client.getResponses();
     this.totalCost = client.getTotalCost();
@@ -253,7 +253,7 @@ export class CliInfraCodeGenerator implements IInfraCodeGenerator {
         boundedContextName: currentCommand.boundedContextName,
         moduleName: currentCommand.moduleName,
       };
-      client.makeOpenAIRequest(
+      client.makeGPT4Request(
         promptApiGrpcControllerCommand(
           currentCommand.content,
           currentCommand.commandHandlerContent,
@@ -280,7 +280,7 @@ export class CliInfraCodeGenerator implements IInfraCodeGenerator {
         boundedContextName: currentQuery.boundedContextName,
         moduleName: currentQuery.moduleName,
       };
-      client.makeOpenAIRequest(
+      client.makeGPT4Request(
         promptApiGrpcControllerQuery(
           currentQuery.content,
           currentQuery.queryHandlerContent,

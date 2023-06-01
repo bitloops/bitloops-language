@@ -59,31 +59,35 @@ export class NatsPubSubQueryBus implements Infra.QueryBus.IQueryBus {
       const sub = this.nc.subscribe(subject);
       (async () => {
         for await (const m of sub) {
-          const query = jsonCodec.decode(m.data);
+          try {
+            const query = jsonCodec.decode(m.data);
 
-          const contextData = ContextPropagation.createStoreFromMessageHeaders(m.headers);
-          const reply = await this.asyncLocalStorage.run(contextData, () => {
-            return handler.execute(query);
-          });
-          if (reply.isOk && reply.isOk() && m.reply) {
-            this.nc.publish(
-              m.reply,
-              jsonCodec.encode({
-                isOk: true,
-                data: reply.value,
-              }),
-            );
-          } else if (reply.isFail && reply.isFail() && m.reply) {
-            this.nc.publish(
-              m.reply,
-              jsonCodec.encode({
-                isOk: false,
-                error: reply.value,
-              }),
-            );
+            const contextData = ContextPropagation.createStoreFromMessageHeaders(m.headers);
+            const reply = await this.asyncLocalStorage.run(contextData, () => {
+              return handler.execute(query);
+            });
+            if (reply.isOk && reply.isOk() && m.reply) {
+              this.nc.publish(
+                m.reply,
+                jsonCodec.encode({
+                  isOk: true,
+                  data: reply.value,
+                }),
+              );
+            } else if (reply.isFail && reply.isFail() && m.reply) {
+              this.nc.publish(
+                m.reply,
+                jsonCodec.encode({
+                  isOk: false,
+                  error: reply.value,
+                }),
+              );
+            }
+
+            this.logger.log(`[${sub.getProcessed()}]: ${JSON.stringify(jsonCodec.decode(m.data))}`);
+          } catch (err) {
+            this.logger.error(`[PubSubQuery: ${subject}] Error in handler:`, err);
           }
-
-          this.logger.log(`[${sub.getProcessed()}]: ${JSON.stringify(jsonCodec.decode(m.data))}`);
         }
       })();
     } catch (err) {

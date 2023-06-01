@@ -32,9 +32,9 @@ const messageInstructionsPubSubHandlers = (
   ${CodeSnippets.sanitizeTypescriptImports(integrationEventFileContent)}
   ${CodeSnippets.closeTypescript()}
 
-  Extract its data from the event.payload property, and map them to the respective grpc stream event defined in the protobuf file.
+  Map the properties of the incoming event to the respective grpc stream event defined in the protobuf file.
   If the integration event has multiple versions, the handler maps the first event version to the grpc stream event.
-  Use default values for any properties you can't find in the event.payload.
+  Use default values for any properties you can't find in the event.
 
   We have generated typescript code from the protobuf file, which can be used as:
   ${CodeSnippets.openTypescript()}
@@ -48,6 +48,9 @@ const messageInstructionsPubSubHandlers = (
 };
 
 const INTEGRATION_EVENT_FILE_CONTENT = `
+import { Infra } from '@bitloops/bl-boilerplate-core';
+import { TodoAddedDomainEvent } from '../../domain/events/todo-added.domain-event';
+import { IntegrationTodoAddedSchemaV1 } from '../../structs/integration-todo-added-schema-v-1.struct';
 type TIntegrationSchemas = IntegrationTodoAddedSchemaV1;
 type ToIntegrationDataMapper = (
   event: TodoAddedDomainEvent
@@ -73,13 +76,14 @@ export class TodoAddedIntegrationEvent extends Infra.EventBus
     event: TodoAddedDomainEvent
   ): IntegrationTodoAddedSchemaV1 {
     const todoAdded = {
-      todoId: event.payload.aggregateId,
-      title: event.payload.title,
-      userId: event.payload.userId,
+      todoId: event.aggregateId,
+      title: event.title,
+      userId: event.userId,
     };
     return todoAdded;
   }
 }
+
 
 `;
 
@@ -148,8 +152,7 @@ message AddTodoResponse {
 
 message AddTodoErrorResponse {
   oneof error {
-    ErrorResponse titleOutOfBoundsError = 1;
-    ErrorResponse unexpectedError = 2;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -171,9 +174,7 @@ message ModifyTitleTodoResponse {
 
 message ModifyTitleTodoErrorResponse {
   oneof error {
-    ErrorResponse todoNotFoundError = 1;
-    ErrorResponse unexpectedError = 2;
-    ErrorResponse titleOutOfBoundsError = 3;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -192,9 +193,7 @@ message CompleteTodoResponse {
 
 message CompleteTodoErrorResponse {
   oneof error {
-    ErrorResponse todoNotFoundError = 1;
-    ErrorResponse unexpectedError = 2;
-    ErrorResponse todoAlreadyCompletedError = 3;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -211,7 +210,7 @@ message GetAllTodosResponse {
 
 message GetAllTodosErrorResponse {
   oneof error {
-    ErrorResponse unexpectedError = 1;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -278,9 +277,6 @@ export class TodoAddedPubSubIntegrationEventHandler implements Application.IHand
     console.log(
       '[TodoAddedIntegrationEvent]: Successfully received TodoAdded PubSub IntegrationEvent',
     );
-    const { payload } = event;
-
-    const { userId } = payload;
     const subscription = this.subscriptions[TodoAddedPubSubIntegrationEventHandler.name];
     const subscriptionsSubscribers = subscription?.subscribers;
     if (subscriptionsSubscribers) {
@@ -288,9 +284,9 @@ export class TodoAddedPubSubIntegrationEventHandler implements Application.IHand
         const call = this.subscribers[subscriber]?.call;
         if (call) {
           const todoObject = new todo.Todo({
-            id: payload.todoId,
-            title: payload.title,
-            userId: payload.userId,
+            id: event.todoId,
+            title: event.title,
+            userId: event.userId,
             completed: false,
           });
           const message = new todo.OnEvent({

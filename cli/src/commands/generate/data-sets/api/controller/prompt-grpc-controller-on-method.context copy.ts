@@ -68,8 +68,7 @@ message AddTodoResponse {
 
 message AddTodoErrorResponse {
   oneof error {
-    ErrorResponse titleOutOfBoundsError = 1;
-    ErrorResponse unexpectedError = 2;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -91,9 +90,7 @@ message ModifyTitleTodoResponse {
 
 message ModifyTitleTodoErrorResponse {
   oneof error {
-    ErrorResponse todoNotFoundError = 1;
-    ErrorResponse unexpectedError = 2;
-    ErrorResponse titleOutOfBoundsError = 3;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -112,9 +109,7 @@ message CompleteTodoResponse {
 
 message CompleteTodoErrorResponse {
   oneof error {
-    ErrorResponse todoNotFoundError = 1;
-    ErrorResponse unexpectedError = 2;
-    ErrorResponse todoAlreadyCompletedError = 3;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -131,7 +126,7 @@ message GetAllTodosResponse {
 
 message GetAllTodosErrorResponse {
   oneof error {
-    ErrorResponse unexpectedError = 1;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 

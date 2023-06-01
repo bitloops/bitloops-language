@@ -161,8 +161,7 @@ message AddTodoResponse {
 
 message AddTodoErrorResponse {
   oneof error {
-    ErrorResponse titleOutOfBoundsError = 1;
-    ErrorResponse unexpectedError = 2;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -184,9 +183,7 @@ message ModifyTitleTodoResponse {
 
 message ModifyTitleTodoErrorResponse {
   oneof error {
-    ErrorResponse todoNotFoundError = 1;
-    ErrorResponse unexpectedError = 2;
-    ErrorResponse titleOutOfBoundsError = 3;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -205,9 +202,7 @@ message CompleteTodoResponse {
 
 message CompleteTodoErrorResponse {
   oneof error {
-    ErrorResponse todoNotFoundError = 1;
-    ErrorResponse unexpectedError = 2;
-    ErrorResponse todoAlreadyCompletedError = 3;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -224,7 +219,7 @@ message GetAllTodosResponse {
 
 message GetAllTodosErrorResponse {
   oneof error {
-    ErrorResponse unexpectedError = 1;
+    ErrorResponse systemUnavailableError = 1;
   }
 }
 
@@ -295,28 +290,21 @@ const messageInstructionsCommand = (
   has a \`result.isOk\` boolean value so we don't need to try-catch.
   In case result.isOk === true -> The response data is under \`result.data\`,
   else the error object is under \`result.error\`.
-  Each error object has errorId and message properties with string values.
-  We use the errorId to distinguish between different errors.
+  In the case of error we return the error that corresponds to the systemUnavailableError key only and ignore the rest.
 
 
-  You should generate only the method of the controller, and any needed imports 
+  You should generate only the method of the controller and an import
   separated with ${GrpcControllerBuilder.IMPORTS_METHODS_SEPARATOR}, in the following format.
   ${CodeSnippets.openTypescript()}
-  <Imports>
+  <Import-of-command>
   ${GrpcControllerBuilder.IMPORTS_METHODS_SEPARATOR}
   <Method>
   ${CodeSnippets.closeTypescript()}
   
-  As imports, you only add the import of the command and of any possible errors. 
-  Don't import Inject. It's already imported.
-  You can use this information for that:
+  You should only import the command and nothing else, using the information that:
   boundedContextName: ${boundedContextName}
   moduleName: ${moduleName}
-
-  ApplicationErrors are imported likes this:
-  import { ApplicationErrors } from '@lib/bounded-contexts/<boundedContextName>/<moduleName>/application/errors';
-  DomainErrors are imported likes this:
-  import { DomainErrors } from '@lib/bounded-contexts/<boundedContextName>/<moduleName>/domain/errors';
+  The boundedContextName and the moduleName can be the same, but they can also be different. So be careful.
   
   Create only the method for the provided command and ignore any remaining rpcs.
 `;
@@ -349,8 +337,6 @@ export const promptApiGrpcControllerCommand = (
     role: 'assistant',
     content: `
     ${CodeSnippets.openTypescript()}
-  import { Application } from '@bitloops/bl-boilerplate-core';
-  import { DomainErrors } from '@lib/bounded-contexts/todo/core-module/domain/errors';
   import { AddTodoCommand } from '@lib/bounded-contexts/todo/core-module/commands/add-todo.command';
 
   ${GrpcControllerBuilder.IMPORTS_METHODS_SEPARATOR}
@@ -368,38 +354,14 @@ export const promptApiGrpcControllerCommand = (
       });
     } 
     const error = result.error;
-    switch (error.errorId) {
-      case DomainErrors.TitleOutOfBoundsError.errorId: {
-        return new ${packageName}.AddTodoResponse({
-          error: new ${packageName}.AddTodoErrorResponse({
-            titleOutOfBoundsError: new ${packageName}.ErrorResponse({
-              code: error.errorId,
-              message: error.message,
-            }),
-          }),
-        });
-      }
-      case Application.Repo.Errors.Unexpected.errorId: {
-        return new ${packageName}.AddTodoResponse({
-          error: new ${packageName}.AddTodoErrorResponse({
-            unexpectedError: new ${packageName}.ErrorResponse({
-              code: error.errorId,
-              message: error.message,
-            }),
-          }),
-        });
-      }
-      default: {
-        return new ${packageName}.AddTodoResponse({
-          error: new ${packageName}.AddTodoErrorResponse({
-            titleOutOfBoundsError: new ${packageName}.ErrorResponse({
-              code: error.errorId,
-              message: error.message,
-            }),
-          }),
-        });
-      }
-    }
+    return new ${packageName}.AddTodoResponse({
+      error: new ${packageName}.AddTodoErrorResponse({
+        systemUnavailableError: new ${packageName}.ErrorResponse({
+          code: error?.errorId || 'SYSTEM_UNAVAILABLE',
+          message: error?.message || 'System unavailable',
+        }),
+      }),
+    });
   }
 
   ${CodeSnippets.closeTypescript()}
