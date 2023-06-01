@@ -1,31 +1,52 @@
 {
   "concretions": {
-    "driver": {
-      "driver-availability": {
-        "driver-availability-read.repo-port.ts": "Mongo",
-        "driver-availability-write.repo-port.ts": "Mongo"
+    "todo": {
+      "todo": {
+        "todo-read.repo-port.ts": "Mongo",
+        "todo-write.repo-port.ts": "Mongo"
+      }
+    },
+    "marketing": {
+      "marketing": {
+        "user-write.repo-port.ts": "Mongo",
+        "notification-template-read.repo-port.ts": "Mongo",
+        "email.service-port.ts": "Mock"
+      }
+    },
+    "iam": {
+      "authentication": {
+        "user-write.repo-port.ts": "Postgres"
       }
     }
   },
   "api": {
     "grpc": {
-      "package": "driver",
-      "service-name": "DriverService",
+      "package": "todo",
+      "service-name": "TodoService",
       "controllers": {
-        "driver": {
-          "driver-availability": {
-            "entities": ["driver-availability.entity.ts"],
+        "todo": {
+          "todo": {
+            "entities": ["todo.entity.ts"],
             "handlers": {
-              "become-available.command-handler.ts": "become-available.command.ts",
-              "become-unavailable.command-handler.ts": "become-unavailable.command.ts",
-              "get-driver-availability.query-handler.ts": "get-driver-availability.query.ts"
+              "add-todo.command-handler.ts": "add-todo.command.ts",
+              "complete-todo.command-handler.ts": "complete-todo.command.ts",
+              "delete-todo.command-handler.ts": "delete-todo.command.ts",
+              "modify-todo-title.command-handler.ts": "modify-todo-title.command.ts",
+              "uncomplete-todo.command-handler.ts": "uncomplete-todo.command.ts",
+              "get-todos.query-handler.ts": "get-todos.query.ts"
             }
           }
         }
       },
       "stream-events": {
-        "driver": {
-          "driver-availability": []
+        "todo": {
+          "todo": [
+            "todo-added.integration-event.ts",
+            "todo-completed.integration-event.ts",
+            "todo-deleted.integration-event.ts",
+            "todo-modified-title.integration-event.ts",
+            "todo-uncompleted.integration-event.ts"
+          ]
         }
       }
     }
