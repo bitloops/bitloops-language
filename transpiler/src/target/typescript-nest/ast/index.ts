@@ -28,6 +28,7 @@ import {
   DomainPrivateMethodNodeTSTransformer,
   DomainPublicMethodNodeTSTransformer,
 } from './node-transformers/domainMethods/index.js';
+import { DomainRuleNodeTSTransformer } from './node-transformers/domainRule.js';
 import { DomainServiceTSTransformer } from './node-transformers/domainServiceTransformer/index.js';
 import { INodeModelToASTTargetASTTransformer } from './node-transformers/index.js';
 import { IntegrationEventHandlerNodeTSTransformer } from './node-transformers/integrationEventHandler.js';
@@ -88,6 +89,8 @@ export class IntermediateModelToASTTargetTransformer
         return new QueryHandlerNodeTSTransformer(intermediateASTTree, intermediateASTNode);
       case BitloopsTypesMapping.TDomainService:
         return new DomainServiceTSTransformer(intermediateASTTree, intermediateASTNode);
+      case BitloopsTypesMapping.TDomainRule:
+        return new DomainRuleNodeTSTransformer(intermediateASTTree, intermediateASTNode);
       default:
         return null;
     }

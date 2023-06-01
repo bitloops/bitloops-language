@@ -69,12 +69,12 @@ const getIsBrokenIfMethod = (
   statementsStringWithThis: string | null,
   isBrokenConditionStringWithThis: string,
   errorIdentifier: string,
-  paramDependencies: TParameter[],
+  _paramDependencies: TParameter[],
   argumentList: TArgumentList,
 ): TTargetDependenciesTypeScript => {
-  const parameterIdentifiers = paramDependencies.map(
-    (paramDependency) => paramDependency.parameter.value,
-  );
+  // const parameterIdentifiers = paramDependencies.map(
+  //   (paramDependency) => paramDependency.parameter.value,
+  // );
 
   let argumentsResult = '(';
   const dependencies = [];
@@ -85,16 +85,15 @@ const getIsBrokenIfMethod = (
       value: argument,
     });
     dependencies.push(...argumentResult.dependencies);
-    let argumentIsParam = false;
-    for (const parameterIdentifier of parameterIdentifiers) {
-      if (argumentResult.output === parameterIdentifier) {
-        argumentsResult += `this.${argumentResult.output}`;
-        argumentIsParam = true;
-      }
-    }
-    if (!argumentIsParam) {
-      argumentsResult += argumentResult.output;
-    }
+    // let argumentIsParam = false;
+    // for (const parameterIdentifier of parameterIdentifiers) {
+    //   if (argumentResult.output === parameterIdentifier) {
+    //     argumentsResult += `this.${argumentResult.output}`;
+    //     argumentIsParam = true;
+    //   }
+    // }
+    argumentsResult += argumentResult.output;
+    // }
     argumentsResult += ',';
   }
   argumentsResult += ')';
