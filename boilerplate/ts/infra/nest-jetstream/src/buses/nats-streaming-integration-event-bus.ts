@@ -87,6 +87,7 @@ export class NatsStreamingIntegrationEventBus implements Infra.EventBus.IEventBu
       const sub = await this.js.subscribe(subject, opts);
       (async () => {
         for await (const m of sub) {
+          try {
           const integrationEvent = jsonCodec.decode(m.data) as any;
 
           const contextData = ContextPropagation.createStoreFromMessageHeaders(m.headers);
@@ -99,6 +100,12 @@ export class NatsStreamingIntegrationEventBus implements Infra.EventBus.IEventBu
           } else m.ack();
 
           this.logger.log(`[${sub.getProcessed()}]: ${JSON.stringify(jsonCodec.decode(m.data))}`);
+        } catch (err) {
+          // Depending on your use case, you might want to rethrow the error, 
+                    // nack the message, or handle the error in another way.
+          this.logger.error(`[${sub.getProcessed()}]: Error handling integration event:, ${JSON.stringify(err)}`);
+          m.ack();
+        }
         }
       })();
     } catch (err) {

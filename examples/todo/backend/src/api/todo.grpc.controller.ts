@@ -34,9 +34,9 @@ import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
   
   import { DeleteTodoCommand } from '@lib/bounded-contexts/todo/todo/commands/delete-todo.command';
   
-  import { UncompleteTodoCommand } from '@lib/bounded-contexts/todo/todo/commands/uncomplete-todo.command';
-  
   import { CompleteTodoCommand } from '@lib/bounded-contexts/todo/todo/commands/complete-todo.command';
+  
+  import { UncompleteTodoCommand } from '@lib/bounded-contexts/todo/todo/commands/uncomplete-todo.command';
   
   import { ModifyTodoTitleCommand } from '@lib/bounded-contexts/todo/todo/commands/modify-todo-title.command';
   
@@ -213,6 +213,31 @@ export class TodoGrpcController {
   }
 
   
+  @GrpcMethod('TodoService', 'Complete')
+  @Traceable({
+    operation: 'CompleteTodoController',
+    serviceName: 'API',
+  })
+  async completeTodo(data: todo.CompleteTodoRequest): Promise<todo.CompleteTodoResponse> {
+    const command = new CompleteTodoCommand({ todoId: data.todoId });
+    const result = await this.commandBus.request(command);
+    if (result.isOk) {
+      return new todo.CompleteTodoResponse({
+        ok: new todo.CompleteTodoOKResponse(),
+      });
+    } 
+    const error = result.error;
+    return new todo.CompleteTodoResponse({
+      error: new todo.CompleteTodoErrorResponse({
+        systemUnavailableError: new todo.ErrorResponse({
+          code: error?.errorId || 'SYSTEM_UNAVAILABLE',
+          message: error?.message || 'System unavailable',
+        }),
+      }),
+    });
+  }
+
+  
   @GrpcMethod('TodoService', 'Uncomplete')
   @Traceable({
     operation: 'UncompleteTodoController',
@@ -238,30 +263,6 @@ export class TodoGrpcController {
   }
 
   
-  @GrpcMethod('TodoService', 'Complete')
-  @Traceable({
-    operation: 'CompleteTodoController',
-    serviceName: 'API',
-  })
-  async completeTodo(data: todo.CompleteTodoRequest): Promise<todo.CompleteTodoResponse> {
-    const command = new CompleteTodoCommand({ todoId: data.todoId });
-    const result = await this.commandBus.request(command);
-    if (result.isOk) {
-      return new todo.CompleteTodoResponse({
-        ok: new todo.CompleteTodoOKResponse(),
-      });
-    }
-    const error = result.error;
-    return new todo.CompleteTodoResponse({
-      error: new todo.CompleteTodoErrorResponse({
-        systemUnavailableError: new todo.ErrorResponse({
-          code: error?.errorId || 'SYSTEM_UNAVAILABLE',
-          message: error?.message || 'System unavailable',
-        }),
-      }),
-    });
-  }
-  
   @GrpcMethod('TodoService', 'ModifyTitle')
   @Traceable({
     operation: 'ModifyTitleTodoController',
@@ -274,7 +275,7 @@ export class TodoGrpcController {
       return new todo.ModifyTitleTodoResponse({
         ok: new todo.ModifyTitleTodoOKResponse(),
       });
-    } 
+    }
     const error = result.error;
     return new todo.ModifyTitleTodoResponse({
       error: new todo.ModifyTitleTodoErrorResponse({

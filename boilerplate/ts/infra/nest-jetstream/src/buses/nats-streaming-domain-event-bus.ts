@@ -89,6 +89,7 @@ export class NatsStreamingDomainEventBus implements Infra.EventBus.IEventBus {
       const sub = await this.js.subscribe(subject, opts);
       (async () => {
         for await (const m of sub) {
+          try{
           const domainEvent = jsonCodec.decode(m.data) as any;
           // domainEvent.data = Domain.EventData.fromPrimitives(domainEvent.data);
 
@@ -104,6 +105,12 @@ export class NatsStreamingDomainEventBus implements Infra.EventBus.IEventBus {
           this.logger.log(
             `[Domain Event ${sub.getProcessed()}]: ${JSON.stringify(jsonCodec.decode(m.data))}`,
           );
+          } catch (err) {
+            // Depending on your use case, you might want to rethrow the error, 
+                    // nack the message, or handle the error in another way.
+            this.logger.error(`[Domain Event ${sub.getProcessed()}]: Error handling domain event: ${JSON.stringify(err)}`)
+            m.ack()
+          }
         }
       })();
     } catch (err) {

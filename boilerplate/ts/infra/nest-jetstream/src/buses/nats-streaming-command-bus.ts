@@ -72,6 +72,7 @@ export class NatsStreamingCommandBus implements Infra.CommandBus.IStreamCommandB
       const sub = await this.js.subscribe(subject, opts);
       (async () => {
         for await (const m of sub) {
+          try {
           const command = jsonCodec.decode(m.data) as any;
 
           const contextData = ContextPropagation.createStoreFromMessageHeaders(m.headers);
@@ -86,10 +87,19 @@ export class NatsStreamingCommandBus implements Infra.CommandBus.IStreamCommandB
           this.logger.log(
             `[Command ${sub.getProcessed()}]: ${JSON.stringify(jsonCodec.decode(m.data))}`,
           );
+          } catch (err) {
+            // Depending on your use case, you might want to rethrow the error, 
+                    // nack the message, or handle the error in another way.
+            this.logger.log(
+              `[Command ${sub.getProcessed()}]: Error executing command: ${JSON.stringify(err)}`,
+            );
+            m.ack()
+          }
         }
         this.logger.log('Exiting command loop...');
       })();
       this.logger.log('Subscribed to:' + subject);
+      
     } catch (err) {
       this.logger.log(JSON.stringify({ subject, durableName }));
       this.logger.error('Error subscribing to streaming command:', err);
