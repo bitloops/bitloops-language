@@ -1,4 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { ExpressionNode } from '../Expression/ExpressionNode.js';
 import { IntermediateASTNode, TNodeMetadata } from '../IntermediateASTNode.js';
 
@@ -15,5 +16,10 @@ export class ArgumentNode extends IntermediateASTNode {
       throw new Error('Expression not found');
     }
     return expression;
+  }
+
+  public addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const argumentExpression = this.getExpression();
+    argumentExpression.addToSymbolTable(symbolTableManager);
   }
 }

@@ -1,8 +1,8 @@
-Rule ValidEmailRule(email: string) throws DomainErrors.InvalidEmailError {
-    const re = /\S+@\S+\.\S+/;
-    isBrokenIf(re.fail(email) == false);
-}
 DomainError InvalidEmailError(email: string) { 
     message: `Email ${email} is invalid`,
     errorId: 'e09ec42c-4d31-4f7c-b68a-ac84abe9464f'
+}
+Rule ValidEmailRule(email: string) throws DomainErrors.InvalidEmailError {
+    const re = /\S+@\S+\.\S+/;
+    isBrokenIf(re.fail(email) == false,(email));
 }

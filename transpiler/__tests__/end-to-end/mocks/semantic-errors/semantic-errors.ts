@@ -60,6 +60,7 @@ export const SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES = [
     expectedErrorMessages: [
       'Identifier DomainErrors.TitleOutOfBoundsError not found: from 5:49 to 5:83 of file domainErrorNotFound.bl',
       'Identifier DomainErrors.TitleOutOfBoundsError not found: from 10:60 to 10:94 of file domainErrorNotFound.bl',
+      'Identifier TitleOutOfBoundsError not defined.',
     ],
   },
   {

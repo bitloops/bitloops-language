@@ -1,6 +1,12 @@
 Props TitleProps {
   string title;
 }
+
+DomainError TitleOutOfBoundsError(title: string)  {
+  message: 'Title is out of range',
+  errorId: 'fe53432-8ef7-42349-ab67-cb83d1d7772fe',
+}
+
 Rule TitleOutOfBoundsRule(title: string) throws DomainErrors.TitleOutOfBoundsError {
   isBrokenIf(title.length > 150 OR title.length < 4);
 }
@@ -10,12 +16,6 @@ ValueObject TitleVO {
     applyRules(TitleOutOfBoundsRule(props.title));
   }
 }
-
-DomainError TitleOutOfBoundsError(title: string)  {
-  message: 'Title is out of range',
-  errorId: 'fe53432-8ef7-42349-ab67-cb83d1d7772fe',
-}
-
 Props TodoProps {
   optional UUIDv4 id;
   TitleVO title;

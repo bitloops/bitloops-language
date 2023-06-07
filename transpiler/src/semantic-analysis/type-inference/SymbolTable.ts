@@ -57,6 +57,10 @@ export class SymbolTable {
     return this.parent || null;
   }
 
+  public getLocalSymbols(): { [name: string]: SymbolEntry } {
+    return this.localSymbols;
+  }
+
   hasChildScope(name: string): boolean {
     return !!this.childrenScopes[name];
   }

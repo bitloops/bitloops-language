@@ -1,3 +1,7 @@
+DomainError InvalidEmailError(email: string) {
+    message: `Email ${email} is invalid`,
+    errorId: 'e09ec42c-4d31-4f7c-b68a-ac84abe9464f'
+}
 Rule ValidNameRule(name: string) throws DomainErrors.InvalidEmailError {
-    isBrokenIf(name.length > 2 AND name.length< 50);
+    isBrokenIf(name.length > 2 AND name.length< 50,(name));
 }

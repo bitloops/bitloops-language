@@ -20,8 +20,10 @@ export class ParameterListNode extends IntermediateASTNode {
 
   addToSymbolTable(symbolTableManager: SymbolTableManager): void {
     const params = this.getParameters();
+    let position = 0;
     params.forEach((paramNode) => {
-      paramNode.addToSymbolTable(symbolTableManager);
+      paramNode.addToSymbolTable(symbolTableManager, position);
+      position++;
     });
   }
 

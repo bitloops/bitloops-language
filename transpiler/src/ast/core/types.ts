@@ -68,6 +68,18 @@ export class MissingMemberError extends ValidationError {
   }
 }
 
+export class WrongParameterTypeError extends ValidationError {
+  constructor(parameter: string, wrongType: string, correctType: string, metadata: TNodeMetadata) {
+    super(`Parameter ${parameter}: ${wrongType} should have type ${correctType}.`, metadata);
+  }
+}
+
+export class MissingParameterError extends ValidationError {
+  constructor(parameter: string, metadata: TNodeMetadata) {
+    super(`Parameter ${parameter} is missing.`, metadata);
+  }
+}
+
 export interface IIntermediateASTValidator {
   validate: (ast: IntermediateAST) => void | ValidationError[];
   getSymbolTable: (ast: IntermediateAST) => TSymbolTableSemantics;

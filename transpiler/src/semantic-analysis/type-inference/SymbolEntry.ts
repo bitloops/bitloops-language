@@ -5,7 +5,9 @@ export class SymbolEntry {
 }
 
 export class ParameterSymbolEntry extends SymbolEntry {
-  constructor(type: TInferredTypes) {
+  //position is the position of the parameter in the method signature
+  //starting from 0
+  constructor(type: TInferredTypes, public position?: number) {
     super(type);
   }
 }

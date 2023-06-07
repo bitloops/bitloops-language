@@ -119,7 +119,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
           )
           .insertChildScope(
             'withdrawAmount',
-            new SymbolTableBuilder().insert('amount', new ParameterSymbolEntry('int32')),
+            new SymbolTableBuilder().insert('amount', new ParameterSymbolEntry('int32', 0)),
           ),
       )
       .build(),
@@ -202,7 +202,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
           )
           .insertChildScope(
             'withdrawAmount',
-            new SymbolTableBuilder().insert('amount', new ParameterSymbolEntry('int32')),
+            new SymbolTableBuilder().insert('amount', new ParameterSymbolEntry('int32', 0)),
           ),
       )
       .build(),
@@ -278,7 +278,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
           )
           .insertChildScope(
             'withdrawAmount',
-            new SymbolTableBuilder().insert('amount', new ParameterSymbolEntry('int32')),
+            new SymbolTableBuilder().insert('amount', new ParameterSymbolEntry('int32', 0)),
           ),
       )
       .build(),
@@ -511,7 +511,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
           .insertChildScope(
             'getNotificationTemplateToBeSent',
             new SymbolTableBuilder()
-              .insert('user', new ParameterSymbolEntry('UserEntity'))
+              .insert('user', new ParameterSymbolEntry('UserEntity', 0))
               .insertVariableSymbolEntry('emailOrigin', bitloopsPrimitivesObj.string, true)
               .insertVariableSymbolEntry(
                 'notificationTemplate',
@@ -565,9 +565,16 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
       .insertChildScope(
         'ValidEmailRule',
         new SymbolTableBuilder()
-          .insert('email', new ParameterSymbolEntry(bitloopsPrimitivesObj.string))
+          .insert('email', new ParameterSymbolEntry(bitloopsPrimitivesObj.string, 0))
           .insertVariableSymbolEntry('re', bitloopsPrimitivesObj.regex, true)
           .insert('re.test()', new MethodCallSymbolEntry(bitloopsPrimitivesObj.bool)),
+      )
+      .insertChildScope(
+        'InvalidEmailError',
+        new SymbolTableBuilder().insert(
+          'email',
+          new ParameterSymbolEntry(bitloopsPrimitivesObj.string, 0),
+        ),
       )
       .build(),
   },
@@ -607,8 +614,15 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
       .insertChildScope(
         'ValidNameRule',
         new SymbolTableBuilder()
-          .insert('name', new ParameterSymbolEntry(bitloopsPrimitivesObj.string))
+          .insert('name', new ParameterSymbolEntry(bitloopsPrimitivesObj.string, 0))
           .insert('name.length', new MemberDotSymbolEntry(bitloopsPrimitivesObj.int32)),
+      )
+      .insertChildScope(
+        'InvalidEmailError',
+        new SymbolTableBuilder().insert(
+          'email',
+          new ParameterSymbolEntry(bitloopsPrimitivesObj.string, 0),
+        ),
       )
       .build(),
   },
@@ -632,7 +646,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
           .insertChildScope(
             'geEmailToBeSent',
             new SymbolTableBuilder()
-              .insert('user', new ParameterSymbolEntry('UserEntity'))
+              .insert('user', new ParameterSymbolEntry('UserEntity', 0))
               .insert('user.getEmail()', new MethodCallSymbolEntry('EmailEntity'))
               .insert('user.getEmail().getAddress()', new MethodCallSymbolEntry('string'))
               .insertVariableSymbolEntry('emailOrigin', bitloopsPrimitivesObj.string, true),
@@ -649,7 +663,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
           )
           .insertChildScope(
             'getEmail',
-            new SymbolTableBuilder().insert('num', new ParameterSymbolEntry('int32')),
+            new SymbolTableBuilder().insert('num', new ParameterSymbolEntry('int32', 0)),
           ),
       )
       .insertChildScope(
@@ -685,7 +699,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
           .insertChildScope(
             'geEmailToBeSent',
             new SymbolTableBuilder()
-              .insert('user', new ParameterSymbolEntry('UserEntity'))
+              .insert('user', new ParameterSymbolEntry('UserEntity', 0))
               .insert('user.getEmail()', new MethodCallSymbolEntry('(OK(EmailEntity), Errors())'))
               .insert('user.getEmail().ifError()', new MethodCallSymbolEntry('EmailEntity'))
               .insertChildScope('ifError0', new SymbolTableBuilder())
@@ -708,7 +722,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
           )
           .insertChildScope(
             'getEmail',
-            new SymbolTableBuilder().insert('num', new ParameterSymbolEntry('int32')),
+            new SymbolTableBuilder().insert('num', new ParameterSymbolEntry('int32', 0)),
           ),
       )
       .insertChildScope(
@@ -827,6 +841,23 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
 
               .insertChildScope('ifError0', new SymbolTableBuilder()),
           ),
+      )
+      .build(),
+  },
+  {
+    description: 'Should create symbol table for domainError and domainRule with errorArguments',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/rule/rule-this-parameter.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    expectedSymbolTable: new SymbolTableBuilder()
+      .insertChildScope(
+        'DocumentStatusNotValidatedError',
+        new SymbolTableBuilder()
+          .insert('documentId', new ParameterSymbolEntry('string', 0))
+          .insert('status', new ParameterSymbolEntry('string', 1)),
       )
       .build(),
   },

@@ -35,10 +35,14 @@ export class ParameterNode extends IntermediateASTNode {
     return parameterType.isRepoPort();
   }
 
-  addToSymbolTable(symbolTableManager: SymbolTableManager): void {
+  addToSymbolTable(symbolTableManager: SymbolTableManager, position?: number): void {
     const symbolTable = symbolTableManager.getSymbolTable();
     const paramName = this.getIdentifier();
-    symbolTable.insert(paramName, new ParameterSymbolEntry(this.getInferredType()));
+    if (position === undefined || null) {
+      symbolTable.insert(paramName, new ParameterSymbolEntry(this.getInferredType()));
+    } else {
+      symbolTable.insert(paramName, new ParameterSymbolEntry(this.getInferredType(), position));
+    }
   }
 
   addClassTypeParameterToSymbolTable(symbolTableManager: SymbolTableManager): void {

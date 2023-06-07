@@ -25,10 +25,16 @@ export class ToStringNode extends ExpressionNode {
     return `${value}.toString()`;
   }
 
+  public getStringValue(): string {
+    const expressionNode = this.getExpression();
+    const expressionNodeValue = expressionNode.getStringValue();
+    return this.joinValueAndToString(expressionNodeValue);
+  }
+
   public addToSymbolTable(symbolTableManager: SymbolTableManager): void {
     const expressionNode = this.getExpression();
     expressionNode.addToSymbolTable(symbolTableManager);
-    const key = this.joinValueAndToString(this.getStringValue());
+    const key = this.getStringValue();
     const symbolTable = symbolTableManager.getSymbolTable();
     symbolTable.insert(key, new MethodCallSymbolEntry(this.getInferredType()));
   }
