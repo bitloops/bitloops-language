@@ -15,8 +15,6 @@ export class DomainRuleNodeTSTransformer extends NodeModelToTargetASTTransformer
   }
 
   run(): void {
-    // TODO Optional/Edge case: A parameter can also be used as statement inside the rule, so we better take care of that case too.
-    // eg const value = parameter -> should become -> const value = this.parameter
     this.prependThisToAllParametersUsedAsStatements();
     this.prependThisToAllParametersUsedInBrokenIf();
   }
