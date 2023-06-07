@@ -34,6 +34,37 @@ export class SwitchStatementNode extends StatementNode {
     return defaultCaseNode;
   }
 
+  /**
+   * It returns an array of the ExpressionNodes including in the switch statement
+   * we use it in domainRule nodeTransformer to prepend `this` to every
+   * parameter of the domainRule which is used in the switch statement
+   * we check the switchExpression, cases and default case
+   */
+  getAllExpressions(): ExpressionNode[] {
+    const switchExpression = this.getExpression();
+    const switchCaseExpressions: ExpressionNode[] = [];
+    const defaultCaseExpressions: ExpressionNode[] = [];
+
+    //cases
+    const switchCases = this.getCases();
+    switchCases.forEach((switchCase) => {
+      switchCaseExpressions.push(switchCase.getExpression()); //maybe getAllExpressions after implementing it
+      const switchCaseStatements = switchCase.getStatements();
+      switchCaseStatements.forEach((statement) => {
+        if (statement.getExpression()) switchCaseExpressions.push(statement.getExpression()); //maybe getAllExpressions after implementing it , null check (for break)
+      });
+    });
+
+    //default
+    const defaultCase = this.getDefaultCase();
+    const defaultCaseStatements = defaultCase.getStatements();
+    defaultCaseStatements.forEach((statement) => {
+      if (statement.getExpression()) defaultCaseExpressions.push(statement.getExpression()); //maybe getAllExpressions after implementing it , null check (for break)
+    });
+
+    return [switchExpression, ...switchCaseExpressions, ...defaultCaseExpressions];
+  }
+
   public addToSymbolTable(symbolTableManager: SymbolTableManager): void {
     const initialSymbolTable = symbolTableManager.getSymbolTable();
     const switchCounter = initialSymbolTable.increaseSwitchCounter();

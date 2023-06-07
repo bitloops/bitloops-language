@@ -15,6 +15,9 @@ export class SwitchRegularCaseNode extends IntermediateASTNode {
     const statementList = this.getChildNodeByType<StatementListNode>(
       BitloopsTypesMapping.TStatements,
     );
+    if (!statementList) {
+      return [];
+    }
     return statementList.statements;
   }
 

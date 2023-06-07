@@ -2,6 +2,7 @@ import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
 import { SymbolTableManager } from '../../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { IntermediateASTNode, TNodeMetadata } from '../../IntermediateASTNode.js';
 import { StatementNode } from '../Statement.js';
+import { StatementListNode } from '../StatementList.js';
 
 export class DefaultSwitchCaseNode extends IntermediateASTNode {
   private static classNodeName = 'defaultCase';
@@ -11,7 +12,13 @@ export class DefaultSwitchCaseNode extends IntermediateASTNode {
   }
 
   getStatements(): StatementNode[] {
-    return this.getChildrenNodesByType<StatementNode>(BitloopsTypesMapping.TStatement);
+    const statementList = this.getChildNodeByType<StatementListNode>(
+      BitloopsTypesMapping.TStatements,
+    );
+    if (!statementList) {
+      return [];
+    }
+    return statementList.statements;
   }
 
   public addToSymbolTable(symbolTableManager: SymbolTableManager): void {

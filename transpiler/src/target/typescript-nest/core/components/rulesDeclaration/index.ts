@@ -37,12 +37,14 @@ const RULE_DEPENDENCIES: TDependencyChildTypescript[] = [
   },
 ];
 
-const getStringWithThisBeforeWord = (
-  word: string,
-  stringToBeReplaced: string,
-): TTargetDependenciesTypeScript => {
-  return { output: stringToBeReplaced.replaceAll(word, `this.${word}`), dependencies: [] };
-};
+//TODO: here needs prependThis?
+// const getStringWithThisBeforeWord = (
+//   word: string,
+//   stringToBeReplaced: string,
+// ): TTargetDependenciesTypeScript => {
+//   return { output: stringToBeReplaced.replaceAll(word, `this.${word}`), dependencies: [] };
+// };
+
 const getStringWithPrivateBeforeWord = (word: string, stringToBeReplaced: string): string => {
   return stringToBeReplaced.replaceAll(word, `private ${word}`);
 };
@@ -72,10 +74,6 @@ const getIsBrokenIfMethod = (
   _paramDependencies: TParameter[],
   argumentList: TArgumentList,
 ): TTargetDependenciesTypeScript => {
-  // const parameterIdentifiers = paramDependencies.map(
-  //   (paramDependency) => paramDependency.parameter.value,
-  // );
-
   let argumentsResult = '(';
   const dependencies = [];
 
@@ -85,15 +83,7 @@ const getIsBrokenIfMethod = (
       value: argument,
     });
     dependencies.push(...argumentResult.dependencies);
-    // let argumentIsParam = false;
-    // for (const parameterIdentifier of parameterIdentifiers) {
-    //   if (argumentResult.output === parameterIdentifier) {
-    //     argumentsResult += `this.${argumentResult.output}`;
-    //     argumentIsParam = true;
-    //   }
-    // }
     argumentsResult += argumentResult.output;
-    // }
     argumentsResult += ',';
   }
   argumentsResult += ')';
@@ -178,21 +168,9 @@ export const ruleDeclarationToTargetLanguage = (
 
   // TODO improve this solution - it will have problems with string manipulation
   // add this to isBrokenConditionString and to statementsStringWithThis and constructorParamsWithPrivate
-  let isBrokenConditionStringWithThis = isBrokenConditionString;
-  let statementsStringWithThis: TTargetDependenciesTypeScript | null = statements;
   let constructorParamsWithPrivate = ruleConstructor;
   if (rule.parameters && rule.parameters.length !== 0) {
     rule.parameters.forEach((ruleParam) => {
-      isBrokenConditionStringWithThis = getStringWithThisBeforeWord(
-        ruleParam.parameter.value,
-        isBrokenConditionStringWithThis.output,
-      );
-      if (statements) {
-        statementsStringWithThis = getStringWithThisBeforeWord(
-          ruleParam.parameter.value,
-          statementsStringWithThis.output,
-        );
-      }
       constructorParamsWithPrivate = getStringWithPrivateBeforeWord(
         ruleParam.parameter.value,
         constructorParamsWithPrivate,
@@ -203,8 +181,8 @@ export const ruleDeclarationToTargetLanguage = (
   const errorArgumentList = argumentList ? { argumentList } : { argumentList: [] };
 
   const isBrokeIfMethod = getIsBrokenIfMethod(
-    statementsStringWithThis?.output ?? null,
-    isBrokenConditionStringWithThis.output,
+    statements?.output ?? null,
+    isBrokenConditionString.output,
     error,
     rule.parameters,
     errorArgumentList,

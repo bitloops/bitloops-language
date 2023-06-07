@@ -43,6 +43,10 @@ export class DomainRuleNode extends ClassTypeNode {
     const statementList = this.getChildNodeByType<StatementListNode>(
       BitloopsTypesMapping.TStatements,
     );
+    //statementList can be null if there are no statements
+    if (!statementList) {
+      return [];
+    }
     return statementList.statements;
   }
 

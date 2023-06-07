@@ -46,6 +46,28 @@ export class IfStatementNode extends StatementNode {
     return elseNode.getStatementListNode();
   }
 
+  /**
+   * It returns an array of the ExpressionNodes including in the if statement
+   * we use it in domainRule nodeTransformer to prepend `this` to every
+   * parameter of the domainRule which is used in the if statement
+   * we check the condition, thenStatements and elseStatements
+   */
+  getAllExpressions(): ExpressionNode[] {
+    const conditionExpression = this.getConditionExpression();
+    const thenStatements = this.getThenStatements();
+    const thenExpressions: ExpressionNode[] = [];
+    thenStatements.forEach((statement) => {
+      thenExpressions.push(statement.getExpression()); //maybe getAllExpressions after implementing it
+    });
+    const elseStatements = this.getElseStatements();
+    const elseExpressions: ExpressionNode[] = [];
+    elseStatements.forEach((statement) => {
+      elseExpressions.push(statement.getExpression()); //maybe getAllExpressions after implementing it
+    });
+
+    return [conditionExpression, ...thenExpressions, ...elseExpressions];
+  }
+
   public getConditionNode(): ConditionNode {
     return this.getChildNodeByType<ConditionNode>(BitloopsTypesMapping.TCondition);
   }
