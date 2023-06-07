@@ -2,6 +2,7 @@ import { spawn } from 'child_process';
 
 export const generateNestProjectProcess = async (projectName: string): Promise<void> => {
   return new Promise((resolve, reject) => {
+    const HAVE_YOU_INSTALLED_NEST_JS_CLI_MESSAGE = 'Have you installed NestJS CLI?\n'; //TODO: is this message ok?
     const command = spawn('nest', ['new', projectName, '--skip-git', '-p', 'yarn']);
 
     command.stdout.on('data', (data) => {
@@ -20,7 +21,14 @@ export const generateNestProjectProcess = async (projectName: string): Promise<v
         resolve();
         return;
       }
-      console.log('Have you installed NestJS CLI?');
+      console.log(HAVE_YOU_INSTALLED_NEST_JS_CLI_MESSAGE);
+      reject();
+    });
+
+    command.on('error', (error) => {
+      // console.log(`child process exited with code ${code}`);
+      console.log(HAVE_YOU_INSTALLED_NEST_JS_CLI_MESSAGE);
+      console.log(error); //TODO: we want to log the error or not?
       reject();
     });
   });
