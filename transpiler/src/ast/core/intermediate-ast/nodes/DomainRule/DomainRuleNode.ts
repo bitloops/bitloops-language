@@ -90,7 +90,7 @@ export class DomainRuleNode extends ClassTypeNode {
     for (const [parameter, symbolEntry] of Object.entries(localSymbols)) {
       const type = symbolEntry.type;
       const position = symbolEntry['position']; //position is optional
-      if (!position) return;
+      if (position === undefined || null) return;
       if (position > errorArguments.length - 1) {
         throw new MissingParameterError(parameter, this.getMetadata());
       }

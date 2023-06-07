@@ -24,5 +24,5 @@ DomainError TitleOutOfBoundsError(title: string) {
     errorId: 'a12ec42c-4d31-4f7c-b68a-b68a78-b68a655'
 }
 Rule TitleOutOfBoundsRule(title: string) throws DomainErrors.TitleOutOfBoundsError { 
-    isBrokenIf(title.length > 150 OR title.length < 4);
+    isBrokenIf(title.length > 150 OR title.length < 4,(title));
 }

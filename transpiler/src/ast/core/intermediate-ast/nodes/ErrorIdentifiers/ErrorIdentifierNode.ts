@@ -13,8 +13,11 @@ export class ErrorIdentifierNode extends IntermediateASTIdentifierNode {
   }
 
   /**
-   * error has the form: DomainError.identifierName or ApplicationError.identifierName
+   * error has the form: DomainError.errorIdentifierName or ApplicationError.errorIdentifierName
    * we split by dot and return the second part
+   *
+   * //TODO in symbol table we have form: errorIdentifierName
+   * maybe we should have the form:: DomainError.errorIdentifierName or ApplicationError.errorIdentifierName
    */
   public getErrorNameAfterDot(): string {
     const identifierNameWithDot = this.getIdentifierName();

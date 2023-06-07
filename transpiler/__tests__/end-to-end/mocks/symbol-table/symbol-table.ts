@@ -859,6 +859,38 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
           .insert('documentId', new ParameterSymbolEntry('string', 0))
           .insert('status', new ParameterSymbolEntry('string', 1)),
       )
+      .insertChildScope(
+        'FinancialDocumentEntity',
+        new SymbolTableBuilder()
+          .insert('this', new ClassTypeThisSymbolEntry('FinancialDocumentEntity'))
+          .insertChildScope(
+            SCOPE_NAMES.DOMAIN_CREATE,
+            new SymbolTableBuilder().insert(
+              'props',
+              new ParameterSymbolEntry('FinancialDocumentProps'),
+            ),
+          ),
+      )
+      .insertChildScope('FinancialDocumentProps', new SymbolTableBuilder())
+      .insertChildScope('StatusProps', new SymbolTableBuilder())
+      .insertChildScope(
+        'StatusVO',
+        new SymbolTableBuilder()
+          .insert('this', new ClassTypeThisSymbolEntry('StatusVO'))
+          .insertChildScope(
+            SCOPE_NAMES.DOMAIN_CREATE,
+            new SymbolTableBuilder().insert('props', new ParameterSymbolEntry('StatusProps')),
+          ),
+      )
+      .insertChildScope(
+        'FinancialDocumentIsValidatedRule',
+        new SymbolTableBuilder()
+          .insert('document', new ParameterSymbolEntry('FinancialDocumentEntity', 0))
+          .insert('document.id', new MemberDotSymbolEntry('UUIDv4'))
+          .insert('document.status', new MemberDotSymbolEntry('StatusVO'))
+          .insert('document.status.status', new MemberDotSymbolEntry('string'))
+          .insert('document.id.toString()', new MemberDotSymbolEntry('string')),
+      )
       .build(),
   },
 ];
@@ -1118,6 +1150,31 @@ export const SYMBOL_TABLE_UNREACHED_CODE_TEST_CASES: SymbolTableErrorTestCase[] 
 
 export const SYMBOL_TABLE_WRONG_ARGUMENTS_TEST_CASES: SymbolTableErrorTestCase[] = [];
 
+export const SYMBOL_TABLE_MISSING_PARAMETER_TEST_CASES: SymbolTableErrorTestCase[] = [
+  {
+    description: 'Should return error that identifier of domain error is not defined',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-parameter/rule-missing-parameter.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    errorMessages: ['Parameter status is missing.'],
+  },
+];
+
+export const SYMBOL_TABLE_WRONG_PARAMETER_TYPE_TEST_CASES: SymbolTableErrorTestCase[] = [
+  {
+    description: 'Should return error that identifier of domain error is not defined',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/wrong-parameter-type/rule-wrong-parameter-type.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    errorMessages: ['Parameter document.status.status: string should have type int32.'],
+  },
+];
 export const SYMBOL_TABLE_FIND_TYPE_OF_KEYWORD_TEST_CASES = [
   {
     description: 'Should return type of keyword in execute scope',

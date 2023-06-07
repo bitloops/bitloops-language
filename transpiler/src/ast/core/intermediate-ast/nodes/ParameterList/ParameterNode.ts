@@ -39,7 +39,7 @@ export class ParameterNode extends IntermediateASTNode {
     const symbolTable = symbolTableManager.getSymbolTable();
     const paramName = this.getIdentifier();
     if (position === undefined || null) {
-      symbolTable.insert(paramName, new ParameterSymbolEntry(this.getInferredType()));
+      symbolTable.insert(paramName, new ParameterSymbolEntry(this.getInferredType())); //position is undefined in symbolTable
     } else {
       symbolTable.insert(paramName, new ParameterSymbolEntry(this.getInferredType(), position));
     }
