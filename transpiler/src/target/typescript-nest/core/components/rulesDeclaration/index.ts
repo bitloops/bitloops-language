@@ -37,14 +37,6 @@ const RULE_DEPENDENCIES: TDependencyChildTypescript[] = [
   },
 ];
 
-//TODO: here needs prependThis?
-// const getStringWithThisBeforeWord = (
-//   word: string,
-//   stringToBeReplaced: string,
-// ): TTargetDependenciesTypeScript => {
-//   return { output: stringToBeReplaced.replaceAll(word, `this.${word}`), dependencies: [] };
-// };
-
 const getStringWithPrivateBeforeWord = (word: string, stringToBeReplaced: string): string => {
   return stringToBeReplaced.replaceAll(word, `private ${word}`);
 };
@@ -71,7 +63,6 @@ const getIsBrokenIfMethod = (
   statementsStringWithThis: string | null,
   isBrokenConditionStringWithThis: string,
   errorIdentifier: string,
-  _paramDependencies: TParameter[],
   argumentList: TArgumentList,
 ): TTargetDependenciesTypeScript => {
   let argumentsResult = '(';
@@ -184,7 +175,6 @@ export const ruleDeclarationToTargetLanguage = (
     statements?.output ?? null,
     isBrokenConditionString.output,
     error,
-    rule.parameters,
     errorArgumentList,
   );
   const isBrokeIfMethodOutput = isBrokeIfMethod.output;
