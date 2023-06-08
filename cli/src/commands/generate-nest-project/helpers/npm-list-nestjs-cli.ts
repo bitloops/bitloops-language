@@ -7,10 +7,10 @@ import { spawn } from 'child_process';
 export const checkForNestJsCli = async (): Promise<void> => {
   return new Promise((resolve, reject) => {
     const NEST_JS_NOT_INSTALLED_MESSAGE =
-      'NestJS CLI is not installed. We are going to install it...\n'; //TODO: is this message ok?
+      'NestJS CLI is not installed. We are going to install it...\n';
     const NEST_JS_INSTALLED_MESSAGE = 'NestJS CLI is installed.\n';
 
-    const command = spawn('npm', ['list', '-g', '@nestjs/cli']);
+    const command = spawn('npm', ['list', '-g', '@nestjs/cli@9.5.0']);
 
     command.stdout.on('data', (data) => {
       // console.log(`stdout: ${data}`);

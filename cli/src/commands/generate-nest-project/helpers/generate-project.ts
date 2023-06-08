@@ -2,7 +2,7 @@ import { spawn } from 'child_process';
 
 export const generateNestProjectProcess = async (projectName: string): Promise<void> => {
   return new Promise((resolve, reject) => {
-    const HAVE_YOU_INSTALLED_NEST_JS_CLI_MESSAGE = 'Have you installed NestJS CLI?\n'; //TODO: is this message ok?
+    const HAVE_YOU_INSTALLED_NEST_JS_CLI_MESSAGE = 'Have you installed NestJS CLI?\n';
     const command = spawn('nest', ['new', projectName, '--skip-git', '-p', 'yarn']);
 
     command.stdout.on('data', (data) => {
