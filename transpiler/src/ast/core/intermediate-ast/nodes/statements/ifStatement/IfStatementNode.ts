@@ -57,12 +57,12 @@ export class IfStatementNode extends StatementNode {
     const thenStatements = this.getThenStatements();
     const thenExpressions: ExpressionNode[] = [];
     thenStatements.forEach((statement) => {
-      thenExpressions.push(statement.getExpression()); //maybe getAllExpressions after implementing it
+      thenExpressions.push(statement.getExpression());
     });
     const elseStatements = this.getElseStatements();
     const elseExpressions: ExpressionNode[] = [];
     elseStatements.forEach((statement) => {
-      elseExpressions.push(statement.getExpression()); //maybe getAllExpressions after implementing it
+      elseExpressions.push(statement.getExpression());
     });
 
     return [conditionExpression, ...thenExpressions, ...elseExpressions];

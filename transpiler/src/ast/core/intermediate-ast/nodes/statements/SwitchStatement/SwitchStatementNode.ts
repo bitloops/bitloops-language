@@ -48,10 +48,10 @@ export class SwitchStatementNode extends StatementNode {
     //cases
     const switchCases = this.getCases();
     switchCases.forEach((switchCase) => {
-      switchCaseExpressions.push(switchCase.getExpression()); //maybe getAllExpressions after implementing it
+      switchCaseExpressions.push(switchCase.getExpression());
       const switchCaseStatements = switchCase.getStatements();
       switchCaseStatements.forEach((statement) => {
-        if (statement.getExpression()) switchCaseExpressions.push(statement.getExpression()); //maybe getAllExpressions after implementing it , null check (for break)
+        if (statement.getExpression()) switchCaseExpressions.push(statement.getExpression());
       });
     });
 
@@ -59,7 +59,7 @@ export class SwitchStatementNode extends StatementNode {
     const defaultCase = this.getDefaultCase();
     const defaultCaseStatements = defaultCase.getStatements();
     defaultCaseStatements.forEach((statement) => {
-      if (statement.getExpression()) defaultCaseExpressions.push(statement.getExpression()); //maybe getAllExpressions after implementing it , null check (for break)
+      if (statement.getExpression()) defaultCaseExpressions.push(statement.getExpression());
     });
 
     return [switchExpression, ...switchCaseExpressions, ...defaultCaseExpressions];

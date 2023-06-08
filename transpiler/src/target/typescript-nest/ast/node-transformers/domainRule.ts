@@ -117,18 +117,13 @@ export class DomainRuleNodeTSTransformer extends NodeModelToTargetASTTransformer
         identifierExpression.isUsedByMemberDotExpression() &&
         !identifierExpression.isLeftMostPartOfMemberDotExpression()
       )
-        return;
+        continue;
 
       // Create the new memberDotExpression with this
-      const newMemberDotExpr =
-        this.prependThisTransformer.replaceIdentifierExpressionNodeToThisMemberDotNode(
-          identifierExpression,
-        );
 
-      // Replace the identifierExpression with the newMemberDotExpr in the tree.
-      const identifierExpressionParent = identifierExpression.getParent();
-      const identifierGrandParent = identifierExpressionParent.getParent();
-      identifierGrandParent.replaceChild(identifierExpressionParent, newMemberDotExpr);
+      this.prependThisTransformer.replaceIdentifierExpressionNodeWithThisMemberDotNode(
+        identifierExpression,
+      );
     }
   }
 }

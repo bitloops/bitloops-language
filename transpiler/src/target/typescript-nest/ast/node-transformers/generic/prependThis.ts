@@ -2,7 +2,6 @@ import { ExpressionBuilder } from '../../../../../ast/core/intermediate-ast/buil
 import { IdentifierExpressionBuilder } from '../../../../../ast/core/intermediate-ast/builders/expressions/IdentifierExpressionBuilder.js';
 import { MemberDotExpressionNodeBuilder } from '../../../../../ast/core/intermediate-ast/builders/expressions/MemberDot/memberDotBuilder.js';
 import { ThisExpressionNodeBuilder } from '../../../../../ast/core/intermediate-ast/builders/expressions/thisExpressionBuilder.js';
-import { ExpressionNode } from '../../../../../ast/core/intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { IdentifierExpressionNode } from '../../../../../ast/core/intermediate-ast/nodes/Expression/IdentifierExpression.js';
 
 export class PrependThisNodeTSTransformer {
@@ -38,9 +37,9 @@ export class PrependThisNodeTSTransformer {
       }
       Resulting in: this.document.status1.status2
    */
-  public replaceIdentifierExpressionNodeToThisMemberDotNode(
+  public replaceIdentifierExpressionNodeWithThisMemberDotNode(
     identifierExpressionNode: IdentifierExpressionNode,
-  ): ExpressionNode {
+  ): void {
     // ExpressionNode that is MemberDotExpressionNode
     const thisNode = new ThisExpressionNodeBuilder().build();
     // We wrap all expression into an ExpressionBuilder
@@ -57,6 +56,11 @@ export class PrependThisNodeTSTransformer {
       .withExpression(thisExpressionNode)
       .withIdentifier(identifierExpr)
       .build();
-    return new ExpressionBuilder().withExpression(memberExpr).build();
+    const newExpression = new ExpressionBuilder().withExpression(memberExpr).build();
+
+    // Replace the identifierExpression with the newMemberDotExpr in the tree.
+    const identifierExpressionNodeParent = identifierExpressionNode.getParent();
+    const identifierExpressionNodeGrandParent = identifierExpressionNodeParent.getParent();
+    identifierExpressionNodeGrandParent.replaceChild(identifierExpressionNodeParent, newExpression);
   }
 }
