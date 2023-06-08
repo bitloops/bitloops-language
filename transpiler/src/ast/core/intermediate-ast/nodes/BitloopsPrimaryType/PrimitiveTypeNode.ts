@@ -1,5 +1,9 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
-import { TBitloopsPrimitives } from '../../../../../types.js';
+import {
+  TBitloopsPrimitives,
+  TBitloopsPrimitivesObject,
+  primitivesTypeKey,
+} from '../../../../../types.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { BitloopsPrimaryTypeNode } from './BitloopsPrimaryTypeNode.js';
 
@@ -17,5 +21,10 @@ export class PrimitiveTypeNode extends BitloopsPrimaryTypeNode {
     const value = this.getValue();
     const typeValue = value[classNodeName];
     return typeValue;
+  }
+
+  public getInferredType(): string {
+    const primitiveType = (this.getValue() as TBitloopsPrimitivesObject)[primitivesTypeKey];
+    return primitiveType;
   }
 }

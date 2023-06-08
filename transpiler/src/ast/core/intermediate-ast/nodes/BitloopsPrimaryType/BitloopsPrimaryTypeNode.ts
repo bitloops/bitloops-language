@@ -85,6 +85,28 @@ export class BitloopsPrimaryTypeNode extends IntermediateASTNode {
     throw new Error('This is not a BitloopsIdentifier type node');
   }
 
+  isPrimaryWithArrayTypeChild(): boolean {
+    if (this.getNodeType() !== BitloopsTypesMapping.TBitloopsPrimaryType) {
+      return false;
+    }
+    const child = this.getChildNodeByType<ArrayPrimaryTypeNode>(
+      BitloopsTypesMapping.ArrayBitloopsPrimType,
+    );
+    return !!child;
+  }
+
+  getArrayPrimaryTypeNode(): ArrayPrimaryTypeNode {
+    if (this.isArrayPrimaryType()) {
+      return this;
+    }
+    if (this.isPrimaryWithArrayTypeChild()) {
+      return this.getChildNodeByType<ArrayPrimaryTypeNode>(
+        BitloopsTypesMapping.ArrayBitloopsPrimType,
+      );
+    }
+    throw new Error('This is not a BitloopsArrayPrimary type node');
+  }
+
   public isRepoPort(): boolean {
     try {
       const bitloopsIdentifierTypeNode = this.getBitloopsIdentifierTypeNode();
@@ -95,9 +117,8 @@ export class BitloopsPrimaryTypeNode extends IntermediateASTNode {
   }
 
   public getInferredType(): TInferredTypes {
-    if (this.isArrayPrimaryType()) {
-      const primaryTypeNode = this.getPrimaryTypeNode();
-      return primaryTypeNode.getInferredType();
+    if (this.isPrimaryWithArrayTypeChild()) {
+      return this.getArrayPrimaryTypeNode().getInferredType();
     } else {
       const childType = (this.getValue() as TBitloopsPrimaryType)[bitloopsPrimaryTypeKey];
       const childValue = Object.values(childType)[0];
