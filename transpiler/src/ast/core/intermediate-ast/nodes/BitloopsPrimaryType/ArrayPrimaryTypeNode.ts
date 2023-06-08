@@ -43,6 +43,13 @@ export class ArrayPrimaryTypeNode extends BitloopsPrimaryTypeNode {
     return primaryType;
   }
 
+  getArrayPrimaryTypeNode(): ArrayPrimaryTypeNode {
+    const primaryType = this.getChildNodeByType<ArrayPrimaryTypeNode>(
+      BitloopsTypesMapping.ArrayBitloopsPrimType,
+    );
+    return primaryType;
+  }
+
   //children of ArrayPrimaryTypeNode can be BitloopsIdentifierTypeNode, PrimitiveTypeNode, StandardValueTypeNode, BuiltInClassTypeNode
   //so check which of them exists and return it
   getPrimaryTypeNode():
@@ -54,6 +61,7 @@ export class ArrayPrimaryTypeNode extends BitloopsPrimaryTypeNode {
     const primitiveType = this.getPrimitiveTypeNode();
     const standardValueType = this.getStandardValueTypeNode();
     const builtInClassType = this.getBuiltInClassTypeNode();
+    const arrayPrimaryType = this.getArrayPrimaryTypeNode();
     if (bitloopsIdentifierType) {
       return bitloopsIdentifierType;
     }
@@ -65,6 +73,9 @@ export class ArrayPrimaryTypeNode extends BitloopsPrimaryTypeNode {
     }
     if (builtInClassType) {
       return builtInClassType;
+    }
+    if (arrayPrimaryType) {
+      return arrayPrimaryType;
     }
     throw new Error('No primary type found');
   }

@@ -768,7 +768,7 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
             'execute',
             new SymbolTableBuilder()
               .insert('command', new ParameterSymbolEntry('WithdrawMoneyCommand'))
-              .insert('command.accountId', new MemberDotSymbolEntry('string[]'))
+              .insert('command.accountId', new MemberDotSymbolEntry('string[][]'))
               .insert('command.balance', new MemberDotSymbolEntry('BalanceVO[]'))
               .insert('command.metadata', new MemberDotSymbolEntry(METADATA_TYPE))
               .insert('command.metadata.context', new MemberDotSymbolEntry(CONTEXT_TYPE))

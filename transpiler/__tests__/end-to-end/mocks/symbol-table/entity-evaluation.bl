@@ -3,7 +3,7 @@ ApplicationError AccountNotFoundError(accountId: string)  {
     errorId: 'fedb1f53-6e89-429d-bc63-8f3adfc4b407',
 }
 Command WithdrawMoneyCommand {
-    string[] accountId;
+    string[][] accountId;
     BalanceVO[] balance;
 }
 Props AccountProps {
