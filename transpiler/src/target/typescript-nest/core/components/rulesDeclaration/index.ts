@@ -21,7 +21,6 @@ import {
   TDomainRule,
   TTargetDependenciesTypeScript,
   TDependencyChildTypescript,
-  // TParameter,
   TArgumentList,
 } from '../../../../../types.js';
 import { BitloopsTypesMapping, ClassTypes } from '../../../../../helpers/mappings.js';
