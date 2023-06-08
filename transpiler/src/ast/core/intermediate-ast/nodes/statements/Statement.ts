@@ -43,4 +43,19 @@ export abstract class StatementNode extends IntermediateASTNode {
   isExpressionNode(): this is ExpressionNode {
     return this.getNodeType() === BitloopsTypesMapping.TExpression;
   }
+
+  /**
+   * It returns an array of the ExpressionNodes including in the statement
+   * we use it in domainRule nodeTransformer to prepend `this` to every
+   * parameter of the domainRule which is used in the statement
+   * we check the children and get the expression
+   */
+  getAllExpressions(): ExpressionNode[] {
+    const children = this.getChildren();
+    const expressions = [];
+    expressions.push(
+      children.find((child) => child.getNodeType() === BitloopsTypesMapping.TExpression),
+    );
+    return expressions;
+  }
 }

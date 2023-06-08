@@ -1,0 +1,57 @@
+/**
+ * Helper components
+ */
+
+// DomainError
+DomainError DocumentStatusNotValidatedError(documentId: string, status:string) {
+    message: `Document status for id: ${documentId} is not validated: ${status}`,
+    errorId: '2mb98ba2-3141-453a-b3c1-c955a72cbbeb',
+}
+
+// ValueObject
+Props StatusProps {
+    string status;
+}
+
+ValueObject StatusVO {
+    static create(props: StatusProps): (OK(StatusVO), Errors()) { }
+}
+
+
+// Entity 
+Props FinancialDocumentProps {
+    optional UUIDv4 id;
+    StatusVO status;
+}
+
+Entity FinancialDocumentEntity {
+    static create(props: FinancialDocumentProps): (OK(FinancialDocumentEntity), Errors()) { }
+}
+
+/**
+ * Domain Rule - under test
+ */
+
+Rule FinancialDocumentIsValidatedRule(document: FinancialDocumentEntity) throws DomainErrors.DocumentStatusNotValidatedError {
+    value:FinancialDocumentEntity  = document;
+    const newValue = document;
+    if(document.status.status != 'VALIDATED') {
+        const x = document.status.status;
+    }
+    else {
+        const x = document.status.status;
+    }
+    switch(NOT document) {
+        case document.status.status != 'VALIDATED':
+            const x = document.status.status;
+            break;
+        case document.status.status == 'VALIDATED':
+            const x = document.status.status;
+            break;
+        default:
+            const x = document.status.status;
+            break;
+    }
+    // document.create(props);
+    isBrokenIf(document.status.status != 'VALIDATED', (document.id.toString(), document.status.status));
+}

@@ -7,6 +7,7 @@ import { ReturnOkErrorTypeNode } from '../returnOkErrorType/ReturnOkErrorTypeNod
 import { StatementNode } from '../statements/Statement.js';
 import { StatementListNode } from '../statements/StatementList.js';
 import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
+import { BitloopsPrimaryTypeNode } from '../BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 
 export class PrivateMethodDeclarationNode extends IntermediateASTNode {
   private static classNodeName = 'privateMethod';
@@ -46,8 +47,25 @@ export class PrivateMethodDeclarationNode extends IntermediateASTNode {
       .identifier;
   }
 
+  public getMethodName(): string {
+    const identifierNode = this.getChildNodeByType<IdentifierNode>(
+      BitloopsTypesMapping.TIdentifier,
+    );
+    return identifierNode.getIdentifierName();
+  }
+
+  public getBitloopsPrimaryType(): BitloopsPrimaryTypeNode | null {
+    return this.getChildNodeByType<BitloopsPrimaryTypeNode>(
+      BitloopsTypesMapping.TBitloopsPrimaryType,
+    );
+  }
+
   public getReturnOkErrorType(): ReturnOkErrorTypeNode | null {
     return this.getChildNodeByType<ReturnOkErrorTypeNode>(BitloopsTypesMapping.TOkErrorReturnType);
+  }
+
+  public getReturnType(): ReturnOkErrorTypeNode | BitloopsPrimaryTypeNode {
+    return this.getReturnOkErrorType() ?? this.getBitloopsPrimaryType();
   }
 
   addToSymbolTable(symbolTableManager: SymbolTableManager): void {

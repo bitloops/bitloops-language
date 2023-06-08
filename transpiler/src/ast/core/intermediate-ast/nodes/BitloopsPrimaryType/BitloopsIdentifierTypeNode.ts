@@ -1,5 +1,6 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { ClassTypeGuards } from '../../../../../helpers/typeGuards/typeGuards.js';
+import { TBitloopsIdentifier, bitloopsIdentifiersTypeKey } from '../../../../../types.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { BitloopsPrimaryTypeNode } from './BitloopsPrimaryTypeNode.js';
 
@@ -39,5 +40,12 @@ export class BitloopsIdentifierTypeNode extends BitloopsPrimaryTypeNode {
   public isRepoPortIdentifier(): boolean {
     const identifierName = this.getIdentifierName();
     return ClassTypeGuards.isRepoPort(identifierName);
+  }
+
+  public getInferredType(): string {
+    const bitloopsIdentifierType = (
+      this.getBitloopsIdentifierTypeNode().getValue() as TBitloopsIdentifier
+    )[bitloopsIdentifiersTypeKey];
+    return bitloopsIdentifierType;
   }
 }

@@ -27,7 +27,10 @@ export const VALID_DOMAIN_RULES: TTestType[] = [
       new ParameterBuilderDirector().buildPrimitiveParameter('param1', 'string'),
       new ParameterBuilderDirector().buildPrimitiveParameter('param2', 'string'),
     ),
-    statements: new StatementListBuilderDirector().buildThisAssignmentExpression('x'),
+    statements: new StatementListBuilderDirector().buildConstDeclarationOfIdentifierExpression(
+      'x',
+      'param1',
+    ),
     isBrokenIfCondition: new ExpressionBuilderDirector().buildEqualityExpression(
       new ExpressionBuilderDirector().buildIdentifierExpression('param1'),
       new ExpressionBuilderDirector().buildIdentifierExpression('param2'),
@@ -43,7 +46,7 @@ export const VALID_DOMAIN_RULES: TTestType[] = [
       public Error: DomainErrors.errIdError;
 
       public isBrokenIf(): boolean {
-        this.x = x;
+        const x = this.param1;
 
         this.Error = new DomainErrors.errIdError(this.param1, this.param2);
         return this.param1 === this.param2;
