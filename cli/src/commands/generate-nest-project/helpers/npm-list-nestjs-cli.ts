@@ -4,7 +4,7 @@ import { spawn } from 'child_process';
  * checks if the NestJS CLI is installed
  */
 
-export const checkForNestJsCli = async (): Promise<void> => {
+export const checkForNestJsCli = async (): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     const NEST_JS_NOT_INSTALLED_MESSAGE =
       'NestJS CLI is not installed. We are going to install it...\n';
@@ -27,11 +27,11 @@ export const checkForNestJsCli = async (): Promise<void> => {
       if (code === 0) {
         //code 0 means that the package is installed
         console.log(NEST_JS_INSTALLED_MESSAGE);
-        resolve();
+        resolve(true);
         return;
       }
       console.log(NEST_JS_NOT_INSTALLED_MESSAGE);
-      reject();
+      resolve(false);
     });
 
     command.on('error', () => {

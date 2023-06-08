@@ -31,9 +31,10 @@ export const generateNestProject = async (projectName: string): Promise<void> =>
   console.log();
 
   const projectPath = path.join(process.cwd(), projectName);
-  await checkForNestJsCli().catch(async () => {
+  const nestIsInstalled = await checkForNestJsCli();
+  if (!nestIsInstalled) {
     await npmInstallNestJsCli();
-  });
+  }
   await generateNestProjectProcess(projectName);
   console.log(
     '\nNavigate into your project and run "yarn install" to install the bitloops dependencies',

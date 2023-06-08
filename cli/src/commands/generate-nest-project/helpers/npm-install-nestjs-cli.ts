@@ -7,7 +7,7 @@ export const npmInstallNestJsCli = async (): Promise<void> => {
   return new Promise((resolve, reject) => {
     const NEST_JS_SUCCESSFULLY_INSTALLED_MESSAGE = 'NestJS CLI installed successfully.\n';
     const NEST_JS_INSTALL_ERROR_MESSAGE =
-      'An error has occurred during the installation of @nestjs/cli.\nPlease run "npm install -g @nestjs/cli" to install it.\n';
+      'An error has occurred during the installation of @nestjs/cli.\nPlease run "npm install -g @nestjs/cli@9.5.0" to install it.\n';
     const command = spawn('npm', ['install', '-g', '@nestjs/cli@9.5.0']);
 
     command.stdout.on('data', (data) => {
