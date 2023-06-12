@@ -147,6 +147,7 @@ import { domainEventEvaluationToTargetLanguage } from './components/statements/e
 import { packageEvaluationToTargetLanguage } from './components/statements/expression/evaluation/packageEvaluation.js';
 import { anonymousFunctionToTargetLanguage } from './components/statements/expression/anonymousFunctionExpression.js';
 import { valueObjectConstructorEvaluationToTargetLanguage } from './components/statements/expression/evaluation/valueObjectConstructorEvaluation.js';
+import { forOfStatementToTargetLanguage } from './components/statements/forOfStatement.js';
 
 const modelToTargetLanguage = (props: {
   type: TNodeType;
@@ -591,6 +592,10 @@ const modelToTargetLanguage = (props: {
     }
     case BitloopsTypesMapping.TPackageEvaluation: {
       res = packageEvaluationToTargetLanguage(value);
+      break;
+    }
+    case BitloopsTypesMapping.TForOfStatement: {
+      res = forOfStatementToTargetLanguage(value);
       break;
     }
     default: {

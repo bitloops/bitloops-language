@@ -32,7 +32,7 @@ type ForOfStatementTestCase = {
 
 export const validForOfStatementTestCases: ForOfStatementTestCase[] = [
   {
-    description: 'Simple if statement with no else',
+    description: 'Simple for of statement',
     fileId: 'testFile.bl',
     inputBLString: FileUtil.readFileString(
       'transpiler/__tests__/ast/core/mocks/statements/for-of/forOfStatement.bl',
