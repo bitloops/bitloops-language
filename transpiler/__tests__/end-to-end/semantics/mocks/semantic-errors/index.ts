@@ -1,5 +1,3 @@
-import { FileUtil } from '../../../../../src/utils/file.js';
-
 /**
  *  Bitloops Language CLI
  *  Copyright (C) 2022 Bitloops S.A.
@@ -19,6 +17,7 @@ import { FileUtil } from '../../../../../src/utils/file.js';
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
+import { FileUtil } from '../../../../../src/utils/file.js';
 export const SEMANTIC_ERRORS_METHOD_SCOPES_END_TO_END_TEST_CASES = [
   {
     description: 'Entity not found',
