@@ -68,6 +68,20 @@ export class MissingMemberError extends ValidationError {
   }
 }
 
+export class AccessViolationError extends ValidationError {
+  constructor(
+    member: string,
+    leftExpressionString: string,
+    contextType: string,
+    metadata: TNodeMetadata,
+  ) {
+    super(
+      `Access violation: Attempt to call the private method '${member}' from outside its authorized context (${contextType}: '${leftExpressionString}').`,
+      metadata,
+    );
+  }
+}
+
 export interface IIntermediateASTValidator {
   validate: (ast: IntermediateAST) => void | ValidationError[];
   getSymbolTable: (ast: IntermediateAST) => TSymbolTableSemantics;

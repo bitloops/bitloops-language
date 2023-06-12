@@ -84,6 +84,7 @@ export class ValueObjectDeclarationNode extends ClassTypeNode {
 
   addToSymbolTable(symbolTableManager: SymbolTableManager): void {
     symbolTableManager.addClassTypeThis(this.getIdentifier().getIdentifierName());
+    this.registerMethods(symbolTableManager);
     const constDeclarationList = this.getConstDeclarationList();
     if (constDeclarationList) {
       constDeclarationList.addToSymbolTable(symbolTableManager);
@@ -94,5 +95,18 @@ export class ValueObjectDeclarationNode extends ClassTypeNode {
 
     const methods = this.getMethodList();
     methods.addToSymbolTable(symbolTableManager);
+  }
+
+  private registerMethods(symbolTableManager: SymbolTableManager): void {
+    const initialSymbolTable = symbolTableManager.getSymbolTable();
+
+    const privateMethodList = this.getMethodList();
+    if (privateMethodList) {
+      for (const privateMethod of privateMethodList.getPrivateMethodNodes()) {
+        const methodName = privateMethod.getIdentifier();
+        symbolTableManager.createSymbolTableChildScope(methodName, privateMethod);
+        symbolTableManager.setCurrentSymbolTable(initialSymbolTable);
+      }
+    }
   }
 }

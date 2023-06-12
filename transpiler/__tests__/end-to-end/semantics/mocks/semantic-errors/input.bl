@@ -1,0 +1,18 @@
+Props ReconciliationReportProps {
+  UUIDv4 id;
+}
+
+Root Entity ReconciliationReportEntity {
+  static create(props: ReconciliationReportProps): (OK(ReconciliationReportEntity),Errors())  {
+      return ReconciliationReportEntity(props);
+  }
+
+  public acceptSuggestion(suggestionId: string, createdBy: string): (
+      OK(void), 
+      Errors()
+      ) {
+      this.deleteSuggestion(suggestionId);
+  }
+
+  private deleteSuggestion(suggestionId: string): void { }
+}

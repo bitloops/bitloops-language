@@ -53,6 +53,14 @@ export class SymbolTableManager {
     return this.symbolTable;
   }
 
+  public findChildScope(scopeName: string): SymbolTable {
+    const childScope = this.symbolTable.getChildScope(scopeName);
+    if (!childScope) {
+      throw new Error(`Child scope ${scopeName} not found`);
+    }
+    return childScope;
+  }
+
   public addIntegrationEventBus(): void {
     const integrationEventBusKey = this.joinThisWithIdentifier('integrationEventBus');
     this.symbolTable.insert(
