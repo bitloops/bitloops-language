@@ -10,25 +10,24 @@
 // 	protoc              v3.21.12
 // source: src/bitloops/proto/todo.proto
 
-
 /* eslint-disable */
 // @ts-nocheck
 
-
 import * as grpcWeb from 'grpc-web';
 
-import * as src_bitloops_proto_todo_pb from '../../../src/bitloops/proto/todo_pb';
-
+import * as src_bitloops_proto_todo_pb from './todo_pb';
 
 export class TodoServiceClient {
   client_: grpcWeb.AbstractClientBase;
   hostname_: string;
-  credentials_: null | { [index: string]: string; };
-  options_: null | { [index: string]: any; };
+  credentials_: null | { [index: string]: string };
+  options_: null | { [index: string]: any };
 
-  constructor (hostname: string,
-               credentials?: null | { [index: string]: string; },
-               options?: null | { [index: string]: any; }) {
+  constructor(
+    hostname: string,
+    credentials?: null | { [index: string]: string },
+    options?: null | { [index: string]: any }
+  ) {
     if (!options) options = {};
     if (!credentials) credentials = {};
     options['format'] = 'text';
@@ -52,34 +51,41 @@ export class TodoServiceClient {
 
   add(
     request: src_bitloops_proto_todo_pb.AddTodoRequest,
-    metadata: grpcWeb.Metadata | null): Promise<src_bitloops_proto_todo_pb.AddTodoResponse>;
+    metadata: grpcWeb.Metadata | null
+  ): Promise<src_bitloops_proto_todo_pb.AddTodoResponse>;
 
   add(
     request: src_bitloops_proto_todo_pb.AddTodoRequest,
     metadata: grpcWeb.Metadata | null,
-    callback: (err: grpcWeb.RpcError,
-               response: src_bitloops_proto_todo_pb.AddTodoResponse) => void): grpcWeb.ClientReadableStream<src_bitloops_proto_todo_pb.AddTodoResponse>;
+    callback: (
+      err: grpcWeb.RpcError,
+      response: src_bitloops_proto_todo_pb.AddTodoResponse
+    ) => void
+  ): grpcWeb.ClientReadableStream<src_bitloops_proto_todo_pb.AddTodoResponse>;
 
   add(
     request: src_bitloops_proto_todo_pb.AddTodoRequest,
     metadata: grpcWeb.Metadata | null,
-    callback?: (err: grpcWeb.RpcError,
-               response: src_bitloops_proto_todo_pb.AddTodoResponse) => void) {
+    callback?: (
+      err: grpcWeb.RpcError,
+      response: src_bitloops_proto_todo_pb.AddTodoResponse
+    ) => void
+  ) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
-        this.hostname_ +
-          '/todo.TodoService/Add',
+        this.hostname_ + '/todo.TodoService/Add',
         request,
         metadata || {},
         this.methodDescriptorAdd,
-        callback);
+        callback
+      );
     }
     return this.client_.unaryCall(
-    this.hostname_ +
-      '/todo.TodoService/Add',
-    request,
-    metadata || {},
-    this.methodDescriptorAdd);
+      this.hostname_ + '/todo.TodoService/Add',
+      request,
+      metadata || {},
+      this.methodDescriptorAdd
+    );
   }
 
   methodDescriptorComplete = new grpcWeb.MethodDescriptor(
@@ -95,34 +101,41 @@ export class TodoServiceClient {
 
   complete(
     request: src_bitloops_proto_todo_pb.CompleteTodoRequest,
-    metadata: grpcWeb.Metadata | null): Promise<src_bitloops_proto_todo_pb.CompleteTodoResponse>;
+    metadata: grpcWeb.Metadata | null
+  ): Promise<src_bitloops_proto_todo_pb.CompleteTodoResponse>;
 
   complete(
     request: src_bitloops_proto_todo_pb.CompleteTodoRequest,
     metadata: grpcWeb.Metadata | null,
-    callback: (err: grpcWeb.RpcError,
-               response: src_bitloops_proto_todo_pb.CompleteTodoResponse) => void): grpcWeb.ClientReadableStream<src_bitloops_proto_todo_pb.CompleteTodoResponse>;
+    callback: (
+      err: grpcWeb.RpcError,
+      response: src_bitloops_proto_todo_pb.CompleteTodoResponse
+    ) => void
+  ): grpcWeb.ClientReadableStream<src_bitloops_proto_todo_pb.CompleteTodoResponse>;
 
   complete(
     request: src_bitloops_proto_todo_pb.CompleteTodoRequest,
     metadata: grpcWeb.Metadata | null,
-    callback?: (err: grpcWeb.RpcError,
-               response: src_bitloops_proto_todo_pb.CompleteTodoResponse) => void) {
+    callback?: (
+      err: grpcWeb.RpcError,
+      response: src_bitloops_proto_todo_pb.CompleteTodoResponse
+    ) => void
+  ) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
-        this.hostname_ +
-          '/todo.TodoService/Complete',
+        this.hostname_ + '/todo.TodoService/Complete',
         request,
         metadata || {},
         this.methodDescriptorComplete,
-        callback);
+        callback
+      );
     }
     return this.client_.unaryCall(
-    this.hostname_ +
-      '/todo.TodoService/Complete',
-    request,
-    metadata || {},
-    this.methodDescriptorComplete);
+      this.hostname_ + '/todo.TodoService/Complete',
+      request,
+      metadata || {},
+      this.methodDescriptorComplete
+    );
   }
 
   methodDescriptorDelete = new grpcWeb.MethodDescriptor(
@@ -138,34 +151,41 @@ export class TodoServiceClient {
 
   delete(
     request: src_bitloops_proto_todo_pb.DeleteTodoRequest,
-    metadata: grpcWeb.Metadata | null): Promise<src_bitloops_proto_todo_pb.DeleteTodoResponse>;
+    metadata: grpcWeb.Metadata | null
+  ): Promise<src_bitloops_proto_todo_pb.DeleteTodoResponse>;
 
   delete(
     request: src_bitloops_proto_todo_pb.DeleteTodoRequest,
     metadata: grpcWeb.Metadata | null,
-    callback: (err: grpcWeb.RpcError,
-               response: src_bitloops_proto_todo_pb.DeleteTodoResponse) => void): grpcWeb.ClientReadableStream<src_bitloops_proto_todo_pb.DeleteTodoResponse>;
+    callback: (
+      err: grpcWeb.RpcError,
+      response: src_bitloops_proto_todo_pb.DeleteTodoResponse
+    ) => void
+  ): grpcWeb.ClientReadableStream<src_bitloops_proto_todo_pb.DeleteTodoResponse>;
 
   delete(
     request: src_bitloops_proto_todo_pb.DeleteTodoRequest,
     metadata: grpcWeb.Metadata | null,
-    callback?: (err: grpcWeb.RpcError,
-               response: src_bitloops_proto_todo_pb.DeleteTodoResponse) => void) {
+    callback?: (
+      err: grpcWeb.RpcError,
+      response: src_bitloops_proto_todo_pb.DeleteTodoResponse
+    ) => void
+  ) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
-        this.hostname_ +
-          '/todo.TodoService/Delete',
+        this.hostname_ + '/todo.TodoService/Delete',
         request,
         metadata || {},
         this.methodDescriptorDelete,
-        callback);
+        callback
+      );
     }
     return this.client_.unaryCall(
-    this.hostname_ +
-      '/todo.TodoService/Delete',
-    request,
-    metadata || {},
-    this.methodDescriptorDelete);
+      this.hostname_ + '/todo.TodoService/Delete',
+      request,
+      metadata || {},
+      this.methodDescriptorDelete
+    );
   }
 
   methodDescriptorModifyTitle = new grpcWeb.MethodDescriptor(
@@ -181,34 +201,41 @@ export class TodoServiceClient {
 
   modifyTitle(
     request: src_bitloops_proto_todo_pb.ModifyTitleTodoRequest,
-    metadata: grpcWeb.Metadata | null): Promise<src_bitloops_proto_todo_pb.ModifyTitleTodoResponse>;
+    metadata: grpcWeb.Metadata | null
+  ): Promise<src_bitloops_proto_todo_pb.ModifyTitleTodoResponse>;
 
   modifyTitle(
     request: src_bitloops_proto_todo_pb.ModifyTitleTodoRequest,
     metadata: grpcWeb.Metadata | null,
-    callback: (err: grpcWeb.RpcError,
-               response: src_bitloops_proto_todo_pb.ModifyTitleTodoResponse) => void): grpcWeb.ClientReadableStream<src_bitloops_proto_todo_pb.ModifyTitleTodoResponse>;
+    callback: (
+      err: grpcWeb.RpcError,
+      response: src_bitloops_proto_todo_pb.ModifyTitleTodoResponse
+    ) => void
+  ): grpcWeb.ClientReadableStream<src_bitloops_proto_todo_pb.ModifyTitleTodoResponse>;
 
   modifyTitle(
     request: src_bitloops_proto_todo_pb.ModifyTitleTodoRequest,
     metadata: grpcWeb.Metadata | null,
-    callback?: (err: grpcWeb.RpcError,
-               response: src_bitloops_proto_todo_pb.ModifyTitleTodoResponse) => void) {
+    callback?: (
+      err: grpcWeb.RpcError,
+      response: src_bitloops_proto_todo_pb.ModifyTitleTodoResponse
+    ) => void
+  ) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
-        this.hostname_ +
-          '/todo.TodoService/ModifyTitle',
+        this.hostname_ + '/todo.TodoService/ModifyTitle',
         request,
         metadata || {},
         this.methodDescriptorModifyTitle,
-        callback);
+        callback
+      );
     }
     return this.client_.unaryCall(
-    this.hostname_ +
-      '/todo.TodoService/ModifyTitle',
-    request,
-    metadata || {},
-    this.methodDescriptorModifyTitle);
+      this.hostname_ + '/todo.TodoService/ModifyTitle',
+      request,
+      metadata || {},
+      this.methodDescriptorModifyTitle
+    );
   }
 
   methodDescriptorUncomplete = new grpcWeb.MethodDescriptor(
@@ -224,34 +251,41 @@ export class TodoServiceClient {
 
   uncomplete(
     request: src_bitloops_proto_todo_pb.UncompleteTodoRequest,
-    metadata: grpcWeb.Metadata | null): Promise<src_bitloops_proto_todo_pb.UncompleteTodoResponse>;
+    metadata: grpcWeb.Metadata | null
+  ): Promise<src_bitloops_proto_todo_pb.UncompleteTodoResponse>;
 
   uncomplete(
     request: src_bitloops_proto_todo_pb.UncompleteTodoRequest,
     metadata: grpcWeb.Metadata | null,
-    callback: (err: grpcWeb.RpcError,
-               response: src_bitloops_proto_todo_pb.UncompleteTodoResponse) => void): grpcWeb.ClientReadableStream<src_bitloops_proto_todo_pb.UncompleteTodoResponse>;
+    callback: (
+      err: grpcWeb.RpcError,
+      response: src_bitloops_proto_todo_pb.UncompleteTodoResponse
+    ) => void
+  ): grpcWeb.ClientReadableStream<src_bitloops_proto_todo_pb.UncompleteTodoResponse>;
 
   uncomplete(
     request: src_bitloops_proto_todo_pb.UncompleteTodoRequest,
     metadata: grpcWeb.Metadata | null,
-    callback?: (err: grpcWeb.RpcError,
-               response: src_bitloops_proto_todo_pb.UncompleteTodoResponse) => void) {
+    callback?: (
+      err: grpcWeb.RpcError,
+      response: src_bitloops_proto_todo_pb.UncompleteTodoResponse
+    ) => void
+  ) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
-        this.hostname_ +
-          '/todo.TodoService/Uncomplete',
+        this.hostname_ + '/todo.TodoService/Uncomplete',
         request,
         metadata || {},
         this.methodDescriptorUncomplete,
-        callback);
+        callback
+      );
     }
     return this.client_.unaryCall(
-    this.hostname_ +
-      '/todo.TodoService/Uncomplete',
-    request,
-    metadata || {},
-    this.methodDescriptorUncomplete);
+      this.hostname_ + '/todo.TodoService/Uncomplete',
+      request,
+      metadata || {},
+      this.methodDescriptorUncomplete
+    );
   }
 
   methodDescriptorGetAll = new grpcWeb.MethodDescriptor(
@@ -267,77 +301,92 @@ export class TodoServiceClient {
 
   getAll(
     request: src_bitloops_proto_todo_pb.GetAllTodosRequest,
-    metadata: grpcWeb.Metadata | null): Promise<src_bitloops_proto_todo_pb.GetAllTodosResponse>;
+    metadata: grpcWeb.Metadata | null
+  ): Promise<src_bitloops_proto_todo_pb.GetAllTodosResponse>;
 
   getAll(
     request: src_bitloops_proto_todo_pb.GetAllTodosRequest,
     metadata: grpcWeb.Metadata | null,
-    callback: (err: grpcWeb.RpcError,
-               response: src_bitloops_proto_todo_pb.GetAllTodosResponse) => void): grpcWeb.ClientReadableStream<src_bitloops_proto_todo_pb.GetAllTodosResponse>;
+    callback: (
+      err: grpcWeb.RpcError,
+      response: src_bitloops_proto_todo_pb.GetAllTodosResponse
+    ) => void
+  ): grpcWeb.ClientReadableStream<src_bitloops_proto_todo_pb.GetAllTodosResponse>;
 
   getAll(
     request: src_bitloops_proto_todo_pb.GetAllTodosRequest,
     metadata: grpcWeb.Metadata | null,
-    callback?: (err: grpcWeb.RpcError,
-               response: src_bitloops_proto_todo_pb.GetAllTodosResponse) => void) {
+    callback?: (
+      err: grpcWeb.RpcError,
+      response: src_bitloops_proto_todo_pb.GetAllTodosResponse
+    ) => void
+  ) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
-        this.hostname_ +
-          '/todo.TodoService/GetAll',
+        this.hostname_ + '/todo.TodoService/GetAll',
         request,
         metadata || {},
         this.methodDescriptorGetAll,
-        callback);
+        callback
+      );
     }
     return this.client_.unaryCall(
-    this.hostname_ +
-      '/todo.TodoService/GetAll',
-    request,
-    metadata || {},
-    this.methodDescriptorGetAll);
+      this.hostname_ + '/todo.TodoService/GetAll',
+      request,
+      metadata || {},
+      this.methodDescriptorGetAll
+    );
   }
 
-  methodDescriptorInitializeSubscriptionConnection = new grpcWeb.MethodDescriptor(
-    '/todo.TodoService/InitializeSubscriptionConnection',
-    grpcWeb.MethodType.UNARY,
-    src_bitloops_proto_todo_pb.InitializeConnectionRequest,
-    src_bitloops_proto_todo_pb.InitializeConnectionResponse,
-    (request: src_bitloops_proto_todo_pb.InitializeConnectionRequest) => {
-      return request.serializeBinary();
-    },
-    src_bitloops_proto_todo_pb.InitializeConnectionResponse.deserializeBinary
-  );
+  methodDescriptorInitializeSubscriptionConnection =
+    new grpcWeb.MethodDescriptor(
+      '/todo.TodoService/InitializeSubscriptionConnection',
+      grpcWeb.MethodType.UNARY,
+      src_bitloops_proto_todo_pb.InitializeConnectionRequest,
+      src_bitloops_proto_todo_pb.InitializeConnectionResponse,
+      (request: src_bitloops_proto_todo_pb.InitializeConnectionRequest) => {
+        return request.serializeBinary();
+      },
+      src_bitloops_proto_todo_pb.InitializeConnectionResponse.deserializeBinary
+    );
 
   initializeSubscriptionConnection(
     request: src_bitloops_proto_todo_pb.InitializeConnectionRequest,
-    metadata: grpcWeb.Metadata | null): Promise<src_bitloops_proto_todo_pb.InitializeConnectionResponse>;
-
-  initializeSubscriptionConnection(
-    request: src_bitloops_proto_todo_pb.InitializeConnectionRequest,
-    metadata: grpcWeb.Metadata | null,
-    callback: (err: grpcWeb.RpcError,
-               response: src_bitloops_proto_todo_pb.InitializeConnectionResponse) => void): grpcWeb.ClientReadableStream<src_bitloops_proto_todo_pb.InitializeConnectionResponse>;
+    metadata: grpcWeb.Metadata | null
+  ): Promise<src_bitloops_proto_todo_pb.InitializeConnectionResponse>;
 
   initializeSubscriptionConnection(
     request: src_bitloops_proto_todo_pb.InitializeConnectionRequest,
     metadata: grpcWeb.Metadata | null,
-    callback?: (err: grpcWeb.RpcError,
-               response: src_bitloops_proto_todo_pb.InitializeConnectionResponse) => void) {
+    callback: (
+      err: grpcWeb.RpcError,
+      response: src_bitloops_proto_todo_pb.InitializeConnectionResponse
+    ) => void
+  ): grpcWeb.ClientReadableStream<src_bitloops_proto_todo_pb.InitializeConnectionResponse>;
+
+  initializeSubscriptionConnection(
+    request: src_bitloops_proto_todo_pb.InitializeConnectionRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback?: (
+      err: grpcWeb.RpcError,
+      response: src_bitloops_proto_todo_pb.InitializeConnectionResponse
+    ) => void
+  ) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
-        this.hostname_ +
-          '/todo.TodoService/InitializeSubscriptionConnection',
+        this.hostname_ + '/todo.TodoService/InitializeSubscriptionConnection',
         request,
         metadata || {},
         this.methodDescriptorInitializeSubscriptionConnection,
-        callback);
+        callback
+      );
     }
     return this.client_.unaryCall(
-    this.hostname_ +
-      '/todo.TodoService/InitializeSubscriptionConnection',
-    request,
-    metadata || {},
-    this.methodDescriptorInitializeSubscriptionConnection);
+      this.hostname_ + '/todo.TodoService/InitializeSubscriptionConnection',
+      request,
+      metadata || {},
+      this.methodDescriptorInitializeSubscriptionConnection
+    );
   }
 
   methodDescriptorKeepSubscriptionAlive = new grpcWeb.MethodDescriptor(
@@ -353,34 +402,41 @@ export class TodoServiceClient {
 
   keepSubscriptionAlive(
     request: src_bitloops_proto_todo_pb.KeepSubscriptionAliveRequest,
-    metadata: grpcWeb.Metadata | null): Promise<src_bitloops_proto_todo_pb.KeepSubscriptionAliveResponse>;
+    metadata: grpcWeb.Metadata | null
+  ): Promise<src_bitloops_proto_todo_pb.KeepSubscriptionAliveResponse>;
 
   keepSubscriptionAlive(
     request: src_bitloops_proto_todo_pb.KeepSubscriptionAliveRequest,
     metadata: grpcWeb.Metadata | null,
-    callback: (err: grpcWeb.RpcError,
-               response: src_bitloops_proto_todo_pb.KeepSubscriptionAliveResponse) => void): grpcWeb.ClientReadableStream<src_bitloops_proto_todo_pb.KeepSubscriptionAliveResponse>;
+    callback: (
+      err: grpcWeb.RpcError,
+      response: src_bitloops_proto_todo_pb.KeepSubscriptionAliveResponse
+    ) => void
+  ): grpcWeb.ClientReadableStream<src_bitloops_proto_todo_pb.KeepSubscriptionAliveResponse>;
 
   keepSubscriptionAlive(
     request: src_bitloops_proto_todo_pb.KeepSubscriptionAliveRequest,
     metadata: grpcWeb.Metadata | null,
-    callback?: (err: grpcWeb.RpcError,
-               response: src_bitloops_proto_todo_pb.KeepSubscriptionAliveResponse) => void) {
+    callback?: (
+      err: grpcWeb.RpcError,
+      response: src_bitloops_proto_todo_pb.KeepSubscriptionAliveResponse
+    ) => void
+  ) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
-        this.hostname_ +
-          '/todo.TodoService/KeepSubscriptionAlive',
+        this.hostname_ + '/todo.TodoService/KeepSubscriptionAlive',
         request,
         metadata || {},
         this.methodDescriptorKeepSubscriptionAlive,
-        callback);
+        callback
+      );
     }
     return this.client_.unaryCall(
-    this.hostname_ +
-      '/todo.TodoService/KeepSubscriptionAlive',
-    request,
-    metadata || {},
-    this.methodDescriptorKeepSubscriptionAlive);
+      this.hostname_ + '/todo.TodoService/KeepSubscriptionAlive',
+      request,
+      metadata || {},
+      this.methodDescriptorKeepSubscriptionAlive
+    );
   }
 
   methodDescriptorOn = new grpcWeb.MethodDescriptor(
@@ -396,14 +452,13 @@ export class TodoServiceClient {
 
   on(
     request: src_bitloops_proto_todo_pb.OnTodoRequest,
-    metadata?: grpcWeb.Metadata): grpcWeb.ClientReadableStream<src_bitloops_proto_todo_pb.OnEvent> {
+    metadata?: grpcWeb.Metadata
+  ): grpcWeb.ClientReadableStream<src_bitloops_proto_todo_pb.OnEvent> {
     return this.client_.serverStreaming(
-      this.hostname_ +
-        '/todo.TodoService/On',
+      this.hostname_ + '/todo.TodoService/On',
       request,
       metadata || {},
-      this.methodDescriptorOn);
+      this.methodDescriptorOn
+    );
   }
-
 }
-

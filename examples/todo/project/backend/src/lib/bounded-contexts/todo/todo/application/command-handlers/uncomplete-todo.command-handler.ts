@@ -7,37 +7,40 @@ import {
 } from '@bitloops/bl-boilerplate-core';
 import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
 import { ApplicationErrors } from '../errors/index';
-import { DeleteTodoCommand } from '../../commands/delete-todo.command';
+import { DomainErrors } from '../../domain/errors/index';
+import { UncompleteTodoCommand } from '../../commands/uncomplete-todo.command';
 import { Inject } from '@nestjs/common';
 import { TodoWriteRepoPortToken } from '../../constants';
 import { TodoWriteRepoPort } from '../../ports/todo-write.repo-port';
-export type DeleteTodoCommandHandlerResponse = Either<
+export type UncompleteTodoCommandHandlerResponse = Either<
   void,
-  Application.Repo.Errors.Unexpected | ApplicationErrors.TodoNotFoundError
+  | Application.Repo.Errors.Unexpected
+  | ApplicationErrors.TodoNotFoundError
+  | DomainErrors.TodoAlreadyUncompletedError
 >;
-export class DeleteTodoCommandHandler
-  implements Application.ICommandHandler<DeleteTodoCommand, void>
+export class UncompleteTodoCommandHandler
+  implements Application.ICommandHandler<UncompleteTodoCommand, void>
 {
   constructor(
     @Inject(TodoWriteRepoPortToken)
     private readonly todoRepo: TodoWriteRepoPort
   ) {}
   get command() {
-    return DeleteTodoCommand;
+    return UncompleteTodoCommand;
   }
   get boundedContext(): string {
     return 'todo';
   }
   @Traceable({
-    operation: 'DeleteTodoCommandHandler',
+    operation: 'UncompleteTodoCommandHandler',
     metrics: {
-      name: 'DeleteTodoCommandHandler',
+      name: 'UncompleteTodoCommandHandler',
       category: 'commandHandler',
     },
   })
   async execute(
-    command: DeleteTodoCommand
-  ): Promise<DeleteTodoCommandHandlerResponse> {
+    command: UncompleteTodoCommand
+  ): Promise<UncompleteTodoCommandHandlerResponse> {
     const todoId = new Domain.UUIDv4(command.id);
     const todoEntity = await this.todoRepo.getById(todoId);
     if (todoEntity.isFail()) {
@@ -46,13 +49,13 @@ export class DeleteTodoCommandHandler
     if (!todoEntity.value) {
       return fail(new ApplicationErrors.TodoNotFoundError(command.id));
     }
-    const result_255472 = todoEntity.value.delete();
-    if (result_255472.isFail()) {
-      return fail(result_255472.value);
+    const result_392069 = todoEntity.value.uncomplete();
+    if (result_392069.isFail()) {
+      return fail(result_392069.value);
     }
-    const deleteResult = await this.todoRepo.delete(todoEntity.value);
-    if (deleteResult.isFail()) {
-      return fail(deleteResult.value);
+    const updateResult = await this.todoRepo.update(todoEntity.value);
+    if (updateResult.isFail()) {
+      return fail(updateResult.value);
     }
     return ok();
   }
