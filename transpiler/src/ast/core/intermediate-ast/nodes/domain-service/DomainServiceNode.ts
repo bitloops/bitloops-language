@@ -128,10 +128,34 @@ export class DomainServiceNode extends ClassTypeNode {
     const parameterList = this.getParameterList();
     parameterList.addClassTypeParametersToSymbolTable(symbolTableManager);
 
+    this.registerMethods(symbolTableManager);
+
     const publicMethodList = this.getPublicMethodList();
     publicMethodList.addToSymbolTable(symbolTableManager);
 
     const privateMethodList = this.getPrivateMethodList();
     privateMethodList.addToSymbolTable(symbolTableManager);
+  }
+
+  private registerMethods(symbolTableManager: SymbolTableManager): void {
+    const initialSymbolTable = symbolTableManager.getSymbolTable();
+
+    const privateMethodList = this.getPrivateMethodList();
+    if (privateMethodList) {
+      for (const privateMethod of privateMethodList.getPrivateMethodNodes()) {
+        const methodName = privateMethod.getIdentifier();
+        symbolTableManager.createSymbolTableChildScope(methodName, privateMethod);
+        symbolTableManager.setCurrentSymbolTable(initialSymbolTable);
+      }
+    }
+
+    const publicMethodList = this.getPublicMethodList();
+    if (publicMethodList) {
+      for (const publicMethod of publicMethodList.publicMethods) {
+        const methodName = publicMethod.getMethodName();
+        symbolTableManager.createSymbolTableChildScope(methodName, publicMethod);
+        symbolTableManager.setCurrentSymbolTable(initialSymbolTable);
+      }
+    }
   }
 }

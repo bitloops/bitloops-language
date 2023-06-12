@@ -69,7 +69,9 @@ export class PublicMethodDeclarationNode extends IntermediateASTNode {
   addToSymbolTable(symbolTableManager: SymbolTableManager): void {
     const initialSymbolTable = symbolTableManager.getSymbolTable();
     const methodName = this.getMethodName();
-    symbolTableManager.createSymbolTableChildScope(methodName, this);
+
+    const methodScope = symbolTableManager.findChildScope(methodName);
+    symbolTableManager.setCurrentSymbolTable(methodScope);
 
     const methodParameterList = this.getMethodParameterList();
     methodParameterList.addToSymbolTable(symbolTableManager);

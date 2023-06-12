@@ -10,7 +10,11 @@ import {
 import { SymbolTable } from '../../../../../../semantic-analysis/type-inference/SymbolTable.js';
 import { SymbolTableManager } from '../../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { bitloopsPrimitivesObj } from '../../../../../../types.js';
-import { MissingIdentifierError, MissingMemberError } from '../../../../types.js';
+import {
+  AccessViolationError,
+  MissingIdentifierError,
+  MissingMemberError,
+} from '../../../../types.js';
 import { DomainEventDeclarationNode } from '../../DomainEvent/DomainEventDeclarationNode.js';
 import { EventHandlerBusDependenciesNode } from '../../DomainEventHandler/EventHandlerBusDependenciesNode.js';
 import { TNodeMetadata } from '../../IntermediateASTNode.js';
@@ -274,6 +278,7 @@ export class MemberDotExpressionNode extends ExpressionNode {
 
     return this.getMemberDotTypeFromIntermediateASTTree({
       leftExpressionType,
+      leftExpressionString,
       rightExpressionString,
       symbolTableManager,
     });
@@ -281,10 +286,12 @@ export class MemberDotExpressionNode extends ExpressionNode {
 
   private getMemberDotTypeFromIntermediateASTTree({
     leftExpressionType,
+    leftExpressionString,
     rightExpressionString,
     symbolTableManager,
   }: {
     leftExpressionType: SymbolEntry;
+    leftExpressionString: string;
     rightExpressionString: string;
     symbolTableManager: SymbolTableManager;
   }): string {
@@ -338,15 +345,44 @@ export class MemberDotExpressionNode extends ExpressionNode {
 
       const publicMethodTypes = entityValues.getPublicMethodTypes();
       const publicMethodType = publicMethodTypes[rightExpressionString];
-      if (!publicMethodType) {
+
+      const privateMethodTypes = entityValues.getPrivateMethodTypes();
+      const privateMethodType = privateMethodTypes[rightExpressionString];
+
+      const isEntityProp = !privateMethodType && !publicMethodType;
+      if (isEntityProp) {
         const propsIdentifier = entityValues.getPropsIdentifier();
         const propsNode = intermediateASTTree.getPropsByIdentifier(propsIdentifier);
         const fieldTypes = propsNode.getFieldTypes();
         const fieldType = fieldTypes[rightExpressionString];
-        if (!fieldType)
+        if (!fieldType) {
+          console.log({
+            publicMethodTypes,
+            privateMethodTypes,
+            rightExpressionString,
+            isEntityProp,
+          });
           throw new MissingMemberError(rightExpressionString, leftType, this.getMetadata());
+        }
         return fieldType.getInferredType();
       }
+      if (privateMethodType) {
+        if (leftExpressionString !== SymbolTableManager.THIS) {
+          throw new AccessViolationError(
+            rightExpressionString,
+            leftExpressionString,
+            leftType,
+            this.getMetadata(),
+          );
+        }
+
+        const privateMethodInferredType = privateMethodType.getInferredType();
+        if (!privateMethodInferredType) {
+          throw new MissingMemberError(rightExpressionString, leftType, this.getMetadata());
+        }
+        return privateMethodInferredType;
+      }
+
       // TODO if none of them typeCheck??
       const publicMethodInferredType = publicMethodType.getInferredType();
       if (!publicMethodInferredType)
