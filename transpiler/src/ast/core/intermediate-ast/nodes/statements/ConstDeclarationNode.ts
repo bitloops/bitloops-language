@@ -1,5 +1,4 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
-import { SymbolTable } from '../../../../../semantic-analysis/type-inference/SymbolTable.js';
 import { AlreadyDefinedIdentifierError } from '../../../types.js';
 import { BitloopsPrimaryTypeNode } from '../BitloopsPrimaryType/BitloopsPrimaryTypeNode.js';
 import { ExpressionNode } from '../Expression/ExpressionNode.js';
@@ -8,6 +7,7 @@ import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { StatementNode } from './Statement.js';
 import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { VariableSymbolEntry } from '../../../../../semantic-analysis/type-inference/SymbolEntry.js';
+import { SymbolTable } from '../../../../../semantic-analysis/type-inference/SymbolTable.js';
 
 const NAME = 'constDeclaration';
 export class ConstDeclarationNode extends StatementNode {

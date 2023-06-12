@@ -7,8 +7,9 @@ import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { EntityValuesNode } from '../Entity/EntityValuesNode.js';
 import { PublicMethodDeclarationNode } from '../methods/PublicMethodDeclarationNode.js';
 import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
+import { MethodCallSymbolEntry } from '../../../../../semantic-analysis/type-inference/SymbolEntry.js';
 
-//fix this and entity to be extendable from a base class
+//TODO fix this and entity to be extendable from a base class
 export class RootEntityDeclarationNode extends ClassTypeNode {
   private static classType = ClassTypes.RootEntity;
   private static classNodeName = RootEntityKey;
@@ -50,8 +51,17 @@ export class RootEntityDeclarationNode extends ClassTypeNode {
     return entityValues;
   }
 
+  public addFromPrimitivesToSymbolTable(symbolTableManager: SymbolTableManager): void {
+    const initialSymbolTable = symbolTableManager.getSymbolTable();
+    initialSymbolTable.insert(
+      SymbolTableManager.FROM_PRIMITIVES + '()',
+      new MethodCallSymbolEntry(this.getIdentifier().getIdentifierName()),
+    );
+  }
+
   addToSymbolTable(symbolTableManager: SymbolTableManager): void {
     symbolTableManager.addClassTypeThis(this.getIdentifier().getIdentifierName());
+    this.addFromPrimitivesToSymbolTable(symbolTableManager);
     const entityValues = this.getEntityValues();
     entityValues.addToSymbolTable(symbolTableManager);
   }

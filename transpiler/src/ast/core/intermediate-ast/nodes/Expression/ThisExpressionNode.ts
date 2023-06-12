@@ -1,5 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
-import { SymbolTable } from '../../../../../semantic-analysis/type-inference/SymbolTable.js';
+import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { TInferredTypes } from '../../../../../semantic-analysis/type-inference/types.js';
 import { MissingIdentifierError } from '../../../types.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
@@ -27,7 +27,8 @@ export class ThisExpressionNode extends ExpressionNode {
     return this.getIdentifierName();
   }
 
-  public override typeCheck(symbolTable: SymbolTable): void {
+  public override typeCheck(symbolTableManager: SymbolTableManager): void {
+    const symbolTable = symbolTableManager.getSymbolTable();
     const identifierName = this.getIdentifierName();
     const identifierType = symbolTable.lookup(identifierName);
     if (!identifierType) {

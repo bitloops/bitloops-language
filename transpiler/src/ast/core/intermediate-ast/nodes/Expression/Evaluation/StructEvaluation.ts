@@ -1,5 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../../../helpers/mappings.js';
-import { SymbolTable } from '../../../../../../semantic-analysis/type-inference/SymbolTable.js';
+import { SymbolTableManager } from '../../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { structIdentifierKey } from '../../../../../../types.js';
 import { TNodeMetadata } from '../../IntermediateASTNode.js';
 import { StructIdentifierNode } from '../../struct/StructIdentifierNode.js';
@@ -25,10 +25,10 @@ export class StructEvaluationNode extends EvaluationNode {
     return evaluationFields;
   }
 
-  public typeCheck(symbolTable: SymbolTable): void {
+  public typeCheck(symbolTableManager: SymbolTableManager): void {
     const evaluationFields = this.getEvaluationFields();
     evaluationFields.forEach((evaluationField) => {
-      evaluationField.getExpression().typeCheck(symbolTable);
+      evaluationField.getExpression().typeCheck(symbolTableManager);
     });
   }
 

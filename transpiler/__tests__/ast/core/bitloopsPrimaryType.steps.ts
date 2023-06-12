@@ -55,7 +55,6 @@ describe('Valid bitloops primary type', () => {
         }
       }
       const expectedNodeValues = testCase.type;
-      // const expectedNodeValues = getExpectedDTOOutput(testDTO.variables, testDTO.identifier);
       const value = resultTree.getCurrentNode().getValue();
 
       expect(value).toMatchObject(expectedNodeValues);

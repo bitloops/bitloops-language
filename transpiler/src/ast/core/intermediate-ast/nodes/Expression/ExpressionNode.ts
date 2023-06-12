@@ -1,5 +1,4 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
-import { SymbolTable } from '../../../../../semantic-analysis/type-inference/SymbolTable.js';
 import { TInferredTypes } from '../../../../../semantic-analysis/type-inference/types.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
 import { StatementNode } from '../statements/Statement.js';
@@ -233,10 +232,10 @@ export class ExpressionNode extends StatementNode {
     throw new Error('No expression found to get string value');
   }
 
-  public typeCheck(symbolTable: SymbolTable): void {
+  public typeCheck(symbolTableManager: SymbolTableManager): void {
     for (const child of this.getChildren()) {
       if (child instanceof ExpressionNode) {
-        child.typeCheck(symbolTable);
+        child.typeCheck(symbolTableManager);
       }
     }
   }
@@ -244,8 +243,7 @@ export class ExpressionNode extends StatementNode {
   public addToSymbolTable(symbolTableManager: SymbolTableManager, isMethodCall = false): void {
     for (const child of this.getChildren()) {
       if (child instanceof ExpressionNode) {
-        const symbolTable = symbolTableManager.getSymbolTable();
-        child.typeCheck(symbolTable);
+        child.typeCheck(symbolTableManager);
         return child.addToSymbolTable(symbolTableManager, isMethodCall);
       }
     }
