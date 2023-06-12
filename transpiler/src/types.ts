@@ -300,6 +300,14 @@ export type TIfStatement = {
   };
 };
 
+export type TForOfStatement = {
+  forOfStatement: {
+    expression: TExpressionValues;
+    statements: TStatements;
+    identifier: TIdentifier;
+  };
+};
+
 export type TEvaluationField = {
   evaluationField: { identifier: string } & TExpression;
 };
@@ -584,7 +592,8 @@ export type TStatement =
   | TConstDeclaration
   | TVariableDeclaration
   | TBuiltInFunction
-  | TExpression;
+  | TExpression
+  | TForOfStatement;
 
 export type TStatements = TStatement[];
 

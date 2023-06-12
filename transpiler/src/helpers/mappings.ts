@@ -223,11 +223,12 @@ const BitloopsTypesMapping = {
   TAnonymousFunction: 'TAnonymousFunction',
   TArrowFunctionBody: 'TArrowFunctionBody',
   TValueObjectConstructorEvaluation: 'TValueObjectConstructorEvaluation',
+  TForOfStatement: 'TForOfStatement',
 } as const;
 
 type TBitloopsTypesKeys = keyof typeof BitloopsTypesMapping;
 
-export type TBitloopsTypesValues = typeof BitloopsTypesMapping[TBitloopsTypesKeys];
+export type TBitloopsTypesValues = (typeof BitloopsTypesMapping)[TBitloopsTypesKeys];
 
 const ClassTypes = {
   RootEntity: 'RootEntity',
@@ -257,7 +258,7 @@ const ClassTypes = {
 
 type TClassTypesKeys = keyof typeof ClassTypes;
 
-export type TClassTypesValues = typeof ClassTypes[TClassTypesKeys];
+export type TClassTypesValues = (typeof ClassTypes)[TClassTypesKeys];
 
 export const mappingBitloopsBuiltInClassToLayer = {
   [BitloopsBuiltInClassNames.UUIDv4]: ArchitectureLayers.Domain,

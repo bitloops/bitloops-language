@@ -309,6 +309,7 @@ statement
     | switchStatement
     | returnStatement
     | builtInFunction // Using semantic analysis, allow it only inside domain
+    | iterationStatement
     ;
 
 builtInFunction
@@ -837,6 +838,11 @@ arrowFunctionBody
     : returnStatement SemiColon?
     | OpenBrace functionBody CloseBrace
     ;
+
+iterationStatement
+    : For OpenParen identifier Of expression CloseParen OpenBrace statementList CloseBrace  # ForOfStatement
+    ;
+
 
 literal
     : NullLiteral               # NullLiteral
