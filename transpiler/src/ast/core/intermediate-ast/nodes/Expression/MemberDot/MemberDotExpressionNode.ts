@@ -381,12 +381,6 @@ export class MemberDotExpressionNode extends ExpressionNode {
         const fieldTypes = propsNode.getFieldTypes();
         const fieldType = fieldTypes[rightExpressionString];
         if (!fieldType) {
-          console.log({
-            publicMethodTypes,
-            privateMethodTypes,
-            rightExpressionString,
-            isEntityProp,
-          });
           throw new MissingMemberError(rightExpressionString, leftType, this.getMetadata());
         }
         return fieldType.getInferredType();
