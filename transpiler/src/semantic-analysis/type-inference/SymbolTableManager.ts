@@ -22,6 +22,7 @@ export class SymbolTableManager {
     HANDLE: 'handle',
     IF_ERROR: 'ifError',
   };
+  public static readonly FROM_PRIMITIVES = 'fromPrimitives';
   private symbolTable: SymbolTable;
   private intermediateASTTree: IntermediateASTTree;
   private boundedContexts: TBoundedContexts;

@@ -329,6 +329,58 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
       .build(),
   },
   {
+    description: 'Should create symbol table for command handler using static method',
+    inputCore: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/symbol-table/command-handler-static-method.bl',
+    ),
+    inputSetup: FileUtil.readFileString(
+      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+    ),
+    expectedSymbolTable: new SymbolTableBuilder()
+      .insertChildScope(
+        'WithdrawMoneyCommandHandler',
+        new SymbolTableBuilder()
+          .insert('this', new ClassTypeThisSymbolEntry('WithdrawMoneyCommandHandler'))
+          .insert(
+            'this.integrationEventBus',
+            new ClassTypeParameterSymbolEntry('IntegrationEventBusPort'),
+          )
+          .insert('this.accountRepo', new ClassTypeParameterSymbolEntry('AccountWriteRepoPort'))
+          .insertChildScope(
+            'execute',
+            new SymbolTableBuilder()
+              .insert('command', new ParameterSymbolEntry('WithdrawMoneyCommand'))
+              .insert('command.accountId', new MemberDotSymbolEntry('string'))
+              .insert('command.amount', new MemberDotSymbolEntry('int32'))
+              .insert('command.metadata', new MemberDotSymbolEntry(METADATA_TYPE))
+              .insert('command.metadata.context', new MemberDotSymbolEntry(CONTEXT_TYPE))
+              .insert('command.metadata.context.jwt', new MemberDotSymbolEntry('string'))
+              .insert('command.metadata.context.userId', new MemberDotSymbolEntry('string'))
+              .insertVariableSymbolEntry('accountEntity', 'AccountEntity', true)
+              .insertVariableSymbolEntry('fromPrimitivesInput', 'FromPrimitivesInput', true),
+          ),
+      )
+      .insertChildScope('AccountWriteRepoPort', new SymbolTableBuilder())
+      .insertChildScope('AccountProps', new SymbolTableBuilder())
+      .insertChildScope('WithdrawMoneyCommand', new SymbolTableBuilder())
+      .insertChildScope(
+        'AccountEntity',
+        new SymbolTableBuilder()
+          .insert('this', new ClassTypeThisSymbolEntry('AccountEntity'))
+          .insert('fromPrimitives()', new MethodCallSymbolEntry('AccountEntity'))
+          .insertChildScope(
+            SCOPE_NAMES.DOMAIN_CREATE,
+            new SymbolTableBuilder().insert('props', new ParameterSymbolEntry('AccountProps')),
+          )
+          .insertChildScope(
+            'withdrawAmount',
+            new SymbolTableBuilder().insert('amount', new ParameterSymbolEntry('int32')),
+          ),
+      )
+      .insertChildScope('FromPrimitivesInput', new SymbolTableBuilder())
+      .build(),
+  },
+  {
     description: 'Should create symbol table for entity',
     inputCore: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/symbol-table/entity.bl',

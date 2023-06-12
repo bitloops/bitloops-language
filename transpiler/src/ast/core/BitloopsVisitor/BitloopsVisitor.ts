@@ -147,6 +147,7 @@ import {
   readModelEvaluationVisitor,
   domainEventEvaluationVisitor,
   packageEvaluationVisitor,
+  // staticMethodCallExpressionVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
@@ -1289,4 +1290,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     const envVar = enviromentVariableVisitor(this, ctx);
     return envVar;
   }
+
+  // visitStaticMethodCallExpression(
+  //   ctx: BitloopsParser.StaticMemberDotExpressionContext,
+  // ): ExpressionNode {
+  //   return staticMethodCallExpressionVisitor(this, ctx);
+  // }
 }

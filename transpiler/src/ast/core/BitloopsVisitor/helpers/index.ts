@@ -145,3 +145,4 @@ export {
 export { integrationEventEvaluationVisitor } from './integrationEventEvaluation.js';
 export { readModelEvaluationVisitor } from './readModelEvaluation.js';
 export { packageEvaluationVisitor } from './packageEvaluation.js';
+// export { staticMethodCallExpressionVisitor } from './expression/staticMethodCallExpression.js';

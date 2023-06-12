@@ -65,7 +65,7 @@ export const validMethodCallTestCases = [
   {
     description: 'Method call with 2 arguments',
     fileId: 'testFile.bl',
-    inputBLString: 'JestTestExpression { helloWorldCommandHandler.execute (dto, tismas)  }',
+    inputBLString: 'JestTestExpression { helloWorldCommandHandler.execute(dto, tismas)  }',
     expression: new ExpressionBuilderDirector().buildMethodCallExpression(
       new ExpressionBuilderDirector().buildMemberExpression(
         new ExpressionBuilderDirector().buildIdentifierExpression('helloWorldCommandHandler'),
@@ -76,6 +76,29 @@ export const validMethodCallTestCases = [
           new ArgumentBuilderDirector().buildIdentifierArgument('dto'),
           new ArgumentBuilderDirector().buildIdentifierArgument('tismas'),
         ],
+      },
+    ),
+  },
+];
+
+export const validStaticMethodCallTestCases = [
+  // {
+  //   description: 'Static Method call with no arguments',
+  //   fileId: 'testFile.bl',
+  //   inputBLString: 'JestTestExpression { ayyu.domeAfavor(kind) }',
+  //   expression: new ExpressionBuilderDirector().buildStaticMethodCallExpression('do', 'A', {
+  //     argumentList: [],
+  //   }),
+  // },
+  {
+    description: 'Static Method call with no arguments',
+    fileId: 'testFile.bl',
+    inputBLString: 'JestTestExpression { PersonEntity.fromPrimitives(something) }',
+    expression: new ExpressionBuilderDirector().buildStaticMethodCallExpression(
+      'do',
+      'PersonEntity',
+      {
+        argumentList: [],
       },
     ),
   },
