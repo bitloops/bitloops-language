@@ -21,21 +21,18 @@ import Transpiler from '../../src/Transpiler.js';
 import { BitloopsParser } from '../../src/parser/index.js';
 import { IntermediateASTParser } from '../../src/ast/core/index.js';
 import { TargetGenerator } from '../../src/target/index.js';
-import {
-  SYMBOL_TABLE_ALREADY_DECLARED_TEST_CASES,
-  SYMBOL_TABLE_CONSTANT_REASSIGNMENT_TEST_CASES,
-  SYMBOL_TABLE_FIND_TYPE_OF_KEYWORD_TEST_CASES,
-  SYMBOL_TABLE_MEMBER_NOT_DEFINED_TEST_CASES,
-  SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES,
-  SYMBOL_TABLE_TEST_CASES,
-} from './mocks/symbol-table/symbol-table.js';
+import { SYMBOL_TABLE_TEST_CASES } from './mocks/symbol-table/symbol-table.js';
+import { SYMBOL_TABLE_ALREADY_DECLARED_TEST_CASES } from './mocks/symbol-table/already-declared/index.js';
+import { SYMBOL_TABLE_CONSTANT_REASSIGNMENT_TEST_CASES } from './mocks/symbol-table/constant-reassignment/index.js';
+import { SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES } from './mocks/symbol-table/missing-identifiers/index.js';
+import { SYMBOL_TABLE_MEMBER_NOT_DEFINED_TEST_CASES } from './mocks/symbol-table/not-defined-member/index.js';
+import { SYMBOL_TABLE_FIND_TYPE_OF_KEYWORD_TEST_CASES } from './mocks/symbol-table/type-of-keyword/index.js';
 
 describe('Symbol table cases', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
 
-  SYMBOL_TABLE_TEST_CASES.forEach((testCase, index) => {
-    if (index !== 4) return;
+  SYMBOL_TABLE_TEST_CASES.forEach((testCase, _index) => {
     const parser = new BitloopsParser();
     const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
     const intermediateASTModelToTargetLanguageGenerator = new TargetGenerator();

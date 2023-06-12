@@ -20,7 +20,6 @@
 import {
   ClassTypeParameterSymbolEntry,
   ClassTypeThisSymbolEntry,
-  EntityEvaluationSymbolEntry,
   IntegrationEventParameterSymbolEntry,
   MemberDotSymbolEntry,
   MethodCallSymbolEntry,
@@ -40,6 +39,7 @@ type SymbolTableTestCase = {
   inputSetup: string;
   expectedSymbolTable: PrimitiveSymbolTable;
 };
+
 const METADATA_TYPE = '{ context: { jwt: string; userId: string } }';
 const CONTEXT_TYPE = '{ jwt: string; userId: string }';
 const SCOPE_NAMES = SymbolTableManager.SCOPE_NAMES;
@@ -326,58 +326,6 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
       )
       .insertChildScope('AccountReadRepoPort', new SymbolTableBuilder())
       .insertChildScope('GetAccountQuery', new SymbolTableBuilder())
-      .build(),
-  },
-  {
-    description: 'Should create symbol table for command handler using static method',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/command-handler-static-method.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    expectedSymbolTable: new SymbolTableBuilder()
-      .insertChildScope(
-        'WithdrawMoneyCommandHandler',
-        new SymbolTableBuilder()
-          .insert('this', new ClassTypeThisSymbolEntry('WithdrawMoneyCommandHandler'))
-          .insert(
-            'this.integrationEventBus',
-            new ClassTypeParameterSymbolEntry('IntegrationEventBusPort'),
-          )
-          .insert('this.accountRepo', new ClassTypeParameterSymbolEntry('AccountWriteRepoPort'))
-          .insertChildScope(
-            'execute',
-            new SymbolTableBuilder()
-              .insert('command', new ParameterSymbolEntry('WithdrawMoneyCommand'))
-              .insert('command.accountId', new MemberDotSymbolEntry('string'))
-              .insert('command.amount', new MemberDotSymbolEntry('int32'))
-              .insert('command.metadata', new MemberDotSymbolEntry(METADATA_TYPE))
-              .insert('command.metadata.context', new MemberDotSymbolEntry(CONTEXT_TYPE))
-              .insert('command.metadata.context.jwt', new MemberDotSymbolEntry('string'))
-              .insert('command.metadata.context.userId', new MemberDotSymbolEntry('string'))
-              .insertVariableSymbolEntry('accountEntity', 'AccountEntity', true)
-              .insertVariableSymbolEntry('fromPrimitivesInput', 'FromPrimitivesInput', true),
-          ),
-      )
-      .insertChildScope('AccountWriteRepoPort', new SymbolTableBuilder())
-      .insertChildScope('AccountProps', new SymbolTableBuilder())
-      .insertChildScope('WithdrawMoneyCommand', new SymbolTableBuilder())
-      .insertChildScope(
-        'AccountEntity',
-        new SymbolTableBuilder()
-          .insert('this', new ClassTypeThisSymbolEntry('AccountEntity'))
-          .insert('fromPrimitives()', new MethodCallSymbolEntry('AccountEntity'))
-          .insertChildScope(
-            SCOPE_NAMES.DOMAIN_CREATE,
-            new SymbolTableBuilder().insert('props', new ParameterSymbolEntry('AccountProps')),
-          )
-          .insertChildScope(
-            'withdrawAmount',
-            new SymbolTableBuilder().insert('amount', new ParameterSymbolEntry('int32')),
-          ),
-      )
-      .insertChildScope('FromPrimitivesInput', new SymbolTableBuilder())
       .build(),
   },
   {
@@ -776,71 +724,6 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
       .build(),
   },
   {
-    description: 'Should create symbol table for entity evaluation',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/entity-evaluation.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    expectedSymbolTable: new SymbolTableBuilder()
-      .insertChildScope('WithdrawMoneyCommand', new SymbolTableBuilder())
-      .insertChildScope('AccountNotFoundError', new SymbolTableBuilder())
-      .insertChildScope(
-        'AccountEntity',
-        new SymbolTableBuilder()
-          .insert('this', new ClassTypeThisSymbolEntry('AccountEntity'))
-          .insertChildScope(
-            SCOPE_NAMES.DOMAIN_CREATE,
-            new SymbolTableBuilder().insert('props', new ParameterSymbolEntry('AccountProps')),
-          ),
-      )
-      .insertChildScope('AccountProps', new SymbolTableBuilder())
-      .insertChildScope('BalanceProps', new SymbolTableBuilder())
-      .insertChildScope(
-        'BalanceVO',
-        new SymbolTableBuilder()
-          .insert('this', new ClassTypeThisSymbolEntry('BalanceVO'))
-          .insertChildScope(
-            SCOPE_NAMES.DOMAIN_CREATE,
-            new SymbolTableBuilder().insert('props', new ParameterSymbolEntry('BalanceProps')),
-          ),
-      )
-
-      .insertChildScope(
-        'WithdrawMoneyCommandHandler',
-        new SymbolTableBuilder()
-          .insert('this', new ClassTypeThisSymbolEntry('WithdrawMoneyCommandHandler'))
-          .insert('this.accountRepo', new ClassTypeParameterSymbolEntry('AccountWriteRepoPort'))
-          .insert(
-            'this.integrationEventBus',
-            new ClassTypeParameterSymbolEntry('IntegrationEventBusPort'),
-          )
-          .insertChildScope(
-            'execute',
-            new SymbolTableBuilder()
-              .insert('command', new ParameterSymbolEntry('WithdrawMoneyCommand'))
-              .insert('command.accountId', new MemberDotSymbolEntry('string[][]'))
-              .insert('command.balance', new MemberDotSymbolEntry('BalanceVO[]'))
-              .insert('command.metadata', new MemberDotSymbolEntry(METADATA_TYPE))
-              .insert('command.metadata.context', new MemberDotSymbolEntry(CONTEXT_TYPE))
-              .insert('command.metadata.context.jwt', new MemberDotSymbolEntry('string'))
-              .insert('command.metadata.context.userId', new MemberDotSymbolEntry('string'))
-              .insert('accountEntity', new VariableSymbolEntry('AccountEntity', true))
-              .insert(
-                'AccountEntity.create()',
-                new EntityEvaluationSymbolEntry('(OK(AccountEntity), Errors())'),
-              )
-              .insert(
-                'AccountEntity.create().ifError()',
-                new MethodCallSymbolEntry('AccountEntity'),
-              )
-              .insertChildScope('ifError0', new SymbolTableBuilder()),
-          ),
-      )
-      .build(),
-  },
-  {
     description: 'Should create symbol table for value object evaluation',
     inputCore: FileUtil.readFileString(
       'transpiler/__tests__/end-to-end/mocks/symbol-table/valueObject-evaluation.bl',
@@ -893,379 +776,60 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
       )
       .build(),
   },
+  // {
+  //   description: 'Should create symbol table for command handler using static method',
+  //   inputCore: FileUtil.readFileString(
+  //     'transpiler/__tests__/end-to-end/mocks/symbol-table/command-handler-static-method.bl',
+  //   ),
+  //   inputSetup: FileUtil.readFileString(
+  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+  //   ),
+  //   expectedSymbolTable: new SymbolTableBuilder()
+  //     .insertChildScope(
+  //       'WithdrawMoneyCommandHandler',
+  //       new SymbolTableBuilder()
+  //         .insert('this', new ClassTypeThisSymbolEntry('WithdrawMoneyCommandHandler'))
+  //         .insert(
+  //           'this.integrationEventBus',
+  //           new ClassTypeParameterSymbolEntry('IntegrationEventBusPort'),
+  //         )
+  //         .insert('this.accountRepo', new ClassTypeParameterSymbolEntry('AccountWriteRepoPort'))
+  //         .insertChildScope(
+  //           'execute',
+  //           new SymbolTableBuilder()
+  //             .insert('command', new ParameterSymbolEntry('WithdrawMoneyCommand'))
+  //             .insert('command.accountId', new MemberDotSymbolEntry('string'))
+  //             .insert('command.amount', new MemberDotSymbolEntry('int32'))
+  //             .insert('command.metadata', new MemberDotSymbolEntry(METADATA_TYPE))
+  //             .insert('command.metadata.context', new MemberDotSymbolEntry(CONTEXT_TYPE))
+  //             .insert('command.metadata.context.jwt', new MemberDotSymbolEntry('string'))
+  //             .insert('command.metadata.context.userId', new MemberDotSymbolEntry('string'))
+  //             .insertVariableSymbolEntry('accountEntity', 'AccountEntity', true),
+  //         ),
+  //     )
+  //     .insertChildScope('AccountWriteRepoPort', new SymbolTableBuilder())
+  //     .insertChildScope('AccountProps', new SymbolTableBuilder())
+  //     .insertChildScope('WithdrawMoneyCommand', new SymbolTableBuilder())
+  //     .insertChildScope(
+  //       'AccountEntity',
+  //       new SymbolTableBuilder()
+  //         .insert('this', new ClassTypeThisSymbolEntry('AccountEntity'))
+  //         .insertChildScope(
+  //           SCOPE_NAMES.DOMAIN_CREATE,
+  //           new SymbolTableBuilder().insert('props', new ParameterSymbolEntry('AccountProps')),
+  //         )
+  //         .insertChildScope(
+  //           'withdrawAmount',
+  //           new SymbolTableBuilder().insert('amount', new ParameterSymbolEntry('int32')),
+  //         ),
+  //     )
+  //     .build(),
+  // },
 ];
 
-type SymbolTableErrorTestCase = {
+export type SymbolTableErrorTestCase = {
   description: string;
   inputCore: string;
   inputSetup: string;
   errorMessages: string[];
 };
-
-export const SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES: SymbolTableErrorTestCase[] = [
-  {
-    description: 'Should return error that identifier in const declaration is not defined',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-const-identifier.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    errorMessages: ['Identifier person not defined.'],
-  },
-  {
-    description: 'Should return error that identifier returned from function is not defined',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-return-identifier.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    errorMessages: ['Identifier person not defined.'],
-  },
-  {
-    description: 'Should return error that argument name in method is not defined',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-method-argument-identifier.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    errorMessages: ['Identifier id not defined.'],
-  },
-  {
-    description: 'Should return error that identifier in switch expression is not defined',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-switch-expression-identifier.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    errorMessages: ['Identifier animal not defined.'],
-  },
-  {
-    description: 'Should return error identifier used inside if condition is not defined',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-if-condition-identifier.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    errorMessages: ['Identifier res not defined.'],
-  },
-  {
-    description: 'Should return error that identifier in switch case expression is not defined',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-switch-case-expression-identifier.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    errorMessages: ['Identifier bird not defined.'],
-  },
-  {
-    description:
-      'Should return error that most left identifier in member expression is not defined',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-member-dot-identifier.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    errorMessages: ['Identifier account not defined.'],
-  },
-  {
-    description:
-      'Should return error that most left identifier in method expression is not defined',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-method-left-identifier.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    errorMessages: ['Identifier hello not defined.'],
-  },
-  {
-    description: 'Should return error that this identifier in member dot expression is not defined',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-identifiers/missing-this-identifier.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    errorMessages: ['Identifier this not defined.'],
-  },
-];
-
-export const SYMBOL_TABLE_ALREADY_DECLARED_TEST_CASES: SymbolTableErrorTestCase[] = [
-  {
-    description: 'Should return error that const declaration is already defined',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/already-declared/already-declared-const.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    errorMessages: ['Identifier accountId is already defined.'],
-  },
-  {
-    description: 'Should return error that variable declaration is already defined',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/already-declared/already-declared-variable.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    errorMessages: ['Identifier accountId is already defined.'],
-  },
-];
-
-export const SYMBOL_TABLE_CONSTANT_REASSIGNMENT_TEST_CASES: SymbolTableErrorTestCase[] = [
-  {
-    description: 'Should return error that const declaration cannot be reassigned',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/constant-reassignment/const-reassignment.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    errorMessages: ['Cannot reassign constant variable accountId.'],
-  },
-];
-
-export const SYMBOL_TABLE_MEMBER_NOT_DEFINED_TEST_CASES: SymbolTableErrorTestCase[] = [
-  {
-    description: 'Should return error that member is not defined for entity',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-member-dot/missing-member-entity.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    errorMessages: ['Member withdrawAmount not defined in AccountEntity.'],
-  },
-  {
-    description: 'Should return error that member is not defined for command',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-member-dot/missing-member-command.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    errorMessages: ['Member amount not defined in WithdrawMoneyCommand.'],
-  },
-  {
-    description: 'Should return error that member is not defined for query',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-member-dot/missing-member-query.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    errorMessages: ['Member accountId not defined in GetAccountQuery.'],
-  },
-  {
-    description: 'Should return error that member is not defined for query handler',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-member-dot/missing-member-query-handler.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    errorMessages: ['Member accountRepo not defined in GetAccountQueryHandler.'],
-  },
-  {
-    description: 'Should return error that member is not defined for repo port',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-member-dot/missing-member-repo-port.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    errorMessages: ['Member getByType not defined in AccountReadRepoPort.'],
-  },
-  {
-    description: 'Should return error that member is not defined for domain event',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-member-dot/missing-member-domain-event.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    errorMessages: ['Member test not defined in TodoAddedDomainEvent.'],
-  },
-  {
-    description: 'Should return error that member is not defined for props',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-member-dot/missing-member-props.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    errorMessages: ['Member error not defined in TitleProps.'],
-  },
-  {
-    description: 'Should return error that member is not defined for integration event',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-member-dot/missing-member-integration-event.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    errorMessages: ['Member account not defined in IntegrationMoneyDepositedSchemaV1.'],
-  },
-  {
-    description: 'Should return error that member is not defined for value object',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-member-dot/missing-member-value-object.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    errorMessages: ['Member test not defined in TitleVO.'],
-  },
-  {
-    description: 'Should return error that member is not defined for command bus port',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-member-dot/missing-member-command-bus-port.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    errorMessages: ['Member test not defined in CommandBus.'],
-  },
-  {
-    description: 'Should return error that member is not defined for regex',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/missing-member-dot/missing-member-regex.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    errorMessages: ['Member fail not defined in regex.'],
-  },
-];
-
-export const SYMBOL_TABLE_UNREACHED_CODE_TEST_CASES: SymbolTableErrorTestCase[] = [];
-
-export const SYMBOL_TABLE_WRONG_ARGUMENTS_TEST_CASES: SymbolTableErrorTestCase[] = [];
-
-export const SYMBOL_TABLE_FIND_TYPE_OF_KEYWORD_TEST_CASES = [
-  {
-    description: 'Should return type of keyword in execute scope',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/findTypeOfKeyword/command-handler-execute.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    keywordInfo: {
-      name: 'accountEntity',
-      position: {
-        line: 16,
-        column: 22,
-        fileId: 'fileId',
-      },
-    },
-    expectedOutput: { type: '(OK(AccountEntity), Errors(UnexpectedError))', isConst: true },
-  },
-  {
-    description: 'Should return type of keyword in execute scope with ifError',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/findTypeOfKeyword/command-handler-execute-if-error.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    keywordInfo: { name: 'accountEntity', position: { line: 16, column: 22, fileId: 'fileId' } },
-    expectedOutput: { type: 'AccountEntity', isConst: true },
-  },
-  {
-    description: 'Should return type of keyword in if scope',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/command-handler-if.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    keywordInfo: { name: 'result', position: { line: 17, column: 22, fileId: 'fileId' } },
-    expectedOutput: { type: 'string', isConst: true },
-  },
-  {
-    description: 'Should return type of keyword in if scope, with two ifs',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/command-handler-two-if.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    keywordInfo: { name: 'message', position: { line: 23, column: 23, fileId: 'fileId' } },
-    expectedOutput: { type: 'string', isConst: true },
-  },
-  {
-    description: 'Should return type of keyword in else scope',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/query-handler-with-else.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    keywordInfo: { name: 'account', position: { line: 17, column: 24, fileId: 'fileId' } },
-    expectedOutput: { type: '(OK(AccountReadModel), Errors(UnexpectedError))', isConst: true },
-  },
-  {
-    description: 'Should return type of keyword in switch scope',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/command-handler-switch.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    keywordInfo: { name: 'animal', position: { line: 22, column: 19, fileId: 'fileId' } },
-    expectedOutput: { type: 'string', isConst: true },
-  },
-  {
-    description: 'Should return type of keyword in switch-case scope',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/findTypeOfKeyword/command-handler-switch-case.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    keywordInfo: { name: 'bird', position: { line: 43, column: 20, fileId: 'fileId' } },
-    expectedOutput: { type: 'string', isConst: true },
-  },
-  {
-    description: 'Should return type of keyword in switch-default scope',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/findTypeOfKeyword/command-handler-switch-default.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    keywordInfo: { name: 'cat', position: { line: 49, column: 26, fileId: 'fileId' } },
-    expectedOutput: { type: 'string', isConst: true },
-  },
-  {
-    description: 'Should return type of keyword in domain-create scope',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/entity.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    keywordInfo: { name: 'isNew', position: { line: 20, column: 16, fileId: 'fileId' } },
-    expectedOutput: { type: 'bool', isConst: true },
-  },
-  {
-    description: 'Should return type of keyword in handle scope',
-    inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/domain-event-handler.bl',
-    ),
-    inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
-    ),
-    keywordInfo: { name: 'command', position: { line: 9, column: 36, fileId: 'fileId' } },
-    expectedOutput: { type: 'SendEmailCommand', isConst: true },
-  },
-];

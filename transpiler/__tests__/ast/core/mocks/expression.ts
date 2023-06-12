@@ -82,23 +82,14 @@ export const validMethodCallTestCases = [
 ];
 
 export const validStaticMethodCallTestCases = [
-  // {
-  //   description: 'Static Method call with no arguments',
-  //   fileId: 'testFile.bl',
-  //   inputBLString: 'JestTestExpression { ayyu.domeAfavor(kind) }',
-  //   expression: new ExpressionBuilderDirector().buildStaticMethodCallExpression('do', 'A', {
-  //     argumentList: [],
-  //   }),
-  // },
   {
     description: 'Static Method call with no arguments',
     fileId: 'testFile.bl',
-    inputBLString: 'JestTestExpression { PersonEntity.fromPrimitives(something) }',
-    expression: new ExpressionBuilderDirector().buildStaticMethodCallExpression(
-      'do',
-      'PersonEntity',
+    inputBLString: 'JestTestExpression { PersonEntity.buildHabits(command.amount) }',
+    expression: new ExpressionBuilderDirector().buildMemberDotMethodCallExpression(
+      ['PersonEntity', 'buildHabits'],
       {
-        argumentList: [],
+        argumentList: [new ArgumentBuilderDirector().buildMemberDotArgument(['command', 'amount'])],
       },
     ),
   },

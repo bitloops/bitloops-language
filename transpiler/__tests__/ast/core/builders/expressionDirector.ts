@@ -184,17 +184,6 @@ export class ExpressionBuilderDirector {
     };
   }
 
-  buildStaticMemberDotExpression(identifier: string, className: string): TExpression {
-    return {
-      expression: {
-        staticMemberDotExpression: {
-          identifier,
-          className,
-        },
-      },
-    };
-  }
-
   buildGetClassExpression(expression: TExpression): TExpression {
     return {
       expression: {
@@ -223,18 +212,6 @@ export class ExpressionBuilderDirector {
       argumentList,
     );
   }
-
-  buildStaticMethodCallExpression(
-    identifier: string,
-    className: string,
-    argumentList: TArgumentList,
-  ): TExpression {
-    return this.buildMethodCallExpression(
-      this.buildStaticMemberDotExpression(identifier, className),
-      argumentList,
-    );
-  }
-
   buildIsInstanceOfExpression(
     expression: TExpression,
     className: TBitloopsPrimaryType,
