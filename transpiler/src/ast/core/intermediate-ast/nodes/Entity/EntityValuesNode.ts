@@ -58,26 +58,22 @@ export class EntityValuesNode extends IntermediateASTNode {
 
   public getPublicMethodTypes(): Record<string, BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode> {
     const publicMethods = this.getPublicMethods();
-    let publicMethodTypes: Record<string, BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode> = {};
+    const publicMethodTypes: Record<string, BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode> = {};
     for (const publicMethod of publicMethods) {
       const publicMethodType = publicMethod.getReturnType();
-      publicMethodTypes = {
-        ...publicMethodTypes,
-        [publicMethod.getMethodName()]: publicMethodType,
-      };
+      const methodName = publicMethod.getMethodName();
+      publicMethodTypes[methodName] = publicMethodType;
     }
     return publicMethodTypes;
   }
 
   public getPrivateMethodTypes(): Record<string, BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode> {
     const privateMethods = this.getPrivateMethods();
-    let privateMethodTypes: Record<string, BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode> = {};
+    const privateMethodTypes: Record<string, BitloopsPrimaryTypeNode | ReturnOkErrorTypeNode> = {};
     for (const privateMethod of privateMethods) {
       const privateMethodType = privateMethod.getReturnType();
-      privateMethodTypes = {
-        ...privateMethodType,
-        [privateMethod.getMethodName()]: privateMethodType,
-      };
+      const methodName = privateMethod.getMethodName();
+      privateMethodTypes[methodName] = privateMethodType;
     }
     return privateMethodTypes;
   }
@@ -95,6 +91,8 @@ export class EntityValuesNode extends IntermediateASTNode {
     const domainCreate = this.getDomainCreateMethod();
     domainCreate.addToSymbolTable(symbolTableManager);
 
+    this.registerMethods(symbolTableManager);
+
     const privateMethodList = this.getPrivateMethodList();
     if (privateMethodList) {
       privateMethodList.addToSymbolTable(symbolTableManager);
@@ -103,6 +101,30 @@ export class EntityValuesNode extends IntermediateASTNode {
     const publicMethodList = this.getPublicMethodList();
     if (publicMethodList) {
       publicMethodList.addToSymbolTable(symbolTableManager);
+    }
+  }
+
+  private registerMethods(symbolTableManager: SymbolTableManager): void {
+    const initialSymbolTable = symbolTableManager.getSymbolTable();
+
+    const privateMethodList = this.getPrivateMethodList();
+    if (privateMethodList) {
+      for (const privateMethod of privateMethodList.getPrivateMethodNodes()) {
+        const methodName = privateMethod.getIdentifier();
+        console.log('private method name', methodName);
+        symbolTableManager.createSymbolTableChildScope(methodName, privateMethod);
+        symbolTableManager.setCurrentSymbolTable(initialSymbolTable);
+      }
+    }
+
+    const publicMethodList = this.getPublicMethodList();
+    if (publicMethodList) {
+      for (const publicMethod of publicMethodList.publicMethods) {
+        const methodName = publicMethod.getMethodName();
+        console.log('public method name', methodName);
+        symbolTableManager.createSymbolTableChildScope(methodName, publicMethod);
+        symbolTableManager.setCurrentSymbolTable(initialSymbolTable);
+      }
     }
   }
 }
