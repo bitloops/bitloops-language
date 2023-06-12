@@ -111,7 +111,6 @@ export class EntityValuesNode extends IntermediateASTNode {
     if (privateMethodList) {
       for (const privateMethod of privateMethodList.getPrivateMethodNodes()) {
         const methodName = privateMethod.getIdentifier();
-        console.log('private method name', methodName);
         symbolTableManager.createSymbolTableChildScope(methodName, privateMethod);
         symbolTableManager.setCurrentSymbolTable(initialSymbolTable);
       }
@@ -121,7 +120,6 @@ export class EntityValuesNode extends IntermediateASTNode {
     if (publicMethodList) {
       for (const publicMethod of publicMethodList.publicMethods) {
         const methodName = publicMethod.getMethodName();
-        console.log('public method name', methodName);
         symbolTableManager.createSymbolTableChildScope(methodName, publicMethod);
         symbolTableManager.setCurrentSymbolTable(initialSymbolTable);
       }
