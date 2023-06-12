@@ -183,6 +183,7 @@ export class ExpressionBuilderDirector {
       },
     };
   }
+
   buildGetClassExpression(expression: TExpression): TExpression {
     return {
       expression: {

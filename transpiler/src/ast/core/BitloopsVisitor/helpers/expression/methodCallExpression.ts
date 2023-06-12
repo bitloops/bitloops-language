@@ -20,7 +20,7 @@
 
 import BitloopsParser from '../../../../../parser/core/grammar/BitloopsParser.js';
 import BitloopsVisitor from '../../BitloopsVisitor.js';
-import { MethodCallExpressionNodeBuilder } from '../../../intermediate-ast/builders/expressions/methodCallExprBuilder.js';
+import { MethodCallExpressionNodeBuilder } from '../../../intermediate-ast/builders/expressions/methodCallExpressionNodeBuilder.js';
 import { ExpressionNode } from '../../../intermediate-ast/nodes/Expression/ExpressionNode.js';
 import { ExpressionBuilder } from '../../../intermediate-ast/builders/expressions/ExpressionBuilder.js';
 import { produceMetadata } from '../../metadata.js';

@@ -309,6 +309,7 @@ statement
     | switchStatement
     | returnStatement
     | builtInFunction // Using semantic analysis, allow it only inside domain
+    | iterationStatement
     ;
 
 builtInFunction
@@ -805,8 +806,8 @@ argument
 expression
     : Not expression                                             # NotExpression
     | OpenParen expression CloseParen                            # ParenthesizedExpression
-    | expression Dot regularIdentifier                           # MemberDotExpression
     | expression methodArguments                                 # MethodCallExpression
+    | expression Dot regularIdentifier                           # MemberDotExpression
     | expression Dot GetClass OpenParen CloseParen               # GetClassExpression
     | expression Dot ToString OpenParen CloseParen               # ToStringExpression
     | expression op=('*' | '/' | '%') expression                 # MultiplicativeExpression
@@ -837,6 +838,11 @@ arrowFunctionBody
     : returnStatement SemiColon?
     | OpenBrace functionBody CloseBrace
     ;
+
+iterationStatement
+    : For OpenParen identifier Of expression CloseParen OpenBrace statementList CloseBrace  # ForOfStatement
+    ;
+
 
 literal
     : NullLiteral               # NullLiteral

@@ -140,6 +140,7 @@ Default:                        'default';
 If:                             'if';
 Throw:                          'throw';
 In:                             'in';
+Of:                             'of';
 Try:                            'try';
 As:                             'as';
 From:                           'from';

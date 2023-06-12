@@ -1,5 +1,4 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
-import { SymbolTable } from '../../../../../semantic-analysis/type-inference/SymbolTable.js';
 import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { ArgumentListNode } from '../ArgumentList/ArgumentListNode.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
@@ -100,9 +99,9 @@ export class MethodCallExpressionNode extends ExpressionNode {
     return leftStringValue + '()';
   }
 
-  public override typeCheck(symbolTable: SymbolTable): void {
+  public override typeCheck(symbolTableManager: SymbolTableManager): void {
     const expressionNode = this.getExpressionValues();
-    expressionNode.typeCheck(symbolTable);
+    expressionNode.typeCheck(symbolTableManager);
 
     const argumentList = this.getChildNodeByType<ArgumentListNode>(
       BitloopsTypesMapping.TArgumentList,
@@ -112,7 +111,7 @@ export class MethodCallExpressionNode extends ExpressionNode {
 
     for (const argument of argumentNodes) {
       const expression = argument.getExpression();
-      expression.typeCheck(symbolTable);
+      expression.typeCheck(symbolTableManager);
     }
   }
 

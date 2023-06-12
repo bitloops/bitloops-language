@@ -54,7 +54,6 @@ describe('Dto evaluation is valid', () => {
         }
       }
       const expectedNodeValues = testCase.evaluation;
-      // const expectedNodeValues = getExpectedDTOOutput(testDTO.variables, testDTO.identifier);
       const value = resultTree.getCurrentNode().getValue();
 
       expect(value).toMatchObject(expectedNodeValues);

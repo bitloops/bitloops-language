@@ -8,7 +8,7 @@ import { EntityValuesNode } from '../Entity/EntityValuesNode.js';
 import { PublicMethodDeclarationNode } from '../methods/PublicMethodDeclarationNode.js';
 import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 
-//fix this and entity to be extendable from a base class
+//TODO fix this and entity to be extendable from a base class
 export class RootEntityDeclarationNode extends ClassTypeNode {
   private static classType = ClassTypes.RootEntity;
   private static classNodeName = RootEntityKey;

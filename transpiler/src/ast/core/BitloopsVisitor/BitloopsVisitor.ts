@@ -147,6 +147,8 @@ import {
   readModelEvaluationVisitor,
   domainEventEvaluationVisitor,
   packageEvaluationVisitor,
+  forOfStatementVisitor,
+  // staticMethodCallExpressionVisitor,
 } from './helpers/index.js';
 import { optionalVisitor } from './helpers/optional.js';
 import { produceMetadata } from './metadata.js';
@@ -249,6 +251,7 @@ import { anonymousFunctionVisitor } from './helpers/anonymousFunctionVisitor.js'
 import { arrowFunctionBodyVisitor } from './helpers/arrowFunctionBodyVisitor.js';
 import { valueObjectConstructorEvaluationVisitor } from './helpers/expression/evaluation/valueObejctConstructorEvaluation.js';
 import { ArgumentListNode } from '../intermediate-ast/nodes/ArgumentList/ArgumentListNode.js';
+import { ForOfStatementNode } from '../intermediate-ast/nodes/statements/ForOfStatementNode.js';
 
 export type TContextInfo = {
   boundedContextName: string;
@@ -883,6 +886,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     return returnStatementNode;
   }
 
+  visitForOfStatement(ctx: BitloopsParser.ForOfStatementContext): ForOfStatementNode {
+    return forOfStatementVisitor(this, ctx);
+  }
+
   /**
    * Errors
    */
@@ -1289,4 +1296,10 @@ export default class BitloopsVisitor extends BitloopsParserVisitor {
     const envVar = enviromentVariableVisitor(this, ctx);
     return envVar;
   }
+
+  // visitStaticMethodCallExpression(
+  //   ctx: BitloopsParser.StaticMemberDotExpressionContext,
+  // ): ExpressionNode {
+  //   return staticMethodCallExpressionVisitor(this, ctx);
+  // }
 }

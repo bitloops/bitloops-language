@@ -1,0 +1,5 @@
+JestTestStatement { 
+    for (elem of elements) {
+        return elem;
+    } 
+}

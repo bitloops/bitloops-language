@@ -126,13 +126,13 @@ export const bitloopsPrimitivesObj = ArrayUtils.toObject<TBitloopsPrimitives>([
   ...bitloopsPrimitives,
 ]);
 
-export type TBitloopsPrimitives = typeof bitloopsPrimitives[number]; //'string' | 'bool' | 'number';
+export type TBitloopsPrimitives = (typeof bitloopsPrimitives)[number]; //'string' | 'bool' | 'number';
 
 export const BitloopsBuiltInClassNames = {
   UUIDv4: 'UUIDv4',
 } as const;
 export const bitloopsBuiltInClasses = [BitloopsBuiltInClassNames.UUIDv4] as const;
-export type TBitloopsBuiltInClasses = typeof bitloopsBuiltInClasses[number];
+export type TBitloopsBuiltInClasses = (typeof bitloopsBuiltInClasses)[number];
 
 export type TBitloopsIdentifier = string;
 
@@ -300,6 +300,14 @@ export type TIfStatement = {
   };
 };
 
+export type TForOfStatement = {
+  forOfStatement: {
+    expression: TExpressionValues;
+    statements: TStatements;
+    identifier: TIdentifier;
+  };
+};
+
 export type TEvaluationField = {
   evaluationField: { identifier: string } & TExpression;
 };
@@ -410,6 +418,7 @@ export type TExpressionValues =
   | TMethodCallExpression
   | TThisExpression
   | TMemberDotExpression
+  | TStaticMemberDotExpression
   | TAssignmentExpression
   | TInstanceOf
   | TGetClass
@@ -439,6 +448,13 @@ export type TAssignmentExpression = {
 export type TMemberDotExpression = {
   memberDotExpression: TExpression & {
     identifier: string;
+  };
+};
+
+export type TStaticMemberDotExpression = {
+  staticMemberDotExpression: {
+    identifier: string;
+    className: string;
   };
 };
 
@@ -576,7 +592,8 @@ export type TStatement =
   | TConstDeclaration
   | TVariableDeclaration
   | TBuiltInFunction
-  | TExpression;
+  | TExpression
+  | TForOfStatement;
 
 export type TStatements = TStatement[];
 

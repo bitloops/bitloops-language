@@ -94,8 +94,7 @@ export class EvaluationNode extends ExpressionNode {
     }
     for (const child of this.getChildren()) {
       if (child instanceof EvaluationNode) {
-        const symbolTable = symbolTableManager.getSymbolTable();
-        child.typeCheck(symbolTable);
+        child.typeCheck(symbolTableManager);
         return child.addToSymbolTable(symbolTableManager);
       }
     }

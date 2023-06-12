@@ -17,32 +17,32 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-
-import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
-import { validBitloopsPrimaryTypeTestCases } from './mocks/bitloopsPrimaryType.js';
 import { BitloopsParser } from '../../../src/parser/index.js';
-import { isParserErrors } from '../../../src/parser/core/guards/index.js';
 import { IntermediateASTParser } from '../../../src/ast/core/index.js';
+import { BitloopsTypesMapping } from '../../../src/helpers/mappings.js';
+import { IntermediateASTTree } from '../../../src/ast/core/intermediate-ast/IntermediateASTTree.js';
 import { isIntermediateASTValidationErrors } from '../../../src/ast/core/guards/index.js';
+import { isParserErrors } from '../../../src/parser/core/guards/index.js';
+import { validForOfStatementTestCases } from './mocks/statements/for-of/forOfStatement.js';
 
 const BOUNDED_CONTEXT = 'Hello World';
 const MODULE = 'core';
 
-describe('Valid bitloops primary type', () => {
+describe('For Of Statement is valid', () => {
   let resultTree: IntermediateASTTree;
 
   const parser = new BitloopsParser();
   const intermediateParser = new IntermediateASTParser();
 
-  validBitloopsPrimaryTypeTestCases.forEach((testCase) => {
-    test(`${testCase.description}`, () => {
+  validForOfStatementTestCases.forEach((forOfStatement) => {
+    test(`${forOfStatement.description}`, () => {
       const initialModelOutput = parser.parse({
         core: [
           {
             boundedContext: BOUNDED_CONTEXT,
             module: MODULE,
-            fileId: testCase.fileId,
-            fileContents: testCase.inputBLString,
+            fileId: forOfStatement.fileId,
+            fileContents: forOfStatement.inputBLString,
           },
         ],
       });
@@ -50,14 +50,16 @@ describe('Valid bitloops primary type', () => {
       if (!isParserErrors(initialModelOutput)) {
         const result = intermediateParser.parse(initialModelOutput);
         if (!isIntermediateASTValidationErrors(result)) {
-          const { core } = result;
-          resultTree = core[BOUNDED_CONTEXT].core;
+          resultTree = result.core[BOUNDED_CONTEXT][MODULE];
         }
       }
-      const expectedNodeValues = testCase.type;
-      const value = resultTree.getCurrentNode().getValue();
 
-      expect(value).toMatchObject(expectedNodeValues);
+      const propsNodes = resultTree.getRootChildrenNodesByType(
+        BitloopsTypesMapping.TForOfStatement,
+      );
+      const value = propsNodes[0].getValue();
+
+      expect(value).toMatchObject(forOfStatement.expectedForOfStatement);
     });
   });
 });

@@ -7,7 +7,6 @@ import {
   IntegrationEventParameterSymbolEntry,
   SymbolEntry,
 } from '../../../../../../semantic-analysis/type-inference/SymbolEntry.js';
-import { SymbolTable } from '../../../../../../semantic-analysis/type-inference/SymbolTable.js';
 import { SymbolTableManager } from '../../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { bitloopsPrimitivesObj } from '../../../../../../types.js';
 import {
@@ -123,8 +122,13 @@ export class MemberDotExpressionNode extends ExpressionNode {
     const leftStringValue = expression.getStringValue();
     return leftStringValue + '.' + this.getIdentifierExpression().getIdentifierName();
   }
+  private isClassName(identifierName: string): boolean {
+    return identifierName[0] === identifierName[0].toUpperCase();
+  }
 
-  public typeCheck(symbolTable: SymbolTable): void {
+  public typeCheck(symbolTableManager: SymbolTableManager): void {
+    const symbolTable = symbolTableManager.getSymbolTable();
+    const astTree = symbolTableManager.getIntermediateASTTree();
     const leftMostExpression = this.getLeftMostExpression();
     let identifierName: string;
     if (leftMostExpression.isIdentifierExpression()) {
@@ -133,9 +137,16 @@ export class MemberDotExpressionNode extends ExpressionNode {
       identifierName = leftMostExpression.getIdentifierName();
     }
 
-    const identifierType = symbolTable.lookup(identifierName);
-    if (!identifierType) {
-      throw new MissingIdentifierError(identifierName, this.getMetadata());
+    if (this.isClassName(identifierName)) {
+      const classNode = astTree.getClassTypeByIdentifier(identifierName);
+      if (!classNode) {
+        throw new Error(`ClassNode ${identifierName} not found`);
+      }
+    } else {
+      const identifierType = symbolTable.lookup(identifierName);
+      if (!identifierType) {
+        throw new MissingIdentifierError(identifierName, this.getMetadata());
+      }
     }
   }
 
@@ -224,6 +235,20 @@ export class MemberDotExpressionNode extends ExpressionNode {
     symbolTableManager: SymbolTableManager;
   }): string {
     const symbolTable = symbolTableManager.getSymbolTable();
+
+    const astTree = symbolTableManager.getIntermediateASTTree();
+    //check if the member dot result is a single string
+    if (memberDotResult.split('.').length === 1 && this.isClassName(memberDotResult)) {
+      const classNode = astTree.getClassTypeByIdentifier(memberDotResult);
+      if (!classNode) {
+        throw new Error(`ClassNode ${memberDotResult} not found`);
+      }
+      const methodCallSymbolEntryKey = this.getMethodCallSymbolEntryKey(
+        memberDotResult,
+        rightMostExpression,
+      );
+      symbolTable.lookup(methodCallSymbolEntryKey);
+    }
     if (isMethodCall) {
       const methodCallSymbolEntryKey = this.getMethodCallSymbolEntryKey(
         memberDotResult,

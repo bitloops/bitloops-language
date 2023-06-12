@@ -72,7 +72,7 @@ export class SwitchStatementNode extends StatementNode {
     symbolTableManager.createSymbolTableChildScope(scopeName, this);
 
     const switchExpression = this.getExpression();
-    switchExpression.typeCheck(initialSymbolTable);
+    switchExpression.typeCheck(symbolTableManager);
     switchExpression.addToSymbolTable(symbolTableManager);
 
     const switchCaseList = this.getCaseList();

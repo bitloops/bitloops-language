@@ -30,7 +30,7 @@ import { ClassNodeBuilder } from '../builders/ClassBuilder.js';
 import { IsInstanceOfExpressionNodeBuilder } from '../builders/expressions/IsIntanceOfExpressionBuilder.js';
 import { ParenthesizedExpressionNodeBuilder } from '../builders/expressions/parenthesizedExprBuilder.js';
 import { MemberDotExpressionNodeBuilder } from '../builders/expressions/MemberDot/memberDotBuilder.js';
-import { MethodCallExpressionNodeBuilder } from '../builders/expressions/methodCallExprBuilder.js';
+import { MethodCallExpressionNodeBuilder } from '../builders/expressions/methodCallExpressionNodeBuilder.js';
 import { ArgumentListNode } from '../nodes/ArgumentList/ArgumentListNode.js';
 import { ToStringBuilder } from '../builders/expressions/ToStringBuilder.js';
 import { GetClassNodeBuilder } from '../builders/expressions/GetClassBuilder.js';

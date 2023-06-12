@@ -1,6 +1,5 @@
 import { BitloopsTypesMapping } from '../../../../../helpers/mappings.js';
 import { VariableSymbolEntry } from '../../../../../semantic-analysis/type-inference/SymbolEntry.js';
-import { SymbolTable } from '../../../../../semantic-analysis/type-inference/SymbolTable.js';
 import { SymbolTableManager } from '../../../../../semantic-analysis/type-inference/SymbolTableManager.js';
 import { ConstVariableReassingedError } from '../../../types.js';
 import { TNodeMetadata } from '../IntermediateASTNode.js';
@@ -28,7 +27,8 @@ export class AssignmentExpressionNode extends ExpressionNode {
     );
   }
 
-  public typeCheck(symbolTable: SymbolTable): void {
+  public typeCheck(symbolTableManager: SymbolTableManager): void {
+    const symbolTable = symbolTableManager.getSymbolTable();
     const leftExpression = this.getChildNodeByClassNodeName<LeftExpressionNode>(
       new LeftExpressionNode().getClassNodeName(),
     );

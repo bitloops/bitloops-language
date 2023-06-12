@@ -88,7 +88,6 @@ export class ReturnStatementNode extends StatementNode {
 
   public addToSymbolTable(symbolTableManager: SymbolTableManager): void {
     const expression = this.getExpressionValues();
-    const symbolTable = symbolTableManager.getSymbolTable();
-    expression.typeCheck(symbolTable);
+    expression.typeCheck(symbolTableManager);
   }
 }
