@@ -28,6 +28,7 @@ import {
 import { ArgumentListBuilderDirector } from '../argumentListBuilderDirector.js';
 import { EvaluationBuilderDirector } from '../evaluationDirector.js';
 import { ExpressionBuilderDirector } from '../expressionDirector.js';
+import { IfErrorExpressionBuilderDirector } from '../ifErrorExpressionBuilderDirector.js';
 import { ConstDeclarationBuilder } from './constDeclarationBuilder.js';
 import { VariableDeclarationBuilder } from './variableDeclarationBuilder.js';
 
@@ -244,6 +245,32 @@ export class ConstDeclarationBuilderDirector {
           new EvaluationBuilderDirector().buildValueObjectEvaluation(valueObjectIdentifier, {
             fields,
           }),
+        ),
+      )
+      .build();
+    return constDeclaration;
+  }
+
+  buildConstDeclarationWithValueObjectEvaluationIfError({
+    name,
+    valueObjectIdentifier,
+    fields,
+  }: {
+    name: string;
+    valueObjectIdentifier: string;
+    fields: TEvaluationField[];
+  }): TConstDeclaration {
+    const constDeclaration = this.constDeclarationBuilder
+      .withIdentifier(name)
+      .withExpression(
+        new ExpressionBuilderDirector().buildIfErrorExpression(
+          new IfErrorExpressionBuilderDirector().buildEmptyIfError(
+            new ExpressionBuilderDirector().buildEvaluation(
+              new EvaluationBuilderDirector().buildValueObjectEvaluation(valueObjectIdentifier, {
+                fields,
+              }),
+            ),
+          ),
         ),
       )
       .build();

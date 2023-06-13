@@ -100,6 +100,29 @@ export class StatementDirector {
     });
   }
 
+  buildConstDeclarationWithValueObjectIfError({
+    name,
+    valueObjectIdentifier,
+    valueObjectFields,
+  }: {
+    name: string;
+    valueObjectIdentifier: string;
+    valueObjectFields: { identifier: string; expression: TExpression }[];
+  }): TConstDeclaration {
+    return new ConstDeclarationBuilderDirector().buildConstDeclarationWithValueObjectEvaluationIfError(
+      {
+        name,
+        valueObjectIdentifier,
+        fields: valueObjectFields.map((field) => {
+          return new EvaluationFieldBuilderDirector().buildEvaluationField(
+            field.identifier,
+            field.expression,
+          );
+        }),
+      },
+    );
+  }
+
   buildConstDeclarationWithEntity({
     name,
     entityIdentifier,

@@ -1,13 +1,13 @@
-import Transpiler from '../../src/Transpiler.js';
-import { IntermediateASTParser } from '../../src/ast/core/index.js';
-import { BitloopsParser } from '../../src/parser/index.js';
-import { TargetGenerator } from '../../src/target/index.js';
-import { SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES } from './mocks/symbol-table/missing-identifiers/index.js';
+import Transpiler from '../../../src/Transpiler.js';
+import { IntermediateASTParser } from '../../../src/ast/core/index.js';
+import { BitloopsParser } from '../../../src/parser/index.js';
+import { TargetGenerator } from '../../../src/target/index.js';
+import { SYMBOL_TABLE_MEMBER_NOT_DEFINED_TEST_CASES } from './mocks/semantic-errors/not-defined-member/index.js';
 
-describe('Missing identifiers test cases', () => {
+describe('Not defined members test cases', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
-  SYMBOL_TABLE_MISSING_IDENTIFIERS_TEST_CASES.forEach((testCase) => {
+  SYMBOL_TABLE_MEMBER_NOT_DEFINED_TEST_CASES.forEach((testCase) => {
     const parser = new BitloopsParser();
     const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
     const intermediateASTModelToTargetLanguageGenerator = new TargetGenerator();

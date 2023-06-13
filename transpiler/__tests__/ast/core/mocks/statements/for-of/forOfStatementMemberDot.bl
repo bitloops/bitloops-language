@@ -1,0 +1,17 @@
+Props MatchProps {
+    optional string matchId;
+    string[] ledgerTransactionIds;
+    string[] externalTransactionIds;
+    string createdBy;
+}
+
+
+JestTestStatement { 
+    for(match of reconciliationReportResult.matches) {
+        const matchVO = MatchVO.create({
+            ledgerTransactionIds: match.ledgerTransactionIds,
+            externalTransactionIds: match.externalTransactionIds,
+            createdBy: match.createdBy
+        }).ifError();
+    };
+}

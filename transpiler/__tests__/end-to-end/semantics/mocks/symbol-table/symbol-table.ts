@@ -26,12 +26,12 @@ import {
   ParameterSymbolEntry,
   ValueObjectEvaluationSymbolEntry,
   VariableSymbolEntry,
-} from '../../../../src/semantic-analysis/type-inference/SymbolEntry.js';
-import { PrimitiveSymbolTable } from '../../../../src/semantic-analysis/type-inference/SymbolTable.js';
-import { SymbolTableManager } from '../../../../src/semantic-analysis/type-inference/SymbolTableManager.js';
-import { bitloopsPrimitivesObj } from '../../../../src/types.js';
-import { FileUtil } from '../../../../src/utils/file.js';
-import { SymbolTableBuilder } from '../../builder/SymbolTableBuilder.js';
+} from '../../../../../src/semantic-analysis/type-inference/SymbolEntry.js';
+import { PrimitiveSymbolTable } from '../../../../../src/semantic-analysis/type-inference/SymbolTable.js';
+import { SymbolTableManager } from '../../../../../src/semantic-analysis/type-inference/SymbolTableManager.js';
+import { bitloopsPrimitivesObj } from '../../../../../src/types.js';
+import { FileUtil } from '../../../../../src/utils/file.js';
+import { SymbolTableBuilder } from '../../../builder/SymbolTableBuilder.js';
 
 type SymbolTableTestCase = {
   description: string;
@@ -48,10 +48,10 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
   {
     description: 'Should create symbol table for command handler',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/command-handler-if.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/symbol-table/command-handler-if.bl',
     ),
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/setup.bl',
     ),
     expectedSymbolTable: new SymbolTableBuilder()
       .insertChildScope(
@@ -127,10 +127,10 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
   {
     description: 'Should create symbol table for command handler with 2 ifs',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/command-handler-two-if.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/symbol-table/command-handler-two-if.bl',
     ),
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/setup.bl',
     ),
     expectedSymbolTable: new SymbolTableBuilder()
       .insertChildScope(
@@ -210,10 +210,10 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
   {
     description: 'Should create symbol table for command handler with switch',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/command-handler-switch.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/symbol-table/command-handler-switch.bl',
     ),
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/setup.bl',
     ),
     expectedSymbolTable: new SymbolTableBuilder()
       .insertChildScope(
@@ -286,10 +286,10 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
   {
     description: 'Should create symbol table for query handler with if/else',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/query-handler-with-else.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/symbol-table/query-handler-with-else.bl',
     ),
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/setup.bl',
     ),
     expectedSymbolTable: new SymbolTableBuilder()
       .insertChildScope(
@@ -331,10 +331,10 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
   {
     description: 'Should create symbol table for entity',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/entity.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/symbol-table/entity.bl',
     ),
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/setup.bl',
     ),
     expectedSymbolTable: new SymbolTableBuilder()
       .insertChildScope(
@@ -394,10 +394,10 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
   {
     description: 'Should create symbol table for value object',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/valueObject.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/symbol-table/valueObject.bl',
     ),
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/setup.bl',
     ),
     expectedSymbolTable: new SymbolTableBuilder()
       .insertChildScope(
@@ -417,10 +417,10 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
   {
     description: 'Should create symbol table for domain event handler',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/domain-event-handler.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/symbol-table/domain-event-handler.bl',
     ),
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/setup.bl',
     ),
     expectedSymbolTable: new SymbolTableBuilder()
       .insertChildScope(
@@ -453,10 +453,10 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
   {
     description: 'Should create symbol table for integration event handler',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/integration-event-handler.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/symbol-table/integration-event-handler.bl',
     ),
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/setup.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/symbol-table/setup.bl',
     ),
     expectedSymbolTable: new SymbolTableBuilder()
       .insertChildScope(
@@ -494,10 +494,10 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
   {
     description: 'Should create symbol table for domain service',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/domain-service.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/symbol-table/domain-service.bl',
     ),
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/setup.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/symbol-table/setup.bl',
     ),
     expectedSymbolTable: new SymbolTableBuilder()
       .insertChildScope(
@@ -556,10 +556,10 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
   {
     description: 'Should create symbol table for domain rule',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/rule.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/symbol-table/rule.bl',
     ),
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/setup.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/symbol-table/setup.bl',
     ),
     expectedSymbolTable: new SymbolTableBuilder()
       .insertChildScope(
@@ -574,10 +574,10 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
   {
     description: 'Should create symbol table for integration event',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/integration-event.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/symbol-table/integration-event.bl',
     ),
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/setup.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/symbol-table/setup.bl',
     ),
     expectedSymbolTable: new SymbolTableBuilder()
       .insertChildScope(
@@ -598,10 +598,10 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
   {
     description: 'Should create symbol table for rule with logical operators',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/rule-with-logical-operators.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/symbol-table/rule-with-logical-operators.bl',
     ),
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/setup.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/symbol-table/setup.bl',
     ),
     expectedSymbolTable: new SymbolTableBuilder()
       .insertChildScope(
@@ -615,10 +615,10 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
   {
     description: 'Should create symbol table for domain service with 2 methodCalls in a row',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/domain-service-2-method-calls.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/symbol-table/domain-service-2-method-calls.bl',
     ),
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/setup.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/symbol-table/setup.bl',
     ),
     expectedSymbolTable: new SymbolTableBuilder()
       .insertChildScope(
@@ -668,10 +668,10 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
     description:
       'Should create symbol table for domain service with 2 methodCalls in a row and left is ifError',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/domain-service-2-method-calls-if-error.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/symbol-table/domain-service-2-method-calls-if-error.bl',
     ),
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/setup.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/symbol-table/setup.bl',
     ),
     expectedSymbolTable: new SymbolTableBuilder()
       .insertChildScope(
@@ -726,10 +726,10 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
   {
     description: 'Should create symbol table for value object evaluation',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/symbol-table/valueObject-evaluation.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/symbol-table/valueObject-evaluation.bl',
     ),
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/setup.bl',
     ),
     expectedSymbolTable: new SymbolTableBuilder()
       .insertChildScope('AddTodoCommand', new SymbolTableBuilder())
@@ -779,10 +779,10 @@ export const SYMBOL_TABLE_TEST_CASES: SymbolTableTestCase[] = [
   // {
   //   description: 'Should create symbol table for command handler using static method',
   //   inputCore: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/symbol-table/command-handler-static-method.bl',
+  //     'transpiler/__tests__/end-to-end/semantics/mocks/symbol-table/command-handler-static-method.bl',
   //   ),
   //   inputSetup: FileUtil.readFileString(
-  //     'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+  //     'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/setup.bl',
   //   ),
   //   expectedSymbolTable: new SymbolTableBuilder()
   //     .insertChildScope(
