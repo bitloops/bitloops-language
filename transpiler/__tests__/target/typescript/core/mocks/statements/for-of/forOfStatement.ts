@@ -4,8 +4,6 @@ import { IdentifierNodeBuilder } from '../../../../../../../src/ast/core/interme
 import { StatementListNodeBuilder } from '../../../../../../../src/ast/core/intermediate-ast/builders/statements/StatementListNodeBuilder.js';
 import { ForOfStatementNode } from '../../../../../../../src/ast/core/intermediate-ast/nodes/statements/ForOfStatementNode.js';
 import { FileUtil } from '../../../../../../../src/utils/file.js';
-import { EvaluationFieldBuilderDirector } from '../../../builders/evaluationFIeld.js';
-import { ConstDeclarationBuilderDirector } from '../../../builders/statement/constDeclaration.js';
 import { ForOfStatementBuilderDirector } from '../../../builders/statement/forOfStatementBuilderDirector.js';
 import { StatementBuilderDirector } from '../../../builders/statement/statementDirector.js';
 
