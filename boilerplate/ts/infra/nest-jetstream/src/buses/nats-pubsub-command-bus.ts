@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { NatsConnection, JSONCodec, headers, Msg, MsgHdrs } from 'nats';
 import { Application, Infra } from '@bitloops/bl-boilerplate-core';
-import { ASYNC_LOCAL_STORAGE, ProvidersConstants } from '../jetstream.constants';
+import { ASYNC_LOCAL_STORAGE, TIMEOUT_MILLIS, ProvidersConstants } from '../jetstream.constants';
 import { ContextPropagation } from './utils/context-propagation';
 
 const jsonCodec = JSONCodec();
@@ -16,6 +16,8 @@ export class NatsPubSubCommandBus implements Infra.CommandBus.IPubSubCommandBus 
     @Inject(ProvidersConstants.JETSTREAM_PROVIDER) private readonly nats: any,
     @Inject(ASYNC_LOCAL_STORAGE)
     private readonly asyncLocalStorage: any,
+    @Inject(TIMEOUT_MILLIS)
+    private readonly timeoutMillis: number,
   ) {
     this.nc = this.nats.getConnection();
   }
@@ -42,8 +44,8 @@ export class NatsPubSubCommandBus implements Infra.CommandBus.IPubSubCommandBus 
   async request(command: Application.Command): Promise<any> {
     const topic = NatsPubSubCommandBus.getTopicFromCommandInstance(command);
 
-    this.logger.log('Requesting in haha :' + topic);
-    console.log('this.asyncLocalStorage.getStore()', this.asyncLocalStorage.getStore());
+    this.logger.log('Requesting in topic:' + topic);
+    // console.log('this.asyncLocalStorage.getStore()', this.asyncLocalStorage.getStore());
     command.correlationId = this.getCorelationId();
     command.context = this.getContext();
     // command
@@ -52,7 +54,7 @@ export class NatsPubSubCommandBus implements Infra.CommandBus.IPubSubCommandBus 
     try {
       const response = await this.nc.request(topic, jsonCodec.encode(command), {
         headers,
-        timeout: 10000,
+        timeout: this.timeoutMillis,
       });
       return jsonCodec.decode(response.data);
     } catch (error: any) {
