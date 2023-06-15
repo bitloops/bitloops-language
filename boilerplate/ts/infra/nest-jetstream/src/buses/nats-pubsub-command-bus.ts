@@ -58,7 +58,11 @@ export class NatsPubSubCommandBus implements Infra.CommandBus.IPubSubCommandBus 
       });
       return jsonCodec.decode(response.data);
     } catch (error: any) {
-      this.logger.error('Error in command request for:' + topic, error);
+      this.logger.error(
+        `Error in command request for: ${topic}. Error message: ${error.message}`,
+        error.stack,
+      );
+
       return { isOk: false, data: error.message };
     }
   }
@@ -77,9 +81,10 @@ export class NatsPubSubCommandBus implements Infra.CommandBus.IPubSubCommandBus 
             await this.asyncLocalStorage.run(contextData, async () => {
               return this.handleReceivedCommand(handler, command, m);
             });
-          } catch (err) {
+          } catch (err: any) {
             this.logger.error(
-              `[${subject}]Error in command-bus subscribe:: ${JSON.stringify(err)}`,
+              `[${subject}]: Error in command handling. Error message: ${err.message}`,
+              err.stack,
             );
           }
         }

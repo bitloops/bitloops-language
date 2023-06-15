@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { NatsConnection, JSONCodec, headers, MsgHdrs } from 'nats';
 import { Application, Infra } from '@bitloops/bl-boilerplate-core';
-import { ASYNC_LOCAL_STORAGE, ProvidersConstants } from '../jetstream.constants';
+import { ASYNC_LOCAL_STORAGE, ProvidersConstants, TIMEOUT_MILLIS } from '../jetstream.constants';
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { ContextPropagation } from './utils/context-propagation';
 
@@ -17,6 +17,8 @@ export class NatsPubSubQueryBus implements Infra.QueryBus.IQueryBus {
     // @Optional()
     @Inject(ASYNC_LOCAL_STORAGE)
     private readonly asyncLocalStorage: AsyncLocalStorage<any>,
+    @Inject(TIMEOUT_MILLIS)
+    private readonly timeoutMillis: number,
   ) {
     this.nc = this.nats.getConnection();
   }
@@ -39,14 +41,17 @@ export class NatsPubSubQueryBus implements Infra.QueryBus.IQueryBus {
     try {
       const response = await this.nc.request(topic, jsonCodec.encode(query), {
         headers,
-        timeout: 10000,
+        timeout: this.timeoutMillis,
       });
 
       const data = jsonCodec.decode(response.data);
       this.logger.log('Response in query request:' + data);
       return data;
-    } catch (err) {
-      this.logger.error('Error in query request for:' + topic, err);
+    } catch (err: any) {
+      this.logger.error(
+        `[${topic}]: Error in query request. Error message: ${err.message}`,
+        err.stack,
+      );
     }
   }
 
@@ -85,8 +90,11 @@ export class NatsPubSubQueryBus implements Infra.QueryBus.IQueryBus {
             }
 
             this.logger.log(`[${sub.getProcessed()}]: ${JSON.stringify(jsonCodec.decode(m.data))}`);
-          } catch (err) {
-            this.logger.error(`[PubSubQuery: ${subject}] Error in handler:`, err);
+          } catch (err: any) {
+            this.logger.error(
+              `[${subject}]: Error in query handling. Error message: ${err.message}`,
+              err.stack,
+            );
           }
         }
       })();
