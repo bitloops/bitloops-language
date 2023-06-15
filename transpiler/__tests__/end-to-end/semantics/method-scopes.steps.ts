@@ -18,7 +18,7 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 import Transpiler from '../../../src/Transpiler.js';
-import { SEMANTIC_ERRORS_METHOD_SCOPES_END_TO_END_TEST_CASES } from './mocks/semantic-errors/index.js';
+import { SEMANTIC_ERRORS_METHOD_SCOPES_END_TO_END_TEST_CASES } from './mocks/access-violation/index.js';
 import { BitloopsParser } from '../../../src/parser/index.js';
 import { IntermediateASTParser } from '../../../src/ast/core/index.js';
 import { TargetGenerator } from '../../../src/target/index.js';

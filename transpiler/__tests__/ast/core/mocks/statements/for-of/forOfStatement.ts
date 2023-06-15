@@ -47,4 +47,49 @@ export const validForOfStatementTestCases: ForOfStatementTestCase[] = [
       ])
       .build(),
   },
+  {
+    description: 'Simple for of statement',
+    fileId: 'testFile.bl',
+    inputBLString: FileUtil.readFileString(
+      'transpiler/__tests__/ast/core/mocks/statements/for-of/forOfStatementMemberDot.bl',
+    ),
+    expectedForOfStatement: new ForOfStatementBuilder()
+      .withIdentifier('match')
+      .withExpression(
+        new ExpressionBuilderDirector().buildMemberExpression(
+          new ExpressionBuilderDirector().buildIdentifierExpression('reconciliationReportResult'),
+          'matches',
+        ),
+      )
+      .withStatementList([
+        new StatementDirector().buildConstDeclarationWithValueObjectIfError({
+          name: 'matchVO',
+          valueObjectIdentifier: 'MatchVO',
+          valueObjectFields: [
+            {
+              identifier: 'ledgerTransactionIds',
+              expression: new ExpressionBuilderDirector().buildMemberExpression(
+                new ExpressionBuilderDirector().buildIdentifierExpression('match'),
+                'ledgerTransactionIds',
+              ),
+            },
+            {
+              identifier: 'externalTransactionIds',
+              expression: new ExpressionBuilderDirector().buildMemberExpression(
+                new ExpressionBuilderDirector().buildIdentifierExpression('match'),
+                'externalTransactionIds',
+              ),
+            },
+            {
+              identifier: 'createdBy',
+              expression: new ExpressionBuilderDirector().buildMemberExpression(
+                new ExpressionBuilderDirector().buildIdentifierExpression('match'),
+                'createdBy',
+              ),
+            },
+          ],
+        }),
+      ])
+      .build(),
+  },
 ];

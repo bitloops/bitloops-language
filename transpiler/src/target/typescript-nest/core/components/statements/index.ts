@@ -40,6 +40,7 @@ export const keysToTypeMapping = {
   variableDeclaration: BitloopsTypesMapping.TVariableDeclaration,
   builtInFunction: BitloopsTypesMapping.TBuiltInFunction,
   breakStatement: BitloopsTypesMapping.TBreakStatement,
+  forOfStatement: BitloopsTypesMapping.TForOfStatement,
 };
 
 const FAIL_DEPENDENCY: TDependenciesTypeScript = [
@@ -57,7 +58,8 @@ const statementToTargetLanguage = (variable: TStatement): TTargetDependenciesTyp
 
   if (!keysToTypeMapping[type]) {
     // eslint-disable-next-line @typescript-eslint/no-base-to-string
-    throw new Error(`Unsupported statement:${variable}`);
+    console.log(JSON.stringify(variable));
+    throw new Error(`Unsupported statement:${JSON.stringify(variable)}`);
   }
   return modelToTargetLanguage({ type: keysToTypeMapping[type], value: variable });
 };

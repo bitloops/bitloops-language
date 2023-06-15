@@ -17,10 +17,11 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import Transpiler from '../../src/Transpiler.js';
-import { BitloopsParser } from '../../src/parser/index.js';
-import { IntermediateASTParser } from '../../src/ast/core/index.js';
-import { TargetGenerator } from '../../src/target/index.js';
+
+import Transpiler from '../../../src/Transpiler.js';
+import { IntermediateASTParser } from '../../../src/ast/core/index.js';
+import { BitloopsParser } from '../../../src/parser/index.js';
+import { TargetGenerator } from '../../../src/target/index.js';
 import { SYMBOL_TABLE_TEST_CASES } from './mocks/symbol-table/symbol-table.js';
 
 describe('Symbol table cases', () => {

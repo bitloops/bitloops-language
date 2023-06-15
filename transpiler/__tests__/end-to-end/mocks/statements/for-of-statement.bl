@@ -1,0 +1,36 @@
+Struct Match {
+    string[] ledgerTransactionIds;
+    string[] externalTransactionIds;
+    string createdBy;
+}
+
+Struct ReconciliationReport {
+   Match[] matches;
+}
+
+Props MatchProps {
+    string[] ledgerTransactionIds;
+    string[] externalTransactionIds;
+    string createdBy;
+}
+
+ValueObject MatchVO {
+    static create(props: MatchProps): (OK(MatchVO), Errors()) {}
+}
+
+DomainService ReconciliationDomainService() {
+
+    public reconcile(reconciliationReportsResult: ReconciliationReport): (OK(void),Errors()) {
+    
+        const matchesVO = [];
+        for(match of reconciliationReportsResult.matches) {
+            const matchVO = MatchVO.create({
+                ledgerTransactionIds: match.ledgerTransactionIds,
+                externalTransactionIds: match.externalTransactionIds,
+                createdBy: match.createdBy
+            }).ifError();
+            matchesVO.push(matchVO);
+        }
+    }
+
+}

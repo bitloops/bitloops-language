@@ -1,13 +1,13 @@
-import Transpiler from '../../src/Transpiler.js';
-import { IntermediateASTParser } from '../../src/ast/core/index.js';
-import { BitloopsParser } from '../../src/parser/index.js';
-import { TargetGenerator } from '../../src/target/index.js';
-import { SYMBOL_TABLE_FIND_TYPE_OF_KEYWORD_TEST_CASES } from './mocks/symbol-table/type-of-keyword/index.js';
+import Transpiler from '../../../src/Transpiler.js';
+import { IntermediateASTParser } from '../../../src/ast/core/index.js';
+import { BitloopsParser } from '../../../src/parser/index.js';
+import { TargetGenerator } from '../../../src/target/index.js';
+import { SYMBOL_TABLE_CONSTANT_REASSIGNMENT_TEST_CASES } from './mocks/semantic-errors/constant-reassignment/index.js';
 
-describe('Find type of keyword test cases', () => {
+describe('constant reassingment identifiers test cases', () => {
   const boundedContext = 'Hello world';
   const module = 'demo';
-  SYMBOL_TABLE_FIND_TYPE_OF_KEYWORD_TEST_CASES.forEach((testCase) => {
+  SYMBOL_TABLE_CONSTANT_REASSIGNMENT_TEST_CASES.forEach((testCase) => {
     const parser = new BitloopsParser();
     const originalLanguageASTToIntermediateModelTransformer = new IntermediateASTParser();
     const intermediateASTModelToTargetLanguageGenerator = new TargetGenerator();
@@ -44,13 +44,7 @@ describe('Find type of keyword test cases', () => {
       if (Transpiler.isTranspilerError(result)) {
         throw new Error('Transpiler should NOT return error');
       }
-      const symbolTable = result.symbolTables[boundedContext];
-      const output = symbolTable.findTypeOfKeyword(
-        testCase.keywordInfo.name,
-        testCase.keywordInfo.position,
-      );
-
-      expect(output).toEqual(testCase.expectedOutput);
+      expect(result.semanticErrors.map((x) => x.message)).toEqual(testCase.errorMessages);
     });
   });
 });

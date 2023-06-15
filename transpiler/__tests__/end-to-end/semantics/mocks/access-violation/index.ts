@@ -20,9 +20,9 @@
 import { FileUtil } from '../../../../../src/utils/file.js';
 export const SEMANTIC_ERRORS_METHOD_SCOPES_END_TO_END_TEST_CASES = [
   {
-    description: 'Entity not found',
+    description: 'Private method working correctly',
     input: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/input.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/access-violation/input.bl',
     ),
   },
 ];

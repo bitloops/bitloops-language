@@ -17,15 +17,15 @@
  *
  *  For further information you can contact legal(at)bitloops.com.
  */
-import { FileUtil } from '../../../../src/utils/file.js';
+import { FileUtil } from '../../../../../src/utils/file.js';
 export const SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES = [
   {
     description: 'Entity not found',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/entityNotFound.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/entityNotFound.bl',
     ),
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/setup.bl',
     ),
     fileIdCore: 'entityNotFound.bl',
     fileIdSetup: 'setup.bl',
@@ -36,10 +36,10 @@ export const SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES = [
   {
     description: 'Rule not found',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/ruleNotFound.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/ruleNotFound.bl',
     ),
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/setup.bl',
     ),
     fileIdCore: 'ruleNotFound.bl',
     fileIdSetup: 'setup.bl',
@@ -50,10 +50,10 @@ export const SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES = [
   {
     description: 'Domain error not found',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/domainErrorNotFound.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/domainErrorNotFound.bl',
     ),
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/setup.bl',
     ),
     fileIdCore: 'domainErrorNotFound.bl',
     fileIdSetup: 'setup.bl',
@@ -65,10 +65,10 @@ export const SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES = [
   {
     description: 'Props not found',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/propsNotFound.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/propsNotFound.bl',
     ),
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/setup.bl',
     ),
     fileIdCore: 'propsNotFound.bl',
     fileIdSetup: 'setup.bl',
@@ -79,10 +79,10 @@ export const SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES = [
   {
     description: 'Application error not found',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/applicationErrorNotFound.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/applicationErrorNotFound.bl',
     ),
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/setup.bl',
     ),
     fileIdCore: 'applicationErrorNotFound.bl',
     fileIdSetup: 'setup.bl',
@@ -94,10 +94,10 @@ export const SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES = [
   {
     description: 'DTO not found',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/dtoNotFound.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/dtoNotFound.bl',
     ),
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/setup.bl',
     ),
     fileIdCore: 'dtoNotFound.bl',
     fileIdSetup: 'setup.bl',
@@ -108,10 +108,10 @@ export const SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES = [
   {
     description: 'Repo port not found',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/repoPortNotFound.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/repoPortNotFound.bl',
     ),
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/setup.bl',
     ),
     fileIdCore: 'repoPortNotFound.bl',
     fileIdSetup: 'setup.bl',
@@ -122,10 +122,10 @@ export const SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES = [
   {
     description: 'Read model not found',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/readModelNotFound.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/readModelNotFound.bl',
     ),
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/setup.bl',
     ),
     fileIdCore: 'readModelNotFound.bl',
     fileIdSetup: 'setup.bl',
@@ -138,12 +138,12 @@ export const SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES = [
   {
     description: 'Command and Query not found',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/commandsQueriesNotFound.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/commandsQueriesNotFound.bl',
     ),
     fileIdCore: 'commandsQueriesNotFound.bl',
     fileIdSetup: 'setup.bl',
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/setup.bl',
     ),
     expectedErrorMessages: [
       'Identifier CreateTodoCommand not found: from 36:23 to 36:40 of file commandsQueriesNotFound.bl',
@@ -153,12 +153,12 @@ export const SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES = [
   {
     description: 'Domain and Integration event not found',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/domainIntegrationEventsNotFound.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/domainIntegrationEventsNotFound.bl',
     ),
     fileIdCore: 'domainIntegrationEventsNotFound.bl',
     fileIdSetup: 'setup.bl',
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/setup.bl',
     ),
     expectedErrorMessages: [
       'Identifier TodoCreatedDomainEvent not found: from 2:19 to 2:41 of file domainIntegrationEventsNotFound.bl',
@@ -168,12 +168,12 @@ export const SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES = [
   {
     description: 'Service port not found',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/servicePortNotFound.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/servicePortNotFound.bl',
     ),
     fileIdCore: 'servicePortNotFound.bl',
     fileIdSetup: 'setup.bl',
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/setup.bl',
     ),
     expectedErrorMessages: [
       'Identifier TestDataSchema not found: from 1:59 to 1:73 of file servicePortNotFound.bl',
@@ -184,12 +184,12 @@ export const SEMANTIC_CORE_ERRORS_END_TO_END_TEST_CASES = [
   {
     description: 'Domain Service not found',
     inputCore: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/domainServiceNotFound.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/domainServiceNotFound.bl',
     ),
     fileIdCore: 'domainServiceNotFound.bl',
     fileIdSetup: 'setup.bl',
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/setup.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/setup.bl',
     ),
     expectedErrorMessages: [
       'Identifier MarketingNotificationDomainService not found: from 5:44 to 5:78 of file domainServiceNotFound.bl',
@@ -209,7 +209,7 @@ export const SEMANTIC_BC_ERRORS_END_TO_END_TEST_CASES = [
         module: 'Todo',
         fileId: 'queryHandler.bl',
         fileContents: FileUtil.readFileString(
-          'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/queryHandler.bl',
+          'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/Todo/Todo/queryHandler.bl',
         ),
       },
       {
@@ -217,12 +217,12 @@ export const SEMANTIC_BC_ERRORS_END_TO_END_TEST_CASES = [
         module: 'Todo',
         fileId: 'repoPorts.bl',
         fileContents: FileUtil.readFileString(
-          'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/repoPorts.bl',
+          'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/Todo/Todo/repoPorts.bl',
         ),
       },
     ],
     inputSetup: FileUtil.readFileString(
-      'transpiler/__tests__/end-to-end/mocks/semantic-errors/Todo/Todo/setupRepoPortDifferentBC.bl',
+      'transpiler/__tests__/end-to-end/semantics/mocks/semantic-errors/Todo/Todo/setupRepoPortDifferentBC.bl',
     ),
     fileIdSetup: 'setupRepoPortDifferentBC.bl',
     expectedErrorMessages: [

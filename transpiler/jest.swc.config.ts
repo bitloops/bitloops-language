@@ -10,6 +10,8 @@ export default {
         jsc: {
           parser: {
             syntax: 'typescript',
+            noUnusedLocals: true,
+            noUnusedParameters: true,
           },
           target: 'es2022',
         },

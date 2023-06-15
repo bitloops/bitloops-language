@@ -54,10 +54,8 @@ describe('For Of Statement is valid', () => {
         }
       }
 
-      const propsNodes = resultTree.getRootChildrenNodesByType(
-        BitloopsTypesMapping.TForOfStatement,
-      );
-      const value = propsNodes[0].getValue();
+      const forOfNode = resultTree.getRootChildrenNodesByType(BitloopsTypesMapping.TForOfStatement);
+      const value = forOfNode[0].getValue();
 
       expect(value).toMatchObject(forOfStatement.expectedForOfStatement);
     });
