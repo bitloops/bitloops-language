@@ -11,6 +11,7 @@ export const HANDLERS_TOKENS = {
 };
 
 export const ASYNC_LOCAL_STORAGE = Symbol('ASYNC_LOCAL_STORAGE');
+export const TIMEOUT_MILLIS = Symbol('TIMEOUT_MILLIS');
 
 export const METADATA_HEADERS = {
   CORRELATION_ID: 'correlationId',
