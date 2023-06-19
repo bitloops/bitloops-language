@@ -1,0 +1,82 @@
+{
+  "name": "@bitloops/bl-boilerplate-combined",
+  "version": "0.0.0",
+  "description": "TypeScript boilerplate code for Bitloops Language generated projects",
+  "engines": {
+    "node": ">= 13"
+  },
+  "homepage": "https://github.com/bitloops/bitloops-language/tree/main/boilerplate/ts/core",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bitloops/bitloops-language"
+  },
+  "types": "./lib/cjs/types/index.d.ts",
+  "main": "./lib/cjs/index.js",
+  "keywords": [
+    "bitloops language",
+    "bl",
+    "typescript",
+    "bdd",
+    "ddd",
+    "hexagonal architecture",
+    "ports & adapters",
+    "behavior driven development",
+    "boilerplate",
+    "core"
+  ],
+  "scripts": {
+    "clean": "rm -rf ./lib",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc -p ./tsconfig.esm.json && mv lib/esm/index.js lib/esm/index.mjs",
+    "build:cjs": "tsc -p ./tsconfig.cjs.json",
+    "prepack": "npm run build",
+    "lint": "eslint . --ext .ts --ext .mts --ext .cts"
+  },
+  "files": [
+    "lib/**/*"
+  ],
+  "author": "Bitloops S.A.",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "class-transformer": "^0.5.1",
+    "reflect-metadata": "^0.1.13",
+    "async-mutex": "^0.4.0",
+    "nats": "^2.13.1",
+    "fastify": "^4.15.0",
+    "pg": "^8.10.0",
+    "@nestjs/jwt": "^10.0.2",
+    "@nestjs/passport": "^9.0.3",
+    "bcrypt": "^5.1.0",
+    "class-validator": "^0.14.0",
+    "passport-jwt": "^4.0.1",
+    "passport-local": "^1.0.0",
+    "rxjs": "^7.8.0",
+    "mongodb": "^4.10.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.11",
+    "@typescript-eslint/eslint-plugin": "^5.40.0",
+    "@typescript-eslint/parser": "^5.40.0",
+    "eslint": "^8.25.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.7.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.4",
+    "@bitloops/bl-boilerplate-core": "^0.3.6",
+    "@nestjs/common": "^9.0.0",
+    "@types/pg": "^8.6.6"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./lib/esm/types/index.d.ts",
+        "default": "./lib/esm/index.mjs"
+      },
+      "require": {
+        "types": "./lib/cjs/types/index.d.ts",
+        "default": "./lib/cjs/index.js"
+      }
+    }
+  }
+}

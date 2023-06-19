@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "checkJs": true,
+    "allowJs": true,
+    "declaration": true,
+    "declarationMap": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./",
+    "paths": {
+      "@src/*": ["src/*"],
+      "@modules/*": ["src/modules/*"],
+      "@config/*": ["src/configs/*"],
+      "@bitloops/*": ["src/bitloops/*"],
+      "@lib/*": ["src/lib/*"],
+      "@packages/*": ["src/packages/*"],
+      "@tests/*": ["__tests__/*"]
+    }
+  },
+  "files": ["./src/index.ts"]
+}
