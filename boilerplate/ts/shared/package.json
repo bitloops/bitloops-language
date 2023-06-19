@@ -1,11 +1,11 @@
 {
-  "name": "@bitloops/bl-boilerplate-combined",
+  "name": "@bitloops/bl-boilerplate-shared",
   "version": "0.0.0",
   "description": "TypeScript boilerplate code for Bitloops Language generated projects",
   "engines": {
     "node": ">= 13"
   },
-  "homepage": "https://github.com/bitloops/bitloops-language/tree/main/boilerplate/ts/core",
+  "homepage": "https://github.com/bitloops/bitloops-language/tree/main/boilerplate/ts/shared",
   "repository": {
     "type": "git",
     "url": "https://github.com/bitloops/bitloops-language"
@@ -26,7 +26,7 @@
   ],
   "scripts": {
     "clean": "rm -rf ./lib",
-    "build": "npm run clean && npm run build:esm && npm run build:cjs",
+    "build": "npm run clean && npx tsc",
     "build:esm": "tsc -p ./tsconfig.esm.json && mv lib/esm/index.js lib/esm/index.mjs",
     "build:cjs": "tsc -p ./tsconfig.cjs.json",
     "prepack": "npm run build",
@@ -38,23 +38,29 @@
   "author": "Bitloops S.A.",
   "license": "GPL-3.0",
   "dependencies": {
-    "class-transformer": "^0.5.1",
-    "reflect-metadata": "^0.1.13",
-    "async-mutex": "^0.4.0",
-    "nats": "^2.13.1",
-    "fastify": "^4.15.0",
-    "pg": "^8.10.0",
     "@nestjs/jwt": "^10.0.2",
+    "@nestjs/microservices": "^10.0.2",
     "@nestjs/passport": "^9.0.3",
+    "async-mutex": "^0.4.0",
     "bcrypt": "^5.1.0",
+    "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
+    "fastify": "^4.15.0",
+    "mongodb": "^4.10.0",
+    "nats": "^2.13.1",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
-    "rxjs": "^7.8.0",
-    "mongodb": "^4.10.0"
+    "pg": "^8.10.0",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.8.0"
   },
   "devDependencies": {
+    "@nestjs/common": "^9.0.0",
+    "@types/bcrypt": "^5.0.0",
     "@types/node": "^18.15.11",
+    "@types/passport-jwt": "^3.0.8",
+    "@types/passport-local": "^1.0.35",
+    "@types/pg": "^8.6.6",
     "@typescript-eslint/eslint-plugin": "^5.40.0",
     "@typescript-eslint/parser": "^5.40.0",
     "eslint": "^8.25.0",
@@ -62,10 +68,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.7.1",
     "ts-node": "^10.9.1",
-    "typescript": "^4.8.4",
-    "@bitloops/bl-boilerplate-core": "^0.3.6",
-    "@nestjs/common": "^9.0.0",
-    "@types/pg": "^8.6.6"
+    "typescript": "^4.8.4"
   },
   "exports": {
     ".": {

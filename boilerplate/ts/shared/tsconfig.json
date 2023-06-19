@@ -1,11 +1,27 @@
 {
-  "extends": "./tsconfig.base.json",
   "compilerOptions": {
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "checkJs": true,
+    "allowJs": true,
+    "declaration": true,
+    "declarationMap": true,
+    "allowSyntheticDefaultImports": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     "lib": ["ES6", "DOM"],
     "target": "ES6",
     "module": "CommonJS",
     "moduleResolution": "Node",
     "outDir": "./lib/cjs",
-    "declarationDir": "./lib/cjs/types"
-  }
+    "declarationDir": "./lib/cjs/types",
+    "strictPropertyInitialization": false,
+    "baseUrl": "./",
+    "paths": {
+      "@bitloops/*": ["src/bitloops/*"]
+    }
+  },
+  "include": ["./src/bitloops/**/*.ts"]
 }

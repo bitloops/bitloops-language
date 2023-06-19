@@ -12,6 +12,7 @@ import {
 import { DomainError } from './domain/DomainError';
 import { Entity as EntityImport } from './domain/Entity';
 import { IEventBus as IEventBusImport } from './domain/events/IEventBus';
+import { SystemEvent as SystemEventImport } from './domain/events/ISystemEvent';
 import {
   IIntegrationEvent as IIntegrationEventImport,
   IIntegrationEventInputMetadata,
@@ -131,6 +132,7 @@ namespace Infra {
 
   export namespace MessageBus {
     export type ISystemMessageBus = ISystemMessageBusImport;
+    export class SystemEvent extends SystemEventImport {}
     export type IMessage = IMessageImport;
     export type SubscriberHandler<T extends IMessage> = SubscribeHandlerImport<T>;
   }
