@@ -5,8 +5,8 @@
 //   [bc].processId.CreateReconciliationReportCommandHandler.ok.correlationId
 import { AsyncLocalStorageService } from './async-local-storage.service';
 
-export { SystemEvents as Traceable } from './system-events.decorator';
-export { InfraModule as TracingModule } from './infra.module';
+export { SystemEvents, getSystemEventTopics } from './system-events.decorator';
+export { InfraModule } from './infra.module';
 
 // This is to be removed, and replaced with the AsyncLocalStorageService
 export const asyncLocalStorage = AsyncLocalStorageService.asyncLocalStorage;

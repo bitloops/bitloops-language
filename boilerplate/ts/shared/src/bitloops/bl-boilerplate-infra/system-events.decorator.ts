@@ -5,9 +5,12 @@ import { MESSAGE_BUS_TOKEN } from './constants';
 import { isAsyncFunction } from './utils';
 import { GetTopicsParams, GetTopicsResponse } from './definitons';
 
-//   [bc].processId.CreateReconciliationReportCommandHandler.errors.correlationId
-//   [bc].processId.CreateReconciliationReportCommandHandler.ok.correlationId
-const getSystemEventTopics = ({
+/**
+ * @example
+ *   [bc].processId.CreateReconciliationReportCommandHandler.errors.correlationId
+ *   [bc].processId.CreateReconciliationReportCommandHandler.ok.correlationId
+ */
+export const getSystemEventTopics = ({
   boundedContext,
   processId = 'processId',
   commandHandlerName,
