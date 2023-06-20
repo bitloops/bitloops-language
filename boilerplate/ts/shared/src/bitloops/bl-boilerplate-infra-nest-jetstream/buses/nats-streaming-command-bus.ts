@@ -87,12 +87,10 @@ export class NatsStreamingCommandBus implements Infra.CommandBus.IStreamCommandB
             this.logger.log(
               `[Command ${sub.getProcessed()}]: ${JSON.stringify(jsonCodec.decode(m.data))}`,
             );
-          } catch (err) {
+          } catch (err: any) {
             // Depending on your use case, you might want to rethrow the error,
             // nack the message, or handle the error in another way.
-            this.logger.log(
-              `[Command ${subject}]: Error executing command: ${JSON.stringify(err)}`,
-            );
+            this.logger.error(`[Stream Command ]: Error executing command: ${subject}`, err.stack);
             m.ack();
           }
         }

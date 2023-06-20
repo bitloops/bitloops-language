@@ -7,7 +7,11 @@ import { NatsPubSubQueryBus } from './buses/nats-pubsub-query-bus';
 import { NatsStreamingDomainEventBus } from './buses/nats-streaming-domain-event-bus';
 import { JetstreamModuleFeatureConfig } from './interfaces/module-feature-input.interface';
 import { BUSES_TOKENS } from './buses/constants';
-import { NatsStreamingIntegrationEventBus, NatsStreamingCommandBus } from './buses';
+import {
+  NatsStreamingIntegrationEventBus,
+  NatsStreamingCommandBus,
+  NatsStreamingMessageBus,
+} from './buses';
 import { SubscriptionsService } from './jetstream.subscriptions.service';
 import {
   ASYNC_LOCAL_STORAGE,
@@ -43,7 +47,7 @@ const streamingCommandBus = {
 
 const streamingMessageBus = {
   provide: BUSES_TOKENS.STREAMING_MESSAGE_BUS,
-  useClass: NatsStreamingCommandBus,
+  useClass: NatsStreamingMessageBus,
 };
 const pubSubIntegrationEventBus = {
   provide: BUSES_TOKENS.PUBSUB_INTEGRATION_EVENT_BUS,

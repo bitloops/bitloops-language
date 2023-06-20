@@ -31,7 +31,7 @@ export type TMessageMetadata = {
   context: TContext | Record<string, never>; // type of empty object
 };
 
-export abstract class Message implements IMessage {
+export abstract class Message {
   metadata: TMessageMetadata;
   constructor(metadata?: Partial<TMessageMetadata>) {
     this.metadata = {

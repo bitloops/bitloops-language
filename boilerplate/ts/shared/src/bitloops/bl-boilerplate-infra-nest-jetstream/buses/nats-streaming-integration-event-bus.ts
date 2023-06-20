@@ -100,12 +100,10 @@ export class NatsStreamingIntegrationEventBus implements Infra.EventBus.IEventBu
             } else m.ack();
 
             this.logger.log(`[${sub.getProcessed()}]: ${JSON.stringify(jsonCodec.decode(m.data))}`);
-          } catch (err) {
+          } catch (err: any) {
             // Depending on your use case, you might want to rethrow the error,
             // nack the message, or handle the error in another way.
-            this.logger.error(
-              `[${subject}]: Error handling integration event:, ${JSON.stringify(err)}`,
-            );
+            this.logger.error(`[${subject}]: Error handling integration event:`, err.stack);
             m.ack();
           }
         }

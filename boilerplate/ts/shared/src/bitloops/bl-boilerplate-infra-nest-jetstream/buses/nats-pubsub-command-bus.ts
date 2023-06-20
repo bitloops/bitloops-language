@@ -127,25 +127,27 @@ export class NatsPubSubCommandBus implements Infra.CommandBus.IPubSubCommandBus 
     command: any,
     m: Msg,
   ): Promise<void> {
-    const reply = await handler.execute(command);
-    if (reply.isOk && reply.isOk() && m.reply) {
+    const result = await handler.execute(command);
+    const replyTopic = m.reply;
+    if (!replyTopic) return;
+    if (result.isOk && result.isOk() && m.reply) {
       return this.nc.publish(
-        m.reply,
+        replyTopic,
         jsonCodec.encode({
           isOk: true,
-          data: reply.value,
+          data: result.value,
         }),
       );
-    } else if (reply.isFail && reply.isFail() && m.reply) {
+    } else if (result.isFail && result.isFail() && m.reply) {
       return this.nc.publish(
-        m.reply,
+        replyTopic,
         jsonCodec.encode({
           isOk: false,
-          error: reply.value,
+          error: result.value,
         }),
       );
     }
-    if (!reply) return;
-    else this.logger.error('Reply is neither ok nor error:' + reply);
+    if (!result) return;
+    else this.logger.error('Reply is neither ok nor error:' + result);
   }
 }

@@ -7,8 +7,8 @@ export class ContextPropagation {
     const correlationId = headers?.get(METADATA_HEADERS.CORRELATION_ID);
     const context = headers?.get(METADATA_HEADERS.CONTEXT);
 
-    if (!correlationId || !context) {
-      console.error('Missing correlationId or context', {
+    if (!correlationId) {
+      console.error('Missing correlationId', {
         correlationId,
         context,
       });

@@ -105,12 +105,10 @@ export class NatsStreamingDomainEventBus implements Infra.EventBus.IEventBus {
             this.logger.log(
               `[Domain Event ${sub.getProcessed()}]: ${JSON.stringify(jsonCodec.decode(m.data))}`,
             );
-          } catch (err) {
+          } catch (err: any) {
             // Depending on your use case, you might want to rethrow the error,
             // nack the message, or handle the error in another way.
-            this.logger.error(
-              `[Domain Event ${subject}]: Error handling domain event: ${JSON.stringify(err)}`,
-            );
+            this.logger.error(`[Domain Event ${subject}]: Error handling domain event`, err.stack);
             m.ack();
           }
         }

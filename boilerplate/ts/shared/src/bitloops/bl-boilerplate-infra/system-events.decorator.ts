@@ -1,4 +1,4 @@
-import { Inject } from '@nestjs/common';
+import { Inject, Logger } from '@nestjs/common';
 import { Either, Infra, Application } from '@bitloops/bl-boilerplate-core';
 import { AsyncLocalStorageService } from './async-local-storage.service';
 import { MESSAGE_BUS_TOKEN } from './constants';
@@ -45,6 +45,8 @@ export function SystemEvents() {
     asyncLocalStorageInjector(target, asyncLocalStorageServiceKey);
     messageBusInjector(target, messageBusServiceKey);
 
+    const logger = new Logger(`SystemEvents`);
+
     descriptor.value = async function (...args: any[]) {
       console.log(`Started executing ... [${this.constructor.name}][${propertyKey}]`);
 
@@ -58,6 +60,7 @@ export function SystemEvents() {
       // });
       const command: Application.Command = args[0];
       const commandHandlerName = this.constructor.name;
+
       let isOk: boolean | null = null;
       let error: any;
       let data: any;
@@ -79,11 +82,9 @@ export function SystemEvents() {
       } catch (err) {
         isOk = false;
         error = err;
-        return err;
+        throw err;
       } finally {
-        console.log(
-          `[SystemEvents]: Finished executing ... [${this.constructor.name}][${propertyKey}].`,
-        );
+        logger.log(`[${commandHandlerName}] Finished executing. IsOk: ${isOk}`);
         const messageBus = this[
           messageBusServiceKey as keyof PropertyDescriptor
         ] as Infra.MessageBus.ISystemMessageBus;

@@ -1,4 +1,4 @@
-import { Inject } from '@nestjs/common';
+import { Inject, Logger } from '@nestjs/common';
 import { AsyncLocalStorageService } from './async-local-storage.service';
 import { MESSAGE_BUS_TOKEN } from './constants';
 import { Infra } from '@bitloops/bl-boilerplate-core';
@@ -15,6 +15,7 @@ export function Traceable(input: TraceableDecoratorInput) {
   const asyncLocalStorageInjector = Inject(AsyncLocalStorageService);
   const messageBusInjector = Inject(MESSAGE_BUS_TOKEN);
 
+  const logger = new Logger(`Traceable`);
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
     // For now we only trace async functions
@@ -28,7 +29,7 @@ export function Traceable(input: TraceableDecoratorInput) {
     messageBusInjector(target, messageBusServiceKey);
 
     descriptor.value = async function (...args: any[]) {
-      console.log(`Started executing ... [${this.constructor.name}][${propertyKey}]`);
+      logger.log(`Started executing ... [${this.constructor.name}][${propertyKey}]`);
       const startTime = Date.now();
 
       const asyncLocalStorage = this[
@@ -60,7 +61,7 @@ export function Traceable(input: TraceableDecoratorInput) {
           messageBusServiceKey as keyof PropertyDescriptor
         ] as Infra.MessageBus.ISystemMessageBus;
         await messageBus.publish(TRACING_TOPIC, traceEvent);
-        console.log(`Finished executing ... [${this.constructor.name}][${propertyKey}].`);
+        logger.log(`Finished executing ... [${this.constructor.name}][${propertyKey}].`);
       }
     };
   };

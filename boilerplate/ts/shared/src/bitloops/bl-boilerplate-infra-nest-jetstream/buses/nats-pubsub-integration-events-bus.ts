@@ -56,8 +56,8 @@ export class NatsPubSubIntegrationEventsBus implements Infra.EventBus.IEventBus 
           });
         }
       })();
-    } catch (err) {
-      this.logger.error('Error in pub-sub-integration-event-bus subscribe::', err);
+    } catch (err: any) {
+      this.logger.error('Error in pub-sub-integration-event-bus subscribe::', err.stack);
     }
   }
 

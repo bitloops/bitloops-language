@@ -19,9 +19,12 @@ import {
   IntegrationEvent as IntegrationEventImport,
 } from './domain/events/IIntegrationEvent';
 import { IRule as IRuleImport } from './domain/IRule';
-import { ISystemMessageBus as ISystemMessageBusImport } from './domain/messages/ISystemMessageBus';
+import {
+  ISystemMessageBus as ISystemMessageBusImport,
+  ISubscription as ISubscriptionImport,
+} from './domain/messages/ISystemMessageBus';
 import { SubscriberHandler as SubscribeHandlerImport } from './domain/messages/ISystemMessageBus';
-import { IMessage as IMessageImport } from './domain/messages/IMessage';
+import { Message as IMessageImport } from './domain/messages/IMessage';
 import { ReadModel as ReadModelImport } from './domain/ReadModel';
 import { UUIDv4 as UUIDv4Import } from './domain/UUIDv4';
 import { ValueObject as ValueObjectImport, ValueObjectProps } from './domain/ValueObject';
@@ -132,9 +135,11 @@ namespace Infra {
 
   export namespace MessageBus {
     export type ISystemMessageBus = ISystemMessageBusImport;
+    export type ISubscription = ISubscriptionImport;
     export class SystemEvent extends SystemEventImport {}
-    export type IMessage = IMessageImport;
-    export type SubscriberHandler<T extends IMessage> = SubscribeHandlerImport<T>;
+
+    export abstract class Message extends IMessageImport {}
+    export type SubscriberHandler<T extends Message> = SubscribeHandlerImport<T>;
   }
 }
 
