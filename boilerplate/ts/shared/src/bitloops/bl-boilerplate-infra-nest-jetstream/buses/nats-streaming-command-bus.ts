@@ -103,10 +103,6 @@ export class NatsStreamingCommandBus implements Infra.CommandBus.IStreamCommandB
     }
   }
 
-  unsubscribe(topic: string, commandHandler: Application.ICommandHandler<any, any>): Promise<void> {
-    throw new Error('Method not implemented.');
-  }
-
   private generateHeaders(command: Application.Command): MsgHdrs {
     const h = headers();
     for (const [key, value] of Object.entries(command.metadata)) {

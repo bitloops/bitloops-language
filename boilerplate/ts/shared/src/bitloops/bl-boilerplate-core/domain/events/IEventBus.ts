@@ -19,9 +19,9 @@
  */
 import { IEvent } from './IEvent';
 import { IHandle } from '../../application/IHandle';
+import { ISubscription } from '../messages/ISystemMessageBus';
 
 export interface IEventBus {
-  subscribe(topic: string, eventHandler: IHandle): Promise<void>;
-  unsubscribe(topic: string, eventHandler: IHandle): Promise<void>;
+  subscribe(topic: string, eventHandler: IHandle): Promise<ISubscription>;
   publish(event: IEvent<any> | IEvent<any>[]): Promise<void>;
 }

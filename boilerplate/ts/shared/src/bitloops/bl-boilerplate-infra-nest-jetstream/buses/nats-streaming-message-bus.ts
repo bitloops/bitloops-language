@@ -15,36 +15,37 @@ import { Infra } from '@bitloops/bl-boilerplate-core';
 import { NestjsJetstream } from '../nestjs-jetstream.class';
 import { ASYNC_LOCAL_STORAGE, ProvidersConstants } from '../jetstream.constants';
 import { ContextPropagation } from './utils/context-propagation';
+import { BaseNatsStreamingBus } from './common/base-nats-streaming-bus';
 
 const jsonCodec = JSONCodec();
 
 @Injectable()
-export class NatsStreamingMessageBus implements Infra.MessageBus.ISystemMessageBus {
-  private readonly logger = new Logger(NatsStreamingMessageBus.name);
-  private nc: NatsConnection;
-  private js: JetStreamClient;
+export class NatsStreamingMessageBus
+  extends BaseNatsStreamingBus
+  implements Infra.MessageBus.ISystemMessageBus
+{
+  // private readonly logger = new Logger(NatsStreamingMessageBus.name);
   constructor(
     @Inject(ProvidersConstants.JETSTREAM_PROVIDER)
-    private readonly jetStreamProvider: NestjsJetstream,
+    readonly jetStreamProvider: NestjsJetstream,
     @Inject(ASYNC_LOCAL_STORAGE)
-    private readonly asyncLocalStorage: any,
+    readonly asyncLocalStorage: any,
   ) {
-    this.nc = this.jetStreamProvider.getConnection();
-    this.js = this.nc.jetstream();
+    super(jetStreamProvider, asyncLocalStorage);
   }
 
-  private getCorelationId() {
-    return this.asyncLocalStorage.getStore()?.get('correlationId');
-  }
+  // private getCorelationId() {
+  //   return this.asyncLocalStorage.getStore()?.get('correlationId');
+  // }
 
-  private getContext() {
-    return this.asyncLocalStorage.getStore()?.get('context') || {};
-  }
+  // private getContext() {
+  //   return this.asyncLocalStorage.getStore()?.get('context') || {};
+  // }
 
   async publish(subject: string, message: Infra.MessageBus.Message): Promise<void> {
     const options: Partial<JetStreamPublishOptions> = { msgID: randomUUID() };
 
-    message.correlationId = this.getCorelationId();
+    message.correlationId = this.getCorrelationId();
     message.context = this.getContext();
     const headers = this.generateHeaders(message);
     const messageEncoded = jsonCodec.encode(message);
@@ -107,6 +108,8 @@ export class NatsStreamingMessageBus implements Infra.MessageBus.ISystemMessageB
       return {
         unsubscribe: async () => {
           sub.unsubscribe();
+          // Consider what should happen with the subject
+          this.logger.log(`[${subject}]: Unsubscribed!`);
         },
       };
     } catch (err: any) {
@@ -129,23 +132,23 @@ export class NatsStreamingMessageBus implements Infra.MessageBus.ISystemMessageB
     return subject.split('.')[0];
   }
 
-  private generateHeaders(message: Infra.MessageBus.Message): MsgHdrs {
-    const h = headers();
-    // TODO We have added ?? {} because of trace message which does not have metadata
-    // Remove this if trace message gets updated,  Traceable decorator should
-    // create a new Message class
-    for (const [key, value] of Object.entries(message.metadata ?? {})) {
-      if (key === 'context' && value) {
-        h.append(key, JSON.stringify(value));
-        continue;
-      }
-      const header = value?.toString();
-      if (header) {
-        h.append(key, header);
-      }
-    }
-    return h;
-  }
+  // private generateHeaders(message: Infra.MessageBus.Message): MsgHdrs {
+  //   const h = headers();
+  //   // TODO We have added ?? {} because of trace message which does not have metadata
+  //   // Remove this if trace message gets updated,  Traceable decorator should
+  //   // create a new Message class
+  //   for (const [key, value] of Object.entries(message.metadata ?? {})) {
+  //     if (key === 'context' && value) {
+  //       h.append(key, JSON.stringify(value));
+  //       continue;
+  //     }
+  //     const header = value?.toString();
+  //     if (header) {
+  //       h.append(key, header);
+  //     }
+  //   }
+  //   return h;
+  // }
 
   /**
    *

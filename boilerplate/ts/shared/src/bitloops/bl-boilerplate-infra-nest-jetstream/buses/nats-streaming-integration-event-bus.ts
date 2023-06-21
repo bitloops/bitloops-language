@@ -8,6 +8,7 @@ import {
   createInbox,
   MsgHdrs,
   headers,
+  JetStreamSubscription,
 } from 'nats';
 import { Application, Domain, Infra } from '@bitloops/bl-boilerplate-core';
 import { NestjsJetstream } from '../nestjs-jetstream.class';
@@ -79,12 +80,13 @@ export class NatsStreamingIntegrationEventBus implements Infra.EventBus.IEventBu
     opts.ackExplicit();
     opts.deliverTo(createInbox());
 
+    let sub: JetStreamSubscription;
     try {
       this.logger.log('Subscribing integration event to: ', subject);
       // this.logger.log(`
       //   Subscribing ${subject}!
       // `);
-      const sub = await this.js.subscribe(subject, opts);
+      sub = await this.js.subscribe(subject, opts);
       (async () => {
         for await (const m of sub) {
           try {
@@ -108,8 +110,21 @@ export class NatsStreamingIntegrationEventBus implements Infra.EventBus.IEventBu
           }
         }
       })();
+
+      return {
+        unsubscribe: async () => {
+          sub.unsubscribe();
+          this.logger.log(`[${subject}]: Unsubscribed!`);
+        },
+      };
     } catch (err) {
       this.logger.error('Error subscribing to integration event:', err);
+
+      return {
+        unsubscribe: async () => {
+          // pass
+        },
+      };
     }
   }
 

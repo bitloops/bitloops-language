@@ -8,6 +8,7 @@ import {
   createInbox,
   headers,
   MsgHdrs,
+  JetStreamSubscription,
 } from 'nats';
 import { Application, Domain, Infra } from '@bitloops/bl-boilerplate-core';
 import { NestjsJetstream } from '../nestjs-jetstream.class';
@@ -70,7 +71,10 @@ export class NatsStreamingDomainEventBus implements Infra.EventBus.IEventBus {
     });
   }
 
-  async subscribe(subject: string, handler: Application.IHandleDomainEvent) {
+  async subscribe(
+    subject: string,
+    handler: Application.IHandleDomainEvent,
+  ): Promise<Infra.MessageBus.ISubscription> {
     const durableName = NatsStreamingDomainEventBus.getDurableName(subject, handler);
     const opts = consumerOpts();
     opts.durable(durableName);
@@ -81,12 +85,13 @@ export class NatsStreamingDomainEventBus implements Infra.EventBus.IEventBus {
     const stream = subject.split('.')[0];
     await this.jetStreamProvider.createStreamIfNotExists(stream, subject);
 
+    let sub: JetStreamSubscription;
     try {
       this.logger.log('Subscribing domain event to: ' + subject);
       // this.logger.log(`
       //   Subscribing ${subject}!
       // `);
-      const sub = await this.js.subscribe(subject, opts);
+      sub = await this.js.subscribe(subject, opts);
       (async () => {
         for await (const m of sub) {
           try {
@@ -113,9 +118,20 @@ export class NatsStreamingDomainEventBus implements Infra.EventBus.IEventBus {
           }
         }
       })();
+      return {
+        unsubscribe: async () => {
+          sub.unsubscribe();
+          this.logger.log(`[${subject}]: Unsubscribed!`);
+        },
+      };
     } catch (err) {
       this.logger.log(JSON.stringify({ subject, durableName }));
       this.logger.error('Error subscribing to domain event:', err);
+      return {
+        unsubscribe: async () => {
+          // pass
+        },
+      };
     }
   }
 

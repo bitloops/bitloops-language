@@ -1,6 +1,13 @@
 import { Logger } from '@nestjs/common';
 import { Mutex } from 'async-mutex';
-import { connect, JetStreamManager, NatsConnection, ConnectionOptions } from 'nats';
+import {
+  connect,
+  JetStreamManager,
+  NatsConnection,
+  ConnectionOptions,
+  RetentionPolicy,
+  DiscardPolicy,
+} from 'nats';
 
 /**
  * @description NATS setup from https://github.com/nats-io/nats.js
@@ -87,7 +94,15 @@ export class NestjsJetstream {
   }
 
   async createStreamWithSubject(stream: string, subject: string): Promise<void> {
-    await this.jsm.streams.add({ name: stream, subjects: [subject] });
+    await this.jsm.streams.add({
+      name: stream,
+      subjects: [subject],
+      retention: RetentionPolicy.Limits,
+      discard: DiscardPolicy.Old,
+      max_msgs: 1000, // Set a conservative default for max messages
+      max_bytes: 1024 * 1024, // 1 MB
+      max_age: 15 * 60 * 1000, // 15 minutes in milliseconds,
+    });
   }
 
   async deleteStream(stream: string): Promise<void> {

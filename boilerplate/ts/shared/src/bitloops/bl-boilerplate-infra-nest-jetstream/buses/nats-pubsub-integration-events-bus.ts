@@ -1,5 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { NatsConnection, JSONCodec, headers, Msg, MsgHdrs } from 'nats';
+import { NatsConnection, JSONCodec, headers, Msg, MsgHdrs, Subscription } from 'nats';
 import { Application, Infra } from '@bitloops/bl-boilerplate-core';
 import { ASYNC_LOCAL_STORAGE, ProvidersConstants } from '../jetstream.constants';
 import { ContextPropagation } from './utils/context-propagation';
@@ -41,10 +41,15 @@ export class NatsPubSubIntegrationEventsBus implements Infra.EventBus.IEventBus 
     );
   }
 
-  async subscribe(subject: string, handler: Application.IHandleIntegrationEvent) {
+  async subscribe(
+    subject: string,
+    handler: Application.IHandleIntegrationEvent,
+  ): Promise<Infra.MessageBus.ISubscription> {
+    let sub: Subscription;
     try {
       this.logger.log('Subscribing to pubsub-integration-event:' + subject);
-      const sub = this.nc.subscribe(subject);
+      sub = this.nc.subscribe(subject);
+
       (async () => {
         for await (const m of sub) {
           const integrationEvent = jsonCodec.decode(m.data);
@@ -56,13 +61,21 @@ export class NatsPubSubIntegrationEventsBus implements Infra.EventBus.IEventBus 
           });
         }
       })();
+
+      return {
+        unsubscribe: async () => {
+          sub.unsubscribe();
+          this.logger.log(`[${subject}] Unsubscribed!`);
+        },
+      };
     } catch (err: any) {
       this.logger.error('Error in pub-sub-integration-event-bus subscribe::', err.stack);
+      return {
+        unsubscribe: async () => {
+          // pass
+        },
+      };
     }
-  }
-
-  unsubscribe(topic: string, eventHandler: Application.IHandleIntegrationEvent): Promise<void> {
-    throw new Error('Method not implemented.');
   }
 
   private getCorelationId() {
