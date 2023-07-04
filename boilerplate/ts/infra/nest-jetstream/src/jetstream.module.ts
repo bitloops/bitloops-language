@@ -6,10 +6,10 @@ import { JetstreamCoreModule } from './jetstream-core.module';
 
 @Module({})
 export class JetstreamModule {
-  static forRoot(connectionOptions: ConnectionOptions): DynamicModule {
+  static forRoot(connectionOptions: ConnectionOptions, timeoutMillis?: number): DynamicModule {
     return {
       module: JetstreamModule,
-      imports: [JetstreamCoreModule.forRoot(connectionOptions)],
+      imports: [JetstreamCoreModule.forRoot(connectionOptions, timeoutMillis)],
     };
   }
 

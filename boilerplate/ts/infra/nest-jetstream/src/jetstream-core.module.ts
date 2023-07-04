@@ -9,7 +9,12 @@ import { JetstreamModuleFeatureConfig } from './interfaces/module-feature-input.
 import { BUSES_TOKENS } from './buses/constants';
 import { NatsStreamingIntegrationEventBus, NatsStreamingCommandBus } from './buses';
 import { SubscriptionsService } from './jetstream.subscriptions.service';
-import { ASYNC_LOCAL_STORAGE, HANDLERS_TOKENS, ProvidersConstants } from './jetstream.constants';
+import {
+  ASYNC_LOCAL_STORAGE,
+  HANDLERS_TOKENS,
+  ProvidersConstants,
+  TIMEOUT_MILLIS,
+} from './jetstream.constants';
 import { NatsPubSubIntegrationEventsBus } from './buses/nats-pubsub-integration-events-bus';
 
 const pubSubCommandBus = {
@@ -48,7 +53,7 @@ const pubSubIntegrationEventBus = {
 @Global()
 @Module({})
 export class JetstreamCoreModule {
-  static forRoot(connectionOptions: ConnectionOptions): DynamicModule {
+  static forRoot(connectionOptions: ConnectionOptions, timeoutMillis?: number): DynamicModule {
     const jetstreamProviders = {
       provide: ProvidersConstants.JETSTREAM_PROVIDER,
       useFactory: (): any => {
@@ -59,6 +64,11 @@ export class JetstreamCoreModule {
     const asyncLocalStorageProvider = {
       provide: ASYNC_LOCAL_STORAGE,
       useValue: asyncLocalStorage,
+    };
+
+    const timeoutMillisProvider = {
+      provide: TIMEOUT_MILLIS,
+      useValue: timeoutMillis ?? 10000,
     };
 
     return {
@@ -73,6 +83,7 @@ export class JetstreamCoreModule {
         streamingMessageBus,
         pubSubIntegrationEventBus,
         asyncLocalStorageProvider,
+        timeoutMillisProvider,
       ],
       exports: [
         jetstreamProviders,
@@ -84,6 +95,7 @@ export class JetstreamCoreModule {
         streamingMessageBus,
         pubSubIntegrationEventBus,
         asyncLocalStorageProvider,
+        timeoutMillisProvider,
       ],
     };
   }
