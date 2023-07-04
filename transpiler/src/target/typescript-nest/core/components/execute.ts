@@ -46,7 +46,8 @@ const useCaseExecuteString = (
   statements: string,
   responseTypeName: string,
 ): string => {
-  let result = 'async execute';
+  let result = `@SystemEvents()
+  async execute`;
   result += `${parameterOutput}`;
   result += `: Promise<${responseTypeName}> {`;
   result += statements;
