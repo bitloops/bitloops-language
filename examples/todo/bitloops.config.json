@@ -15,7 +15,7 @@
     },
     "iam": {
       "authentication": {
-        "user-write.repo-port.ts": "Postgres"
+        "user-write.repo-port.ts": "Mongo"
       }
     }
   },

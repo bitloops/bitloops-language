@@ -1,0 +1,143 @@
+
+syntax = "proto3";
+
+package todo;
+
+service TodoService {
+  rpc Add(AddTodoRequest) returns (AddTodoResponse);
+  rpc Complete(CompleteTodoRequest) returns (CompleteTodoResponse);
+  rpc Delete(DeleteTodoRequest) returns (DeleteTodoResponse);
+  rpc ModifyTitle(ModifyTitleTodoRequest) returns (ModifyTitleTodoResponse);
+  rpc Uncomplete(UncompleteTodoRequest) returns (UncompleteTodoResponse);
+  rpc GetTodos(GetTodosRequest) returns (GetTodosResponse);
+  rpc InitializeSubscriptionConnection(InitializeConnectionRequest) returns (InitializeConnectionResponse);
+  rpc KeepSubscriptionAlive(KeepSubscriptionAliveRequest) returns (KeepSubscriptionAliveResponse);
+  rpc On(OnTodoRequest) returns (stream OnEvent);
+}
+
+message InitializeConnectionRequest {}
+message InitializeConnectionResponse {
+  string subscriberId = 1;
+}
+
+message KeepSubscriptionAliveRequest {
+  string subscriberId = 1;
+}
+
+message KeepSubscriptionAliveResponse {}
+
+enum TODO_EVENTS {
+  ADDED = 0;
+  COMPLETED = 1;
+  DELETED = 2;
+  MODIFIED_TITLE = 3;
+  UNCOMPLETED = 4;
+}
+
+message OnTodoRequest {
+  string subscriberId = 1;
+  repeated TODO_EVENTS events = 2;
+}
+
+message OnEvent {
+  oneof event {
+    Todo added = 1;
+    Todo completed = 2;
+    Todo deleted = 3;
+    Todo modifiedTitle = 4;
+    Todo uncompleted = 5;
+  }
+}
+
+message ErrorResponse {
+  string code = 1;
+  string message = 2;
+}
+
+message AddTodoRequest {
+  string title = 1;
+}
+
+message AddTodoResponse {
+  oneof result {
+    AddTodoOKResponse ok = 1;
+    ErrorResponse error = 2;
+  }
+}
+
+message AddTodoOKResponse {
+  string id = 1;
+}
+
+message CompleteTodoRequest {
+  string id = 1;
+}
+
+message CompleteTodoResponse {
+  oneof result {
+    CompleteTodoOKResponse ok = 1;
+    ErrorResponse error = 2;
+  }
+}
+
+message CompleteTodoOKResponse {}
+
+message DeleteTodoRequest {
+  string id = 1;
+}
+
+message DeleteTodoResponse {
+  oneof result {
+    DeleteTodoOKResponse ok = 1;
+    ErrorResponse error = 2;
+  }
+}
+
+message DeleteTodoOKResponse {}
+
+message ModifyTitleTodoRequest {
+  string id = 1;
+  string title = 2;
+}
+
+message ModifyTitleTodoResponse {
+  oneof result {
+    ModifyTitleTodoOKResponse ok = 1;
+    ErrorResponse error = 2;
+  }
+}
+
+message ModifyTitleTodoOKResponse {}
+
+message UncompleteTodoRequest {
+  string id = 1;
+}
+
+message UncompleteTodoResponse {
+  oneof result {
+    UncompleteTodoOKResponse ok = 1;
+    ErrorResponse error = 2;
+  }
+}
+
+message UncompleteTodoOKResponse {}
+
+message GetTodosRequest {}
+
+message GetTodosResponse {
+  oneof result {
+    GetTodosOKResponse ok = 1;
+    ErrorResponse error = 2;
+  }
+}
+
+message GetTodosOKResponse {
+  repeated Todo todos = 1;
+}
+
+message Todo {
+  string id = 1;
+  string title = 2;
+  bool completed = 3;
+  string userId = 4;
+}

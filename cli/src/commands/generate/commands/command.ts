@@ -3,7 +3,7 @@ import { Command, ResultOrError } from './types.js';
 
 // Define a concrete Command class for making OpenAI requests
 export class OpenAIRequestCommand implements Command {
-  private model = 'gpt-3.5-turbo';
+  private model = 'gpt-3.5-turbo-0613'; //'gpt-3.5-turbo';
   public usedTokens?: number;
   private costPer1KDollars = 0.002;
   constructor(
@@ -43,6 +43,7 @@ export class OpenAIRequestCommand implements Command {
           thisParams: JSON.stringify(this.params, null, 2),
           response: completion.data.choices[0].message.content,
         });
+        console.log({ usedTokens });
         return [null, new Error('The response was incomplete.')];
       }
       return [completion.data.choices[0].message.content, null];

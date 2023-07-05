@@ -31,13 +31,22 @@ export class OpenAIGPT4RequestCommand implements Command {
       // console.log('completion usage: ', completion.data.usage);
       // console.log(completion.data.choices[0].message.content);
 
-      // const finishReason = completion.data.choices[0].finish_reason;
+      const finishReason = completion.data.choices[0].finish_reason;
       const usedTokens = completion.data.usage.total_tokens;
       // console.log({
       //   finishReason,
       //   usedTokens,
       // });
       this.usedTokens = usedTokens;
+
+      if (finishReason === 'length') {
+        console.error('The response was incomplete:', {
+          thisParams: JSON.stringify(this.params, null, 2),
+          response: completion.data.choices[0].message.content,
+        });
+        console.log({ usedTokens });
+        return [null, new Error('The response was incomplete.')];
+      }
       return [completion.data.choices[0].message.content, null];
     } catch (error: any) {
       console.error('Error occurred: ');

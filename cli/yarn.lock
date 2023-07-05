@@ -290,10 +290,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@bitloops/bl-transpiler@^0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@bitloops/bl-transpiler/-/bl-transpiler-0.7.0.tgz#cc63bae8781d8addc830cd266720fa3205c8bdb6"
-  integrity sha512-9584ZgekEZuOwVF/on/ooGsG1IoLptQk6vuY2uQGGKfknCnE/zY8bITL9PKO2M90RaDQn97vwDqQiYLQD/3AAg==
+"@bitloops/bl-transpiler@0.7.3":
+  version "0.7.3"
+  resolved "https://registry.yarnpkg.com/@bitloops/bl-transpiler/-/bl-transpiler-0.7.3.tgz#86aec3f60818870234c395ea0cf5c9df16914c39"
+  integrity sha512-JPurftELx4HtY3/uPCS6xhs3cMlpjgtyr0V7QjKbCT5D7nzq8sohWZCYoOueKBvBqdVM0p74sO1RhbsFYUy+DA==
   dependencies:
     antlr4 "4.11.0"
     lodash "^4.17.21"

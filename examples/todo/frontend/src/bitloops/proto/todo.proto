@@ -9,7 +9,7 @@ service TodoService {
   rpc Delete(DeleteTodoRequest) returns (DeleteTodoResponse);
   rpc ModifyTitle(ModifyTitleTodoRequest) returns (ModifyTitleTodoResponse);
   rpc Uncomplete(UncompleteTodoRequest) returns (UncompleteTodoResponse);
-  rpc GetAll(GetAllTodosRequest) returns (GetAllTodosResponse);
+  rpc GetTodos(GetTodosRequest) returns (GetTodosResponse);
   rpc InitializeSubscriptionConnection(InitializeConnectionRequest) returns (InitializeConnectionResponse);
   rpc KeepSubscriptionAlive(KeepSubscriptionAliveRequest) returns (KeepSubscriptionAliveResponse);
   rpc On(OnTodoRequest) returns (stream OnEvent);
@@ -23,6 +23,7 @@ message InitializeConnectionResponse {
 message KeepSubscriptionAliveRequest {
   string subscriberId = 1;
 }
+
 message KeepSubscriptionAliveResponse {
   optional string renewedAuthToken = 1;
 }
@@ -42,11 +43,11 @@ message OnTodoRequest {
 
 message OnEvent {
   oneof event {
-    Todo onAdded = 1;
-    Todo onCompleted = 2;
-    Todo onDeleted = 3;
-    Todo onModifiedTitle = 4;
-    Todo onUncompleted = 5;
+    Todo onadded = 1;
+    Todo oncompleted = 2;
+    Todo ondeleted = 3;
+    Todo onmodifiedTitle = 4;
+    Todo onuncompleted = 5;
   }
 }
 
@@ -62,13 +63,7 @@ message AddTodoRequest {
 message AddTodoResponse {
   oneof result {
     AddTodoOKResponse ok = 1;
-    AddTodoErrorResponse error = 2;
-  }
-}
-
-message AddTodoErrorResponse {
-  oneof error {
-    ErrorResponse systemUnavailableError = 1;
+    ErrorResponse error = 2;
   }
 }
 
@@ -83,13 +78,7 @@ message CompleteTodoRequest {
 message CompleteTodoResponse {
   oneof result {
     CompleteTodoOKResponse ok = 1;
-    CompleteTodoErrorResponse error = 2;
-  }
-}
-
-message CompleteTodoErrorResponse {
-  oneof error {
-    ErrorResponse systemUnavailableError = 1;
+    ErrorResponse error = 2;
   }
 }
 
@@ -102,36 +91,11 @@ message DeleteTodoRequest {
 message DeleteTodoResponse {
   oneof result {
     DeleteTodoOKResponse ok = 1;
-    DeleteTodoErrorResponse error = 2;
-  }
-}
-
-message DeleteTodoErrorResponse {
-  oneof error {
-    ErrorResponse systemUnavailableError = 1;
+    ErrorResponse error = 2;
   }
 }
 
 message DeleteTodoOKResponse {}
-
-message GetAllTodosRequest {}
-
-message GetAllTodosResponse {
-  oneof result {
-    GetAllTodosOKResponse ok = 1;
-    GetAllTodosErrorResponse error = 2;
-  }
-}
-
-message GetAllTodosErrorResponse {
-  oneof error {
-    ErrorResponse systemUnavailableError = 1;
-  }
-}
-
-message GetAllTodosOKResponse {
-  repeated Todo todos = 1;
-}
 
 message ModifyTitleTodoRequest {
   string id = 1;
@@ -141,13 +105,7 @@ message ModifyTitleTodoRequest {
 message ModifyTitleTodoResponse {
   oneof result {
     ModifyTitleTodoOKResponse ok = 1;
-    ModifyTitleTodoErrorResponse error = 2;
-  }
-}
-
-message ModifyTitleTodoErrorResponse {
-  oneof error {
-    ErrorResponse systemUnavailableError = 1;
+    ErrorResponse error = 2;
   }
 }
 
@@ -160,17 +118,24 @@ message UncompleteTodoRequest {
 message UncompleteTodoResponse {
   oneof result {
     UncompleteTodoOKResponse ok = 1;
-    UncompleteTodoErrorResponse error = 2;
-  }
-}
-
-message UncompleteTodoErrorResponse {
-  oneof error {
-    ErrorResponse systemUnavailableError = 1;
+    ErrorResponse error = 2;
   }
 }
 
 message UncompleteTodoOKResponse {}
+
+message GetTodosRequest {}
+
+message GetTodosResponse {
+  oneof result {
+    GetTodosOKResponse ok = 1;
+    ErrorResponse error = 2;
+  }
+}
+
+message GetTodosOKResponse {
+  repeated Todo todos = 1;
+}
 
 message Todo {
   string id = 1;

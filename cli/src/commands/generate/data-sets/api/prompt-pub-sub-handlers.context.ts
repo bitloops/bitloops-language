@@ -44,6 +44,12 @@ const messageInstructionsPubSubHandlers = (
   Where package-name = ${packageName},
   
   The handler class will be named: ${getPubSubHandlerNameFromIntegrationEvent(integrationEventName)}
+
+  You access the incoming event properties directly from the event object.
+  Payload is undefined, do not use it.
+  For example
+  use \`event.userId\` and not \`event.payload.userId\`
+
 `;
 };
 
