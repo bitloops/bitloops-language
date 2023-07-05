@@ -84,7 +84,7 @@ export class CliInfraCodeGenerator implements IInfraCodeGenerator {
       const { writeRepoPorts, readRepoPorts, servicePorts, constantsFile } = moduleInfo;
       const moduleNameInCamelCase = CasingUtils.kebabCaseToCamelCase(moduleName) + 'Module';
       const targetFileName = `${moduleName}.module.ts`;
-      client.makeOpenAIRequest(
+      client.makeGPT3RicherContextRequest(
         promptModuleMessages(
           moduleNameInCamelCase,
           {

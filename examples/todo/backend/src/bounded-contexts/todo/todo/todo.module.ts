@@ -1,4 +1,3 @@
-
 import { Module } from '@nestjs/common';
 import {
   JetstreamModule,
@@ -10,7 +9,10 @@ import {
 } from '@bitloops/bl-boilerplate-infra-nest-jetstream';
 import { MongoModule } from '@bitloops/bl-boilerplate-infra-mongo';
 import { TodoModule as LibTodoModule } from '@lib/bounded-contexts/todo/todo/todo.module';
-import { StreamingCommandHandlers } from '@lib/bounded-contexts/todo/todo/application/command-handlers';
+import {
+  PubSubCommandHandlers,
+  StreamingCommandHandlers,
+} from '@lib/bounded-contexts/todo/todo/application/command-handlers';
 import { QueryHandlers } from '@lib/bounded-contexts/todo/todo/application/query-handlers';
 import { StreamingDomainEventHandlers } from '@lib/bounded-contexts/todo/todo/application/event-handlers/domain';
 import { StreamingIntegrationEventHandlers } from '@lib/bounded-contexts/todo/todo/application/event-handlers/integration';
@@ -64,6 +66,7 @@ const providers = [
     }),
     JetstreamModule.forFeature({
       moduleOfHandlers: TodoModule,
+      pubSubCommandHandlers: [...PubSubCommandHandlers],
       streamingCommandHandlers: [...StreamingCommandHandlers],
       streamingDomainEventHandlers: [...StreamingDomainEventHandlers],
       streamingIntegrationEventHandlers: [...StreamingIntegrationEventHandlers],

@@ -821,7 +821,7 @@
     passport-local "^1.0.0"
     rxjs "^7.8.0"
 
-"@bitloops/bl-boilerplate-infra-nest-jetstream@^0.0.6":
+"@bitloops/bl-boilerplate-infra-nest-jetstream@0.0.6":
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/@bitloops/bl-boilerplate-infra-nest-jetstream/-/bl-boilerplate-infra-nest-jetstream-0.0.6.tgz#23da853f8cbeed0f992da6a09f2f481109baca62"
   integrity sha512-A/ib1B5W6DNy5eZ+bfE/ao+sG1j+e7BbRB1B3KyxK1DFb8kMp3Yi+p6xYcbl2KvNhKbFEkkTO3oaxt5LSlM+yA==
