@@ -181,7 +181,7 @@ export class CliInfraCodeGenerator implements IInfraCodeGenerator {
      */
     const { handlersContent, commands, queries, entitiesContent } = exposedGrpcComponents;
 
-    client.makeOpenAIRequest(
+    client.makeGPT3RicherContextRequest(
       promptProtoMessages(
         grpc.package,
         grpc['service-name'],
@@ -214,7 +214,7 @@ export class CliInfraCodeGenerator implements IInfraCodeGenerator {
 
     const { integrationEvents } = exposedGrpcComponents;
 
-    client.makeOpenAIRequest(
+    client.makeGPT4Request(
       promptProtoRealTimeStreamsMessages(
         CodeSnippets.sanitizeProto(protobuf.fileContent),
         integrationEvents.map((x) => FileNameToClassName.integrationEvent(x.fileName)),

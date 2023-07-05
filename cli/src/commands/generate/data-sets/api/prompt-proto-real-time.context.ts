@@ -162,6 +162,7 @@ const messageInstructions = (protobuf: string, integrationEventNames: string[]):
   Create one event field per integrationEvent. These are the integrationEvents:
   ${integrationEventNames.map((name) => `  ${name}`).join('\n')}
   Use the integrationEvent for the fieldName, but use the same <message-type> across all events.
+  For example for Todos, use <message-type> = Todo.
 
   ${CodeSnippets.openProto()}
   message OnEvent {

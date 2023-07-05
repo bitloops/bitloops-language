@@ -24,9 +24,7 @@ message KeepSubscriptionAliveRequest {
   string subscriberId = 1;
 }
 
-message KeepSubscriptionAliveResponse {
-  optional string renewedAuthToken = 1;
-}
+message KeepSubscriptionAliveResponse {}
 
 enum TODO_EVENTS {
   ADDED = 0;

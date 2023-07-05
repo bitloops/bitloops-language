@@ -46,9 +46,9 @@ export class DeleteTodoCommandHandler
     if (!todoEntity.value) {
       return fail(new ApplicationErrors.TodoNotFoundError(command.id));
     }
-    const result_255472 = todoEntity.value.delete();
-    if (result_255472.isFail()) {
-      return fail(result_255472.value);
+    const result_276111 = todoEntity.value.delete();
+    if (result_276111.isFail()) {
+      return fail(result_276111.value);
     }
     const deleteResult = await this.todoRepo.delete(todoEntity.value);
     if (deleteResult.isFail()) {

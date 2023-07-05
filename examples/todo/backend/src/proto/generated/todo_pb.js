@@ -1,4 +1,4 @@
-// source: src/bitloops/proto/todo.proto
+// source: todo.proto
 /**
  * @fileoverview
  * @enhanceable
@@ -994,7 +994,7 @@ proto.todo.KeepSubscriptionAliveResponse.prototype.toObject = function(opt_inclu
  */
 proto.todo.KeepSubscriptionAliveResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-    renewedauthtoken: jspb.Message.getFieldWithDefault(msg, 1, "")
+
   };
 
   if (includeInstance) {
@@ -1031,10 +1031,6 @@ proto.todo.KeepSubscriptionAliveResponse.deserializeBinaryFromReader = function(
     }
     var field = reader.getFieldNumber();
     switch (field) {
-    case 1:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setRenewedauthtoken(value);
-      break;
     default:
       reader.skipField();
       break;
@@ -1064,49 +1060,6 @@ proto.todo.KeepSubscriptionAliveResponse.prototype.serializeBinary = function() 
  */
 proto.todo.KeepSubscriptionAliveResponse.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = /** @type {string} */ (jspb.Message.getField(message, 1));
-  if (f != null) {
-    writer.writeString(
-      1,
-      f
-    );
-  }
-};
-
-
-/**
- * optional string renewedAuthToken = 1;
- * @return {string}
- */
-proto.todo.KeepSubscriptionAliveResponse.prototype.getRenewedauthtoken = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.todo.KeepSubscriptionAliveResponse} returns this
- */
-proto.todo.KeepSubscriptionAliveResponse.prototype.setRenewedauthtoken = function(value) {
-  return jspb.Message.setField(this, 1, value);
-};
-
-
-/**
- * Clears the field making it undefined.
- * @return {!proto.todo.KeepSubscriptionAliveResponse} returns this
- */
-proto.todo.KeepSubscriptionAliveResponse.prototype.clearRenewedauthtoken = function() {
-  return jspb.Message.setField(this, 1, undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.todo.KeepSubscriptionAliveResponse.prototype.hasRenewedauthtoken = function() {
-  return jspb.Message.getField(this, 1) != null;
 };
 
 

@@ -2,10 +2,10 @@ import { ChatCompletionRequestMessage, OpenAIApi } from 'openai';
 import { Command, ResultOrError } from './types.js';
 
 // Define a concrete Command class for making OpenAI requests
-export class OpenAIGPT4RequestCommand implements Command {
-  private model = 'gpt-4';
+export class OpenAIGPT_3_16k_RequestCommand implements Command {
+  private model = 'gpt-3.5-turbo-16k-0613';
   public usedTokens?: number;
-  private costPer1KDollars = 0.03;
+  private costPer1KDollars = 0.003; // TODO fix this, its 0.003 for input tokens, but 0.004 for output tokens
   constructor(
     private client: OpenAIApi,
     private params: ChatCompletionRequestMessage[],
@@ -38,7 +38,6 @@ export class OpenAIGPT4RequestCommand implements Command {
       //   usedTokens,
       // });
       this.usedTokens = usedTokens;
-
       if (finishReason === 'length') {
         console.error('The response was incomplete:', {
           thisParams: JSON.stringify(this.params, null, 2),

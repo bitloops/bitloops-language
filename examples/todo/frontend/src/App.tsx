@@ -8,7 +8,7 @@ import {
   AddTodoRequest,
   CompleteTodoRequest,
   DeleteTodoRequest,
-  GetAllTodosRequest,
+  GetTodosRequest,
   InitializeConnectionRequest,
   KeepSubscriptionAliveRequest,
   ModifyTitleTodoRequest,
@@ -290,7 +290,7 @@ function App(props: { service: TodoServiceClient }): JSX.Element {
 
   async function getAllTodos() {
     try {
-      const response = await service.getAll(new GetAllTodosRequest(), {
+      const response = await service.getTodos(new GetTodosRequest(), {
         authorization: `Bearer ${user?.access_token}`,
         'cache-hash': await sha256Hash(JSON.stringify(todos)),
       });
