@@ -34,8 +34,8 @@ export class TodoModifiedTitlePubSubIntegrationEventHandler implements Applicati
           const todoObject = new todo.Todo({
             id: event.todoId,
             title: event.title,
-            completed: false,
             userId: event.userId,
+            completed: false,
           });
           const message = new todo.OnEvent({
             modifiedTitle: todoObject,

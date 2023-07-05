@@ -34,6 +34,7 @@ export class TodoUncompletedPubSubIntegrationEventHandler implements Application
           const todoObject = new todo.Todo({
             id: event.todoId,
             completed: false,
+            userId: event.userId,
           });
           const message = new todo.OnEvent({
             uncompleted: todoObject,

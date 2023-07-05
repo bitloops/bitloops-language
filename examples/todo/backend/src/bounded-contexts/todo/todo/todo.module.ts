@@ -1,3 +1,4 @@
+
 import { Module } from '@nestjs/common';
 import {
   JetstreamModule,
@@ -66,11 +67,11 @@ const providers = [
     }),
     JetstreamModule.forFeature({
       moduleOfHandlers: TodoModule,
+      pubSubQueryHandlers: [...QueryHandlers],
       pubSubCommandHandlers: [...PubSubCommandHandlers],
       streamingCommandHandlers: [...StreamingCommandHandlers],
       streamingDomainEventHandlers: [...StreamingDomainEventHandlers],
       streamingIntegrationEventHandlers: [...StreamingIntegrationEventHandlers],
-      pubSubQueryHandlers: [...QueryHandlers],
     }),
   ],
   exports: [LibTodoModule],

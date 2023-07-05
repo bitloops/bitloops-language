@@ -58,11 +58,11 @@ const providers = [
     }),
     JetstreamModule.forFeature({
       moduleOfHandlers: AuthenticationModule,
-      streamingCommandHandlers: [...StreamingCommandHandlers],
+      pubSubQueryHandlers: [...QueryHandlers],
       pubSubCommandHandlers: [...PubSubCommandHandlers],
+      streamingCommandHandlers: [...StreamingCommandHandlers],
       streamingDomainEventHandlers: [...StreamingDomainEventHandlers],
       streamingIntegrationEventHandlers: [...StreamingIntegrationEventHandlers],
-      pubSubQueryHandlers: [...QueryHandlers],
     }),
   ],
   exports: [LibAuthenticationModule],

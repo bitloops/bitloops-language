@@ -32,10 +32,10 @@ export class TodoAddedPubSubIntegrationEventHandler implements Application.IHand
         const call = this.subscribers[subscriber]?.call;
         if (call) {
           const todoObject = new todo.Todo({
-            id: event.payload.todoId,
-            title: event.payload.title,
+            id: event.todoId,
+            title: event.title,
             completed: false,
-            userId: event.payload.userId,
+            userId: event.userId,
           });
           const message = new todo.OnEvent({
             added: todoObject,

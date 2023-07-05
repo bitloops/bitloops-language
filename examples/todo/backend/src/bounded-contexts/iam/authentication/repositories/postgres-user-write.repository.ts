@@ -25,14 +25,15 @@ export class PostgresUserWriteRepository implements UserWriteRepoPort {
   async getById(id: Domain.UUIDv4): Promise<Either<UserEntity | null, Application.Repo.Errors.Unexpected>> {
     const result = await this.client.query('SELECT * FROM users WHERE id = $1', [id.toString()]);
 
-    if (!result.rows[0]) {
+    if (!result.rows.length) {
       return ok(null);
     }
 
+    const user = result.rows[0];
     return ok(
       UserEntity.fromPrimitives({
-        ...result.rows[0],
-        id: result.rows[0].id.toString(),
+        ...user,
+        id: user.id,
       })
     );
   }
@@ -40,11 +41,10 @@ export class PostgresUserWriteRepository implements UserWriteRepoPort {
   @Application.Repo.Decorators.ReturnUnexpectedError()
   async update(user: UserEntity): Promise<Either<void, Application.Repo.Errors.Unexpected>> {
     const { id, ...userInfo } = user.toPrimitives();
-    const keys = Object.keys(userInfo);
     const values = Object.values(userInfo);
-    const setString = keys.map((key, i) => `${key} = $${i + 2}`).join(', ');
+    const setQuery = Object.keys(userInfo).map((key, i) => `${key} = $${i + 1}`).join(', ');
 
-    await this.client.query(`UPDATE users SET ${setString} WHERE id = $1`, [id, ...values]);
+    await this.client.query(`UPDATE users SET ${setQuery} WHERE id = $${values.length + 1}`, [...values, id]);
     this.domainEventBus.publish(user.domainEvents);
     return ok();
   }
@@ -60,12 +60,11 @@ export class PostgresUserWriteRepository implements UserWriteRepoPort {
   @Application.Repo.Decorators.ReturnUnexpectedError()
   async save(user: UserEntity): Promise<Either<void, Application.Repo.Errors.Unexpected>> {
     const { id, ...userInfo } = user.toPrimitives();
-    const keys = Object.keys(userInfo);
-    const values = Object.values(userInfo);
-    const columns = keys.join(', ');
-    const placeholders = keys.map((_, i) => `$${i + 2}`).join(', ');
+    const values = [id, ...Object.values(userInfo)];
+    const columns = ['id', ...Object.keys(userInfo)].join(', ');
+    const placeholders = values.map((_, i) => `$${i + 1}`).join(', ');
 
-    await this.client.query(`INSERT INTO users (id, ${columns}) VALUES ($1, ${placeholders})`, [id, ...values]);
+    await this.client.query(`INSERT INTO users (${columns}) VALUES (${placeholders})`, values);
     this.domainEventBus.publish(user.domainEvents);
     return ok();
   }
