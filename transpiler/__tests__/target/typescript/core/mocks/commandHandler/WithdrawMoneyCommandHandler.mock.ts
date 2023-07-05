@@ -1,5 +1,6 @@
 import { Application, Either, Domain, fail, ok } from '@bitloops/bl-boilerplate-core';
 import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
+import { SystemEvents } from '@bitloops/bl-boilerplate-infra';
 import { ApplicationErrors } from '../errors/index';
 import { DomainErrors } from '../../domain/errors/index';
 import { WithdrawMoneyCommand } from '../../commands/withdraw-money.command';
@@ -32,6 +33,7 @@ export class WithdrawMoneyCommandHandler
       category: 'commandHandler',
     },
   })
+  @SystemEvents()
   async execute(command: WithdrawMoneyCommand): Promise<WithdrawMoneyCommandHandlerResponse> {
     const accountId = new Domain.UUIDv4(command.accountId);
     const accountEntity = await this.accountRepo.getById(accountId);

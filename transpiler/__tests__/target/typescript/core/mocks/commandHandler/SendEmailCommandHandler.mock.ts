@@ -1,5 +1,6 @@
 import { Application, Either, ok } from '@bitloops/bl-boilerplate-core';
 import { Traceable } from '@bitloops/bl-boilerplate-infra-telemetry';
+import { SystemEvents } from '@bitloops/bl-boilerplate-infra';
 import { SendEmailCommand } from '../../commands/send-email.command';
 import { Inject } from '@nestjs/common';
 import { EmailDomainServiceToken } from '../../constants';
@@ -27,6 +28,7 @@ export class SendEmailCommandHandler
       category: 'commandHandler',
     },
   })
+  @SystemEvents()
   async execute(command: SendEmailCommand): Promise<SendEmailCommandHandlerResponse> {
     const emailToSend: EmailToSend = {
       origin: command.origin,

@@ -33,6 +33,7 @@ import { getParentDependencies } from '../../dependencies.js';
 import { modelToTargetLanguage } from '../../modelToTargetLanguage.js';
 import { createHandlerConstructor } from '../handler-constructor/index.js';
 import { executeToTargetLanguage } from '../execute.js';
+import { getSystemEventsDecorator } from '../../../helpers/systemEventsDecorator.js';
 
 const COMMAND_HANDLER_DEPENDENCIES: () => TDependenciesTypeScript = () => [
   {
@@ -52,6 +53,12 @@ const COMMAND_HANDLER_DEPENDENCIES: () => TDependenciesTypeScript = () => [
     default: false,
     value: 'Traceable',
     from: '@bitloops/bl-boilerplate-infra-telemetry',
+  },
+  {
+    type: 'absolute',
+    default: false,
+    value: 'SystemEvents',
+    from: '@bitloops/bl-boilerplate-infra',
   },
 ];
 
@@ -106,7 +113,9 @@ export const commandHandlerToTargetLanguage = (
   result += getters;
 
   const traceableDecorator = getTraceableDecorator(commandHandlerName, COMMAND_HANDLER);
+  const systemEventsDecorator = getSystemEventsDecorator();
   result += traceableDecorator;
+  result += systemEventsDecorator;
   const executeResult = executeToTargetLanguage(
     commandHandler[commandHandlerKey].execute,
     commandHandlerResponseTypeName,
