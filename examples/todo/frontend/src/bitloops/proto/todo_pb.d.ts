@@ -102,30 +102,30 @@ export namespace OnTodoRequest {
 }
 
 export class OnEvent extends jspb.Message {
-  getAdded(): Todo | undefined;
-  setAdded(value?: Todo): OnEvent;
-  hasAdded(): boolean;
-  clearAdded(): OnEvent;
+  getOnadded(): Todo | undefined;
+  setOnadded(value?: Todo): OnEvent;
+  hasOnadded(): boolean;
+  clearOnadded(): OnEvent;
 
-  getCompleted(): Todo | undefined;
-  setCompleted(value?: Todo): OnEvent;
-  hasCompleted(): boolean;
-  clearCompleted(): OnEvent;
+  getOncompleted(): Todo | undefined;
+  setOncompleted(value?: Todo): OnEvent;
+  hasOncompleted(): boolean;
+  clearOncompleted(): OnEvent;
 
-  getDeleted(): Todo | undefined;
-  setDeleted(value?: Todo): OnEvent;
-  hasDeleted(): boolean;
-  clearDeleted(): OnEvent;
+  getOndeleted(): Todo | undefined;
+  setOndeleted(value?: Todo): OnEvent;
+  hasOndeleted(): boolean;
+  clearOndeleted(): OnEvent;
 
-  getModifiedtitle(): Todo | undefined;
-  setModifiedtitle(value?: Todo): OnEvent;
-  hasModifiedtitle(): boolean;
-  clearModifiedtitle(): OnEvent;
+  getOnmodifiedtitle(): Todo | undefined;
+  setOnmodifiedtitle(value?: Todo): OnEvent;
+  hasOnmodifiedtitle(): boolean;
+  clearOnmodifiedtitle(): OnEvent;
 
-  getUncompleted(): Todo | undefined;
-  setUncompleted(value?: Todo): OnEvent;
-  hasUncompleted(): boolean;
-  clearUncompleted(): OnEvent;
+  getOnuncompleted(): Todo | undefined;
+  setOnuncompleted(value?: Todo): OnEvent;
+  hasOnuncompleted(): boolean;
+  clearOnuncompleted(): OnEvent;
 
   getEventCase(): OnEvent.EventCase;
 
@@ -139,20 +139,20 @@ export class OnEvent extends jspb.Message {
 
 export namespace OnEvent {
   export type AsObject = {
-    added?: Todo.AsObject,
-    completed?: Todo.AsObject,
-    deleted?: Todo.AsObject,
-    modifiedtitle?: Todo.AsObject,
-    uncompleted?: Todo.AsObject,
+    onadded?: Todo.AsObject,
+    oncompleted?: Todo.AsObject,
+    ondeleted?: Todo.AsObject,
+    onmodifiedtitle?: Todo.AsObject,
+    onuncompleted?: Todo.AsObject,
   }
 
   export enum EventCase { 
     EVENT_NOT_SET = 0,
-    ADDED = 1,
-    COMPLETED = 2,
-    DELETED = 3,
-    MODIFIEDTITLE = 4,
-    UNCOMPLETED = 5,
+    ONADDED = 1,
+    ONCOMPLETED = 2,
+    ONDELETED = 3,
+    ONMODIFIEDTITLE = 4,
+    ONUNCOMPLETED = 5,
   }
 }
 

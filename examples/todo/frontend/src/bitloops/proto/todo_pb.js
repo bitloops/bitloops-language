@@ -13,13 +13,7 @@
 
 var jspb = require('google-protobuf');
 var goog = jspb;
-var global =
-    (typeof globalThis !== 'undefined' && globalThis) ||
-    (typeof window !== 'undefined' && window) ||
-    (typeof global !== 'undefined' && global) ||
-    (typeof self !== 'undefined' && self) ||
-    (function () { return this; }).call(null) ||
-    Function('return this')();
+var global = (function() { return this || window || global || self || Function('return this')(); }).call(null);
 
 goog.exportSymbol('proto.todo.AddTodoOKResponse', null, global);
 goog.exportSymbol('proto.todo.AddTodoRequest', null, global);
@@ -1314,11 +1308,11 @@ proto.todo.OnEvent.oneofGroups_ = [[1,2,3,4,5]];
  */
 proto.todo.OnEvent.EventCase = {
   EVENT_NOT_SET: 0,
-  ADDED: 1,
-  COMPLETED: 2,
-  DELETED: 3,
-  MODIFIEDTITLE: 4,
-  UNCOMPLETED: 5
+  ONADDED: 1,
+  ONCOMPLETED: 2,
+  ONDELETED: 3,
+  ONMODIFIEDTITLE: 4,
+  ONUNCOMPLETED: 5
 };
 
 /**
@@ -1359,11 +1353,11 @@ proto.todo.OnEvent.prototype.toObject = function(opt_includeInstance) {
  */
 proto.todo.OnEvent.toObject = function(includeInstance, msg) {
   var f, obj = {
-    added: (f = msg.getAdded()) && proto.todo.Todo.toObject(includeInstance, f),
-    completed: (f = msg.getCompleted()) && proto.todo.Todo.toObject(includeInstance, f),
-    deleted: (f = msg.getDeleted()) && proto.todo.Todo.toObject(includeInstance, f),
-    modifiedtitle: (f = msg.getModifiedtitle()) && proto.todo.Todo.toObject(includeInstance, f),
-    uncompleted: (f = msg.getUncompleted()) && proto.todo.Todo.toObject(includeInstance, f)
+    onadded: (f = msg.getOnadded()) && proto.todo.Todo.toObject(includeInstance, f),
+    oncompleted: (f = msg.getOncompleted()) && proto.todo.Todo.toObject(includeInstance, f),
+    ondeleted: (f = msg.getOndeleted()) && proto.todo.Todo.toObject(includeInstance, f),
+    onmodifiedtitle: (f = msg.getOnmodifiedtitle()) && proto.todo.Todo.toObject(includeInstance, f),
+    onuncompleted: (f = msg.getOnuncompleted()) && proto.todo.Todo.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -1403,27 +1397,27 @@ proto.todo.OnEvent.deserializeBinaryFromReader = function(msg, reader) {
     case 1:
       var value = new proto.todo.Todo;
       reader.readMessage(value,proto.todo.Todo.deserializeBinaryFromReader);
-      msg.setAdded(value);
+      msg.setOnadded(value);
       break;
     case 2:
       var value = new proto.todo.Todo;
       reader.readMessage(value,proto.todo.Todo.deserializeBinaryFromReader);
-      msg.setCompleted(value);
+      msg.setOncompleted(value);
       break;
     case 3:
       var value = new proto.todo.Todo;
       reader.readMessage(value,proto.todo.Todo.deserializeBinaryFromReader);
-      msg.setDeleted(value);
+      msg.setOndeleted(value);
       break;
     case 4:
       var value = new proto.todo.Todo;
       reader.readMessage(value,proto.todo.Todo.deserializeBinaryFromReader);
-      msg.setModifiedtitle(value);
+      msg.setOnmodifiedtitle(value);
       break;
     case 5:
       var value = new proto.todo.Todo;
       reader.readMessage(value,proto.todo.Todo.deserializeBinaryFromReader);
-      msg.setUncompleted(value);
+      msg.setOnuncompleted(value);
       break;
     default:
       reader.skipField();
@@ -1454,7 +1448,7 @@ proto.todo.OnEvent.prototype.serializeBinary = function() {
  */
 proto.todo.OnEvent.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getAdded();
+  f = message.getOnadded();
   if (f != null) {
     writer.writeMessage(
       1,
@@ -1462,7 +1456,7 @@ proto.todo.OnEvent.serializeBinaryToWriter = function(message, writer) {
       proto.todo.Todo.serializeBinaryToWriter
     );
   }
-  f = message.getCompleted();
+  f = message.getOncompleted();
   if (f != null) {
     writer.writeMessage(
       2,
@@ -1470,7 +1464,7 @@ proto.todo.OnEvent.serializeBinaryToWriter = function(message, writer) {
       proto.todo.Todo.serializeBinaryToWriter
     );
   }
-  f = message.getDeleted();
+  f = message.getOndeleted();
   if (f != null) {
     writer.writeMessage(
       3,
@@ -1478,7 +1472,7 @@ proto.todo.OnEvent.serializeBinaryToWriter = function(message, writer) {
       proto.todo.Todo.serializeBinaryToWriter
     );
   }
-  f = message.getModifiedtitle();
+  f = message.getOnmodifiedtitle();
   if (f != null) {
     writer.writeMessage(
       4,
@@ -1486,7 +1480,7 @@ proto.todo.OnEvent.serializeBinaryToWriter = function(message, writer) {
       proto.todo.Todo.serializeBinaryToWriter
     );
   }
-  f = message.getUncompleted();
+  f = message.getOnuncompleted();
   if (f != null) {
     writer.writeMessage(
       5,
@@ -1498,10 +1492,10 @@ proto.todo.OnEvent.serializeBinaryToWriter = function(message, writer) {
 
 
 /**
- * optional Todo added = 1;
+ * optional Todo onadded = 1;
  * @return {?proto.todo.Todo}
  */
-proto.todo.OnEvent.prototype.getAdded = function() {
+proto.todo.OnEvent.prototype.getOnadded = function() {
   return /** @type{?proto.todo.Todo} */ (
     jspb.Message.getWrapperField(this, proto.todo.Todo, 1));
 };
@@ -1511,7 +1505,7 @@ proto.todo.OnEvent.prototype.getAdded = function() {
  * @param {?proto.todo.Todo|undefined} value
  * @return {!proto.todo.OnEvent} returns this
 */
-proto.todo.OnEvent.prototype.setAdded = function(value) {
+proto.todo.OnEvent.prototype.setOnadded = function(value) {
   return jspb.Message.setOneofWrapperField(this, 1, proto.todo.OnEvent.oneofGroups_[0], value);
 };
 
@@ -1520,8 +1514,8 @@ proto.todo.OnEvent.prototype.setAdded = function(value) {
  * Clears the message field making it undefined.
  * @return {!proto.todo.OnEvent} returns this
  */
-proto.todo.OnEvent.prototype.clearAdded = function() {
-  return this.setAdded(undefined);
+proto.todo.OnEvent.prototype.clearOnadded = function() {
+  return this.setOnadded(undefined);
 };
 
 
@@ -1529,16 +1523,16 @@ proto.todo.OnEvent.prototype.clearAdded = function() {
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.todo.OnEvent.prototype.hasAdded = function() {
+proto.todo.OnEvent.prototype.hasOnadded = function() {
   return jspb.Message.getField(this, 1) != null;
 };
 
 
 /**
- * optional Todo completed = 2;
+ * optional Todo oncompleted = 2;
  * @return {?proto.todo.Todo}
  */
-proto.todo.OnEvent.prototype.getCompleted = function() {
+proto.todo.OnEvent.prototype.getOncompleted = function() {
   return /** @type{?proto.todo.Todo} */ (
     jspb.Message.getWrapperField(this, proto.todo.Todo, 2));
 };
@@ -1548,7 +1542,7 @@ proto.todo.OnEvent.prototype.getCompleted = function() {
  * @param {?proto.todo.Todo|undefined} value
  * @return {!proto.todo.OnEvent} returns this
 */
-proto.todo.OnEvent.prototype.setCompleted = function(value) {
+proto.todo.OnEvent.prototype.setOncompleted = function(value) {
   return jspb.Message.setOneofWrapperField(this, 2, proto.todo.OnEvent.oneofGroups_[0], value);
 };
 
@@ -1557,8 +1551,8 @@ proto.todo.OnEvent.prototype.setCompleted = function(value) {
  * Clears the message field making it undefined.
  * @return {!proto.todo.OnEvent} returns this
  */
-proto.todo.OnEvent.prototype.clearCompleted = function() {
-  return this.setCompleted(undefined);
+proto.todo.OnEvent.prototype.clearOncompleted = function() {
+  return this.setOncompleted(undefined);
 };
 
 
@@ -1566,16 +1560,16 @@ proto.todo.OnEvent.prototype.clearCompleted = function() {
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.todo.OnEvent.prototype.hasCompleted = function() {
+proto.todo.OnEvent.prototype.hasOncompleted = function() {
   return jspb.Message.getField(this, 2) != null;
 };
 
 
 /**
- * optional Todo deleted = 3;
+ * optional Todo ondeleted = 3;
  * @return {?proto.todo.Todo}
  */
-proto.todo.OnEvent.prototype.getDeleted = function() {
+proto.todo.OnEvent.prototype.getOndeleted = function() {
   return /** @type{?proto.todo.Todo} */ (
     jspb.Message.getWrapperField(this, proto.todo.Todo, 3));
 };
@@ -1585,7 +1579,7 @@ proto.todo.OnEvent.prototype.getDeleted = function() {
  * @param {?proto.todo.Todo|undefined} value
  * @return {!proto.todo.OnEvent} returns this
 */
-proto.todo.OnEvent.prototype.setDeleted = function(value) {
+proto.todo.OnEvent.prototype.setOndeleted = function(value) {
   return jspb.Message.setOneofWrapperField(this, 3, proto.todo.OnEvent.oneofGroups_[0], value);
 };
 
@@ -1594,8 +1588,8 @@ proto.todo.OnEvent.prototype.setDeleted = function(value) {
  * Clears the message field making it undefined.
  * @return {!proto.todo.OnEvent} returns this
  */
-proto.todo.OnEvent.prototype.clearDeleted = function() {
-  return this.setDeleted(undefined);
+proto.todo.OnEvent.prototype.clearOndeleted = function() {
+  return this.setOndeleted(undefined);
 };
 
 
@@ -1603,16 +1597,16 @@ proto.todo.OnEvent.prototype.clearDeleted = function() {
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.todo.OnEvent.prototype.hasDeleted = function() {
+proto.todo.OnEvent.prototype.hasOndeleted = function() {
   return jspb.Message.getField(this, 3) != null;
 };
 
 
 /**
- * optional Todo modifiedTitle = 4;
+ * optional Todo onmodifiedTitle = 4;
  * @return {?proto.todo.Todo}
  */
-proto.todo.OnEvent.prototype.getModifiedtitle = function() {
+proto.todo.OnEvent.prototype.getOnmodifiedtitle = function() {
   return /** @type{?proto.todo.Todo} */ (
     jspb.Message.getWrapperField(this, proto.todo.Todo, 4));
 };
@@ -1622,7 +1616,7 @@ proto.todo.OnEvent.prototype.getModifiedtitle = function() {
  * @param {?proto.todo.Todo|undefined} value
  * @return {!proto.todo.OnEvent} returns this
 */
-proto.todo.OnEvent.prototype.setModifiedtitle = function(value) {
+proto.todo.OnEvent.prototype.setOnmodifiedtitle = function(value) {
   return jspb.Message.setOneofWrapperField(this, 4, proto.todo.OnEvent.oneofGroups_[0], value);
 };
 
@@ -1631,8 +1625,8 @@ proto.todo.OnEvent.prototype.setModifiedtitle = function(value) {
  * Clears the message field making it undefined.
  * @return {!proto.todo.OnEvent} returns this
  */
-proto.todo.OnEvent.prototype.clearModifiedtitle = function() {
-  return this.setModifiedtitle(undefined);
+proto.todo.OnEvent.prototype.clearOnmodifiedtitle = function() {
+  return this.setOnmodifiedtitle(undefined);
 };
 
 
@@ -1640,16 +1634,16 @@ proto.todo.OnEvent.prototype.clearModifiedtitle = function() {
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.todo.OnEvent.prototype.hasModifiedtitle = function() {
+proto.todo.OnEvent.prototype.hasOnmodifiedtitle = function() {
   return jspb.Message.getField(this, 4) != null;
 };
 
 
 /**
- * optional Todo uncompleted = 5;
+ * optional Todo onuncompleted = 5;
  * @return {?proto.todo.Todo}
  */
-proto.todo.OnEvent.prototype.getUncompleted = function() {
+proto.todo.OnEvent.prototype.getOnuncompleted = function() {
   return /** @type{?proto.todo.Todo} */ (
     jspb.Message.getWrapperField(this, proto.todo.Todo, 5));
 };
@@ -1659,7 +1653,7 @@ proto.todo.OnEvent.prototype.getUncompleted = function() {
  * @param {?proto.todo.Todo|undefined} value
  * @return {!proto.todo.OnEvent} returns this
 */
-proto.todo.OnEvent.prototype.setUncompleted = function(value) {
+proto.todo.OnEvent.prototype.setOnuncompleted = function(value) {
   return jspb.Message.setOneofWrapperField(this, 5, proto.todo.OnEvent.oneofGroups_[0], value);
 };
 
@@ -1668,8 +1662,8 @@ proto.todo.OnEvent.prototype.setUncompleted = function(value) {
  * Clears the message field making it undefined.
  * @return {!proto.todo.OnEvent} returns this
  */
-proto.todo.OnEvent.prototype.clearUncompleted = function() {
-  return this.setUncompleted(undefined);
+proto.todo.OnEvent.prototype.clearOnuncompleted = function() {
+  return this.setOnuncompleted(undefined);
 };
 
 
@@ -1677,7 +1671,7 @@ proto.todo.OnEvent.prototype.clearUncompleted = function() {
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.todo.OnEvent.prototype.hasUncompleted = function() {
+proto.todo.OnEvent.prototype.hasOnuncompleted = function() {
   return jspb.Message.getField(this, 5) != null;
 };
 
