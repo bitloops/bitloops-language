@@ -43,11 +43,11 @@ message OnTodoRequest {
 
 message OnEvent {
   oneof event {
-    Todo added = 1;
-    Todo completed = 2;
-    Todo deleted = 3;
-    Todo modifiedTitle = 4;
-    Todo uncompleted = 5;
+    Todo onadded = 1;
+    Todo oncompleted = 2;
+    Todo ondeleted = 3;
+    Todo onmodifiedTitle = 4;
+    Todo onuncompleted = 5;
   }
 }
 
