@@ -39,7 +39,7 @@
   "license": "GPL-3.0",
   "dependencies": {
     "@nestjs/common": "^9.0.0",
-    "mongodb": "^4.10.0"
+    "mongodb": "^4.17.1"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.40.0",
