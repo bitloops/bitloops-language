@@ -1,8 +1,0 @@
-{
-  "label": "Software Design",
-  "position": 2,
-  "link": {
-    "type": "generated-index",
-    "description": "Looking for the latest best practices and principles in software engineering? Our experts cover the latest software engineering methodologies, design patterns and practices. Learn how to create scalable, maintainable, and performant software systems using DDD, Hexagonal Architecture, CQRS, Event Sourcing and many other design patterns, architectural styles, and development methodologies."
-  }
-}

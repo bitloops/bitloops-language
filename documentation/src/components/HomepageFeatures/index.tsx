@@ -13,7 +13,14 @@ const SectionList: SectionItem[] = [
     Svg: require('@site/static/img/Bitloops-Language-Logo.svg').default,
     button: {
       title: 'Bitloops Language',
-      link: '/docs/bitloops-language/category/introduction',
+      link: '/docs/bitloops-language/introduction/welcome',
+    },
+    },
+  {
+    Svg: require('@site/static/img/Bitloops-Logo.svg').default, // Update the path to your actual SVG
+    button: {
+      title: 'Design 2 Code',
+      link: '/docs/design-2-code/getting-started/introduction-to-bitloops', // Update the link to the starting page of your design-2-code docs
     },
   },
 ];
