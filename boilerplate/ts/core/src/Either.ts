@@ -36,7 +36,11 @@ export class Ok<A, L> {
   readonly value: A;
 
   constructor(value?: A) {
-    this.value = value || (undefined as unknown as A);
+    if(value === undefined) {
+      this.value = value as unknown as A;
+    }else {
+      this.value = value;
+    }
   }
 
   isFail(): this is Fail<A, L> {
