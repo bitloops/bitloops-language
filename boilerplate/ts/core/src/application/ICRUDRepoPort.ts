@@ -16,12 +16,23 @@
  */
 
 import { Either } from '../Either';
+import { ConcurrencyOrNotFoundError } from '../errors/repository/ConcurrencyOrNotFoundError';
+import { NotFoundError } from '../errors/repository/NotFoundError';
 import { UnexpectedError } from '../errors/repository/UnexpectedError';
 
+export type UpdateOptions = {
+  occ?: boolean;
+};
+
 export interface CRUDWriteRepoPort<Aggregate, AggregateId> {
-  getById(aggregateRootId: AggregateId): Promise<Either<Aggregate | null, UnexpectedError>>;
+  getById(
+    aggregateRootId: AggregateId,
+  ): Promise<Either<Aggregate | null, UnexpectedError | NotFoundError>>;
   save(aggregate: Aggregate): Promise<Either<void, UnexpectedError>>;
-  update(aggregate: Aggregate): Promise<Either<void, UnexpectedError>>;
+  update(
+    aggregate: Aggregate,
+    options?: UpdateOptions,
+  ): Promise<Either<void, UnexpectedError | ConcurrencyOrNotFoundError>>;
   delete(aggregate: Aggregate): Promise<Either<void, UnexpectedError>>;
 }
 

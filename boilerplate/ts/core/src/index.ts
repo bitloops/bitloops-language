@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import 'reflect-metadata';
 import { AppError } from './application/AppError';
-import { CRUDReadRepoPort, CRUDWriteRepoPort } from './application/ICRUDRepoPort';
+import { CRUDReadRepoPort, CRUDWriteRepoPort, UpdateOptions } from './application/ICRUDRepoPort';
 import { CommandHandler, UseCase, QueryHandler } from './application/UseCase';
 import { AggregateRoot } from './domain/AggregateRoot';
 import { applyRules as applyRulesImport } from './domain/applyRule';
@@ -56,6 +56,7 @@ import { UnexpectedError } from './errors/repository/UnexpectedError';
 import { ReturnUnexpectedError as ReturnUnexpectedErrorImport } from './errors/repository/unexpected-error.decorator';
 import { TEventMetadata } from './domain/events/IEvent';
 import { asyncLocalStorage, AsyncLocalStorageStore } from './helpers/asyncLocalStorage';
+import { ConcurrencyOrNotFoundError } from './errors/repository/ConcurrencyOrNotFoundError';
 
 namespace Domain {
   export class Error extends DomainError {}
@@ -102,6 +103,7 @@ namespace Application {
       export class Concurrency extends ConcurrencyError {}
       export class Conflict extends ConflictError {}
       export class Unexpected extends UnexpectedError {}
+      export class ConcurrencyOrNotFound extends ConcurrencyOrNotFoundError {}
     }
     export namespace Decorators {
       export const ReturnUnexpectedError = ReturnUnexpectedErrorImport;
@@ -109,6 +111,7 @@ namespace Application {
 
     export type ICRUDReadPort<ReadModel> = CRUDReadRepoPort<ReadModel>;
     export type ICRUDWritePort<Aggregate, AggregateId> = CRUDWriteRepoPort<Aggregate, AggregateId>;
+    export type CRUDUpdateRepoOptions = UpdateOptions;
   }
 }
 
