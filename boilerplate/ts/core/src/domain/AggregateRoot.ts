@@ -18,11 +18,32 @@ import { Entity } from './Entity';
 import { IDomainEvent } from './events/IDomainEvent';
 import { UniqueEntityID } from './UniqueEntityID';
 
+type AggregateRootProps<T> = {
+  props: T;
+  id?: UniqueEntityID;
+  aggregateVersion?: string;
+};
+
 export abstract class AggregateRoot<T> extends Entity<T> {
   private _domainEvents: IDomainEvent<any>[] = [];
+  private _aggregateVersion?: string;
+
+  constructor(aggregateRootProps: AggregateRootProps<T>) {
+    const { props, id, aggregateVersion } = aggregateRootProps;
+    super(props, id);
+    this._aggregateVersion = aggregateVersion;
+  }
 
   get id(): UniqueEntityID {
     return this._id;
+  }
+
+  get aggregateVersion(): string | undefined {
+    return this._aggregateVersion;
+  }
+
+  set aggregateVersion(version: string | undefined) {
+    this._aggregateVersion = version;
   }
 
   get domainEvents(): IDomainEvent<any>[] {
