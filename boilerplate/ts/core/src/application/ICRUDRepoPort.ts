@@ -28,7 +28,7 @@ export interface CRUDWriteRepoPort<Aggregate, AggregateId> {
   getById(
     aggregateRootId: AggregateId,
   ): Promise<Either<Aggregate | null, UnexpectedError | NotFoundError>>;
-  save(aggregate: Aggregate): Promise<Either<void, UnexpectedError>>;
+  create(aggregate: Aggregate): Promise<Either<void, UnexpectedError>>;
   update(
     aggregate: Aggregate,
     options?: UpdateOptions,
