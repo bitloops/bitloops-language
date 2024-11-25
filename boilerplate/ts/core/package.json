@@ -1,6 +1,6 @@
 {
   "name": "@bitloops/bl-boilerplate-core",
-  "version": "0.4.3",
+  "version": "1.0.0",
   "description": "TypeScript boilerplate code for Bitloops Language generated projects",
   "engines": {
     "node": ">= 13"
