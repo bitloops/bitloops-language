@@ -59,7 +59,7 @@ E. Boost productivity: BDD enhances productivity in the code development process
 By incorporating BDD into the software development process, teams can benefit from improved collaboration, reduced risks, streamlined focus, better communication, and boosted productivity. These benefits ultimately lead to a higher quality product that meets the needs of both the business and the end-users.
 
 
-## Key differences between traditional software development and behavior-driven development
+## Traditional software development vs  BDD
 
 In traditional development process, the business owner conveys the software requirements to the product developer, who drafts a requirement document that is then shared with the developer and tester. The focus is on writing codes and test cases, and after executing the tests, changes are made and retesting is performed until the final product is delivered. However, in this process, the developers and testers are not involved in understanding the system's behavior, leading to potential miscommunication and errors in the final product.
 
