@@ -57,8 +57,11 @@ export abstract class OrchestratorHandler<IRequest, IOkResponse> {
     message.metadata.orchestratorInstanceId = orchestratorInstanceId;
   }
 
-  getOrchestratorStateKey(message: Message) {
+  public getOrchestratorIds(message: Message) {
     const orchestratorInstanceId = (message as any).metadata.orchestratorInstanceId;
-    return `${this.orchestratorNameId}:${orchestratorInstanceId}`;
+    return {
+      orchestratorInstanceId,
+      orchestratorNameId: this.orchestratorNameId,
+    };
   }
 }

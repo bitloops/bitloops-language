@@ -29,7 +29,7 @@ export type TMessageMetadata = {
   messageId: string;
   correlationId?: string;
   orchestratorInstanceId?: string;
-  name?: string;
+  name: string;
   context: TContext | Record<string, never>; // type of empty object
 };
 
@@ -49,6 +49,11 @@ export abstract class Message implements IMessage {
   set correlationId(correlationId: string) {
     this.metadata.correlationId = correlationId;
   }
+
+  set orchestratorInstanceId(orchestratorInstanceId: string) {
+    this.metadata.orchestratorInstanceId = orchestratorInstanceId;
+  }
+
   set context(context: TContext) {
     this.metadata.context = context;
   }
