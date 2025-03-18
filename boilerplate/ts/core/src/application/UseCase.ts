@@ -1,3 +1,5 @@
+import { Message } from '../domain/messages/IMessage.js';
+import { UUIDv4 } from '../domain/UUIDv4.js';
 import { Either } from '../Either';
 import { ICoreError } from '../ICoreError';
 
@@ -33,4 +35,30 @@ export interface QueryHandler<IRequest, IOkResponse> {
   get query(): any;
   get boundedContext(): string;
   execute(request?: IRequest): Promise<Either<IOkResponse, ICoreError>>;
+}
+
+export abstract class OrchestratorHandler<IRequest, IOkResponse> {
+  abstract get triggerMessage(): any;
+  abstract get boundedContext(): string; // TODO check if we can add many
+  abstract get domainEvents(): any[];
+  abstract get systemEventNames(): string[];
+  abstract listen(message: Message): Promise<Either<IOkResponse, ICoreError>>;
+
+  get orchestratorNameId(): string {
+    return this.constructor.name;
+  }
+
+  protected isTriggerMessage(message: Message): boolean {
+    return message.metadata.name === this.triggerMessage.name;
+  }
+
+  async trigger(message: Message): Promise<void> {
+    const orchestratorInstanceId = new UUIDv4().toString();
+    message.metadata.orchestratorInstanceId = orchestratorInstanceId;
+  }
+
+  getOrchestratorStateKey(message: Message) {
+    const orchestratorInstanceId = (message as any).metadata.orchestratorInstanceId;
+    return `${this.orchestratorNameId}:${orchestratorInstanceId}`;
+  }
 }
