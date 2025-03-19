@@ -42,6 +42,7 @@ export abstract class OrchestratorHandler<IRequest, IOkResponse> {
   abstract get boundedContext(): string; // TODO check if we can add many
   abstract get domainEvents(): any[];
   abstract get systemEventNames(): string[];
+  abstract get integrationEvents(): any[];
   abstract listen(message: Message): Promise<Either<IOkResponse, ICoreError>>;
 
   get orchestratorNameId(): string {
