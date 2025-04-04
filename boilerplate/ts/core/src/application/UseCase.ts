@@ -1,4 +1,7 @@
+import { Message } from '../domain/messages/IMessage.js';
+import { UUIDv4 } from '../domain/UUIDv4.js';
 import { Either } from '../Either';
+import { asyncLocalStorage } from '../helpers/asyncLocalStorage.js';
 import { ICoreError } from '../ICoreError';
 
 /**
@@ -33,4 +36,43 @@ export interface QueryHandler<IRequest, IOkResponse> {
   get query(): any;
   get boundedContext(): string;
   execute(request?: IRequest): Promise<Either<IOkResponse, ICoreError>>;
+}
+
+const CONTEXT = 'context';
+export abstract class OrchestratorHandler<IRequest, IOkResponse> {
+  abstract get triggerMessage(): any;
+  abstract get boundedContext(): string; // TODO check if we can add many
+  abstract get domainEvents(): any[];
+  abstract get systemEventNames(): string[];
+  abstract get integrationEvents(): any[];
+  abstract listen(message: Message): Promise<Either<IOkResponse, ICoreError>>;
+
+  get orchestratorNameId(): string {
+    return this.constructor.name;
+  }
+
+  protected isTriggerMessage(message: Message): boolean {
+    return message.metadata.name === this.triggerMessage.name;
+  }
+
+  async trigger(message: Message): Promise<void> {
+    const orchestratorInstanceId = new UUIDv4().toString();
+    const store = asyncLocalStorage.getStore();
+    if (!store) {
+      throw new Error('No store found, did you forget to attach correlation middleware?');
+    }
+    const ctx = store.get(CONTEXT);
+    const ctxWithStorybookPort = {
+      ...ctx,
+      orchestratorInstanceId,
+    };
+    store.set(CONTEXT, ctxWithStorybookPort);
+    message.metadata.context.orchestratorInstanceId = orchestratorInstanceId;
+  }
+
+  public getOrchestratorNameId() {
+    return {
+      orchestratorNameId: this.orchestratorNameId,
+    };
+  }
 }
