@@ -38,7 +38,7 @@
   "author": "Bitloops S.A.",
   "license": "GPL-3.0",
   "dependencies": {
-    "@nestjs/common": "^9.0.0",
+    "@nestjs/common": "^11.0.17",
     "mongodb": "^4.10.0"
   },
   "devDependencies": {
