@@ -56,18 +56,30 @@ export abstract class OrchestratorHandler<IRequest, IOkResponse> {
   }
 
   async trigger(message: Message): Promise<void> {
-    const orchestratorInstanceId = new UUIDv4().toString();
+    const orchestratorName = this.constructor.name;
+    const orchestratorInstanceId = new UUIDv4().toString() + '-' + orchestratorName;
     const store = asyncLocalStorage.getStore();
     if (!store) {
       throw new Error('No store found, did you forget to attach correlation middleware?');
     }
     const ctx = store.get(CONTEXT);
-    const ctxWithStorybookPort = {
+    const alreadyCreatedOrchestratorInstanceIds = ctx.orchestratorInstanceIds
+      ? JSON.parse(ctx.orchestratorInstanceIds)
+      : {};
+    const ctxWithOrchestratorInstanceId = {
       ...ctx,
-      orchestratorInstanceId,
+      orchestratorInstanceIds: JSON.stringify({
+        ...alreadyCreatedOrchestratorInstanceIds,
+        [orchestratorName]: orchestratorInstanceId,
+      }),
     };
-    store.set(CONTEXT, ctxWithStorybookPort);
-    message.metadata.context.orchestratorInstanceId = orchestratorInstanceId;
+    store.set(CONTEXT, ctxWithOrchestratorInstanceId);
+    if (!message.metadata.context.orchestratorInstanceIds) {
+      message.metadata.context.orchestratorInstanceIds = JSON.stringify({});
+    }
+    const orchestratorInstanceIds = JSON.parse(message.metadata.context.orchestratorInstanceIds);
+    orchestratorInstanceIds[orchestratorName] = orchestratorInstanceId;
+    message.metadata.context.orchestratorInstanceIds = JSON.stringify(orchestratorInstanceIds);
   }
 
   public getOrchestratorNameId() {
