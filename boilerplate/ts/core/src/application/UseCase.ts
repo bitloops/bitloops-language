@@ -87,4 +87,13 @@ export abstract class OrchestratorHandler<IRequest, IOkResponse> {
       orchestratorNameId: this.orchestratorNameId,
     };
   }
+
+  public isGeneratedByOrchestrator(message: Message): boolean {
+    const orchestratorInstanceIdStr = message.metadata.context.orchestratorInstanceIds;
+    if (!orchestratorInstanceIdStr) {
+      return false;
+    }
+    const orchestratorInstanceIds = JSON.parse(orchestratorInstanceIdStr);
+    return orchestratorInstanceIds?.[this.constructor.name] !== undefined;
+  }
 }
