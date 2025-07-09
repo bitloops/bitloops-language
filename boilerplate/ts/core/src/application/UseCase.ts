@@ -91,7 +91,7 @@ export abstract class OrchestratorHandler<IRequest, IOkResponse> {
   public isGeneratedByOrchestrator(message: Message): boolean {
     const orchestratorInstanceIdStr = message.metadata.context.orchestratorInstanceIds;
     if (!orchestratorInstanceIdStr) {
-      return false;
+      return true;
     }
     const orchestratorInstanceIds = JSON.parse(orchestratorInstanceIdStr);
     return orchestratorInstanceIds?.[this.constructor.name] !== undefined;
