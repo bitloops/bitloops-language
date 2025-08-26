@@ -37,5 +37,3 @@ DTO HExampleResponseDTO {
 ```
 
 By default, all parameters are required (unless optional is used in front) and errors will be thrown in the controllers if parameters are missing.  
-
-To learn more about DTOs, read our reference guide on [DTOs](https://bitloops.com/docs/bitloops-language/reference/dto)
