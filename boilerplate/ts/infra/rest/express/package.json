@@ -41,7 +41,7 @@
   "license": "GPL-3.0",
   "dependencies": {
     "@bitloops/bl-boilerplate-core": "^0.1.1",
-    "body-parser": "^1.20.1",
+    "body-parser": "^2.2.1",
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "helmet": "^6.0.0",
