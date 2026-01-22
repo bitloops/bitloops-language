@@ -76,7 +76,7 @@
   "license": "GPL-3.0",
   "dependencies": {
     "antlr4": "4.11.0",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "prettier": "^2.7.1"
   },
   "exports": {
