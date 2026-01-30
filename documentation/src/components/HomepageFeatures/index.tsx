@@ -17,10 +17,10 @@ const SectionList: SectionItem[] = [
     },
     },
   {
-    Svg: require('@site/static/img/Bitloops-Logo.svg').default, // Update the path to your actual SVG
+    Svg: require('@site/static/img/Bitloops-Logo.svg').default,
     button: {
-      title: 'Design 2 Code',
-      link: '/docs/design-2-code/overview/introduction-to-bitloops', // Update the link to the starting page of your design-2-code docs
+      title: 'Frontend Copilot',
+      link: '/docs/frontend-copilot/introduction/what-is-bitloops',
     },
   },
 ];

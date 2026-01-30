@@ -38,23 +38,19 @@ const config = {
       {
         id: 'bitloops-language',
         path: 'docs/bitloops-language',
-        routeBasePath: 'bitloops-language', // Adjusted
+        routeBasePath: 'bitloops-language',
         sidebarPath: require.resolve('./sidebarsBitloops.js'),
-        // editUrl: 'https://github.com/bitloops/bitloops-language/edit/main/documentation',
       },
     ],
     [
       '@docusaurus/plugin-content-docs',
       {
-        id: 'design-2-code',
-        path: 'docs/design-2-code',
-        routeBasePath: 'design-2-code', // Adjusted
-        sidebarPath: require.resolve('./sidebarsDesign2Code.js'),
-        // disableVersioning: true, // optional, based on your preference
-        // You might want to add an edit URL for design-2-code as well
+        id: 'frontend-copilot',
+        path: 'docs/frontend-copilot',
+        routeBasePath: 'frontend-copilot',
+        sidebarPath: require.resolve('./sidebarsFrontendCopilot.js'),
       },
     ],
-    // ... other plugins you might have
   ],
   themeConfig: {
     navbar: {
