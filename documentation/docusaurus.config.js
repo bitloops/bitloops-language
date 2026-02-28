@@ -36,22 +36,22 @@ const config = {
     [
       '@docusaurus/plugin-content-docs',
       {
-        id: 'bitloops-language',
-        path: 'docs/bitloops-language',
-        routeBasePath: 'bitloops-language', // Adjusted
-        sidebarPath: require.resolve('./sidebarsBitloops.js'),
-        // editUrl: 'https://github.com/bitloops/bitloops-language/edit/main/documentation',
+        id: 'cli',
+        path: 'docs/cli',
+        routeBasePath: 'cli', // Adjusted
+        sidebarPath: require.resolve('./sidebarsCli.js'),
+        // disableVersioning: true, // optional, based on your preference
+        // You might want to add an edit URL for cli as well
       },
     ],
     [
       '@docusaurus/plugin-content-docs',
       {
-        id: 'design-2-code',
-        path: 'docs/design-2-code',
-        routeBasePath: 'design-2-code', // Adjusted
-        sidebarPath: require.resolve('./sidebarsDesign2Code.js'),
-        // disableVersioning: true, // optional, based on your preference
-        // You might want to add an edit URL for design-2-code as well
+        id: 'bitloops-language',
+        path: 'docs/bitloops-language',
+        routeBasePath: 'bitloops-language', // Adjusted
+        sidebarPath: require.resolve('./sidebarsBitloops.js'),
+        // editUrl: 'https://github.com/bitloops/bitloops-language/edit/main/documentation',
       },
     ],
     // ... other plugins you might have

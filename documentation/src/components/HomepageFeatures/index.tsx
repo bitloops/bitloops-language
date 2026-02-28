@@ -1,26 +1,26 @@
-import React, { JSX } from 'react';
-import Link from '@docusaurus/Link';
-import clsx from 'clsx';
-import styles from './styles.module.css';
+import React, { JSX } from "react";
+import Link from "@docusaurus/Link";
+import clsx from "clsx";
+import styles from "./styles.module.css";
 
 type SectionItem = {
-  Svg: React.ComponentType<React.ComponentProps<'svg'>>;
+  Svg: React.ComponentType<React.ComponentProps<"svg">>;
   button: { title: string; link: string };
 };
 
 const SectionList: SectionItem[] = [
   {
-    Svg: require('@site/static/img/Bitloops-Language-Logo.svg').default,
+    Svg: require("@site/static/img/Bitloops-Logo.svg").default, // Update the path to your actual SVG
     button: {
-      title: 'Bitloops Language',
-      link: '/docs/bitloops-language/introduction/welcome',
+      title: "Bitloops CLI",
+      link: "/docs/cli/getting-started/installation", // Update the link to the starting page of your design-2-code docs
     },
-    },
+  },
   {
-    Svg: require('@site/static/img/Bitloops-Logo.svg').default, // Update the path to your actual SVG
+    Svg: require("@site/static/img/Bitloops-Language-Logo.svg").default,
     button: {
-      title: 'Design 2 Code',
-      link: '/docs/design-2-code/overview/introduction-to-bitloops', // Update the link to the starting page of your design-2-code docs
+      title: "Bitloops Language",
+      link: "/docs/bitloops-language/introduction/welcome",
     },
   },
 ];
@@ -28,7 +28,7 @@ const SectionList: SectionItem[] = [
 function Section({ Svg, button }: SectionItem) {
   return (
     // <div className={clsx('col col--4')}>
-    <div className={clsx('col')}>
+    <div className={clsx("col")}>
       <div className={styles.section}>
         <div className="text--center">
           <Svg className={styles.featureSvg} role="img" />
