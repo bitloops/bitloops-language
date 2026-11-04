@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import Link from '@docusaurus/Link';
 import clsx from 'clsx';
 import styles from './styles.module.css';
@@ -20,7 +20,7 @@ const SectionList: SectionItem[] = [
     Svg: require('@site/static/img/Bitloops-Logo.svg').default, // Update the path to your actual SVG
     button: {
       title: 'Design 2 Code',
-      link: '/docs/design-2-code/getting-started/introduction-to-bitloops', // Update the link to the starting page of your design-2-code docs
+      link: '/docs/design-2-code/overview/introduction-to-bitloops', // Update the link to the starting page of your design-2-code docs
     },
   },
 ];

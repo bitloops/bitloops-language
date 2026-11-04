@@ -20,9 +20,18 @@ import { UniqueEntityID } from './UniqueEntityID';
 
 export abstract class AggregateRoot<T> extends Entity<T> {
   private _domainEvents: IDomainEvent<any>[] = [];
+  private _aggregateVersion?: string;
 
   get id(): UniqueEntityID {
     return this._id;
+  }
+
+  get aggregateVersion(): string | undefined {
+    return this._aggregateVersion;
+  }
+
+  set aggregateVersion(version: string | undefined) {
+    this._aggregateVersion = version;
   }
 
   get domainEvents(): IDomainEvent<any>[] {

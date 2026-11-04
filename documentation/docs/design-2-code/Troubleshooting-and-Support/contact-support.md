@@ -1,7 +1,7 @@
 ---
 sidebar_position: 3
 sidebar_label: Contact Support
-title: "Your Direct Line to Bitloops Support"
+title: "Bitloops Support"
 description: "Need a helping hand? 'Your Direct Line to Bitloops Support' connects you with our dedicated team, ready to assist you with any inquiries or challenges you might face. Whether you need guidance through a complex scenario, assistance with advanced features, or help troubleshooting an issue, our support team is here for you. Learn how to reach out via email, chat, or phone, ensuring you receive timely and effective assistance."
 
 keywords:
@@ -36,8 +36,9 @@ keywords:
   ]
 ---
 
-## Your Direct Line to Bitloops Support
-We understand that sometimes you need direct assistance to navigate through more complex situations. That's why our Bitloops support team is just a message or call away. In this section, you'll find all the necessary contact information to reach our support team via email, chat, or phone. We're committed to providing timely, comprehensive support to ensure your experience with Bitloops is as smooth and productive as possible. Whether you have a question, need help with a specific feature, or require technical assistance, don't hesitate to reach out. Our team is here to ensure your success with Bitloops.
+We understand that sometimes you need direct assistance to navigate through more complex situations. That's why our Bitloops support team is just a message or call away. 
+
+In this section, you'll find all the necessary contact information to reach our support team via email, chat, or phone. We're committed to providing timely, comprehensive support to ensure your experience with Bitloops is as smooth and productive as possible. Whether you have a question, need help with a specific feature, or require technical assistance, don't hesitate to reach out. Our team is here to ensure your success with Bitloops.
 
 ## Getting Help
 
@@ -80,10 +81,6 @@ ___
 
 ### 📧 Email
 
-Sometimes the easiest is a simple email. Feel free to email any one of the founding team members:
-- vasilis [at] bitloops.com
-- sergio [at] bitloops.com
-- antonis [at] bitloops.com
-- elli [at] bitloops.com
-- giorgos [at] bitloops.com
+Sometimes the easiest is a simple email. Feel free to email us at [support@bitloops.com](mailto:support@bitloops.com) and one of the founders will respond!
+
 

@@ -30,7 +30,7 @@ export interface ICommand {
 export abstract class Command extends Message implements ICommand {
   [x: string]: any;
   public declare readonly metadata: CommandMetadata;
-  constructor(boundedContextId: string, metadata?: Partial<CommandMetadata>) {
+  constructor(boundedContextId: string, metadata: Partial<CommandMetadata> = {}) {
     super(metadata);
     this.metadata.boundedContextId = boundedContextId;
   }

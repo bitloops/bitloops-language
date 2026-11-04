@@ -25,4 +25,5 @@ export type TEventMetadata = TMessageMetadata & {
 
 export interface IEvent<T> extends IMessage {
   metadata: TEventMetadata;
+  payload: T;
 }

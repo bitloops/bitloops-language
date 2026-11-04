@@ -1,8 +1,13 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import 'reflect-metadata';
 import { AppError } from './application/AppError';
-import { CRUDReadRepoPort, CRUDWriteRepoPort } from './application/ICRUDRepoPort';
-import { CommandHandler, UseCase, QueryHandler } from './application/UseCase';
+import { CRUDReadRepoPort, CRUDWriteRepoPort, UpdateOptions } from './application/ICRUDRepoPort';
+import {
+  CommandHandler,
+  UseCase,
+  QueryHandler,
+  OrchestratorHandler as OrchestratorHandlerImport,
+} from './application/UseCase';
 import { AggregateRoot } from './domain/AggregateRoot';
 import { applyRules as applyRulesImport } from './domain/applyRule';
 import {
@@ -56,6 +61,9 @@ import { UnexpectedError } from './errors/repository/UnexpectedError';
 import { ReturnUnexpectedError as ReturnUnexpectedErrorImport } from './errors/repository/unexpected-error.decorator';
 import { TEventMetadata } from './domain/events/IEvent';
 import { asyncLocalStorage, AsyncLocalStorageStore } from './helpers/asyncLocalStorage';
+import { ConcurrencyOrNotFoundError } from './errors/repository/ConcurrencyOrNotFoundError';
+import { Message as MessageImport } from './domain/messages/IMessage';
+import { SystemEvent as SystemEventImport } from './domain/messages/SystemEvent';
 
 namespace Domain {
   export class Error extends DomainError {}
@@ -85,6 +93,10 @@ namespace Application {
   export type ICommandHandler<IRequest, IResponse> = CommandHandler<IRequest, IResponse>;
   export type IQueryHandler<IRequest, IResponse> = QueryHandler<IRequest, IResponse>;
   export type IHandleDomainEvent = IHandleImport;
+  export abstract class OrchestratorHandler<IRequest, IResponse> extends OrchestratorHandlerImport<
+    IRequest,
+    IResponse
+  > {}
   export interface IHandleIntegrationEvent extends IHandleImport {
     version: string;
   }
@@ -102,6 +114,7 @@ namespace Application {
       export class Concurrency extends ConcurrencyError {}
       export class Conflict extends ConflictError {}
       export class Unexpected extends UnexpectedError {}
+      export class ConcurrencyOrNotFound extends ConcurrencyOrNotFoundError {}
     }
     export namespace Decorators {
       export const ReturnUnexpectedError = ReturnUnexpectedErrorImport;
@@ -109,6 +122,7 @@ namespace Application {
 
     export type ICRUDReadPort<ReadModel> = CRUDReadRepoPort<ReadModel>;
     export type ICRUDWritePort<Aggregate, AggregateId> = CRUDWriteRepoPort<Aggregate, AggregateId>;
+    export type CRUDUpdateRepoOptions = UpdateOptions;
   }
 }
 
@@ -119,6 +133,9 @@ namespace Infra {
     export abstract class IntegrationEvent<T> extends IntegrationEventImport<T> {}
     export type IEventBus = IEventBusImport;
     export type IEvent<T> = IEventImport<T>;
+    export type Message = MessageImport;
+    export class SystemEvent<T> extends SystemEventImport<T> {}
+    export type IHandle = IHandleImport;
   }
   export namespace CommandBus {
     export type IPubSubCommandBus = IPubSubCommandBusImport;

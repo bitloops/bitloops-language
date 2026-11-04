@@ -36,8 +36,9 @@ keywords:
   ]
 ---
 
-## Spot, Report, Reward: Earn Credits for Reporting Bugs with Bitloops
-At Bitloops, we are committed to providing a seamless and efficient design-to-code conversion experience. We understand that despite our rigorous testing, bugs can slip through the cracks. This is where you, our valued user, play a crucial role. Not only do you help us in enhancing the quality of Bitloops, but you also get rewarded for your contributions. Here's how you can participate in our 'Spot, Report, Reward' program and earn free credits.
+At Bitloops, we are committed to providing a seamless and efficient design-to-code conversion experience. However, we understand that despite our rigorous testing, bugs can slip through the cracks. 
+
+This is where you, our valued user, play a crucial role. Not only do you help us in enhancing the quality of Bitloops, but you also get rewarded for your contributions. Here's how you can participate in our 'Spot, Report, Reward' program and earn free credits.
 
 ## 1. Identifying Bugs
 Begin by using Bitloops as you normally would and keep an eye out for any unexpected behavior, glitches, or inconsistencies. Whether it's a minor interface issue or a major functionality flaw, your keen observations are invaluable.
@@ -51,5 +52,7 @@ Visit the 'Report a Bug' section on our website and fill out the bug report form
 ## 4. Earning Your Credits
 Once your bug report is submitted, our team will review the details and verify the issue. After validation, we'll credit your Bitloops account as a token of our appreciation. These credits can be used for future subscriptions, additional features, or conversion credits within Bitloops.
 
-By participating in the 'Spot, Report, Reward' program, you're not just improving your own experience with Bitloops; you're also contributing to a community of developers and designers who rely on our tool for their projects. Your insights and proactive reporting are instrumental in shaping an even more robust and reliable Bitloops. So, let's team up to squash those bugs and keep enhancing the seamless bridge between design and code!
+By participating in the 'Spot, Report, Reward' program, you're not just improving your own experience with Bitloops; you're also contributing to a community of developers and designers who rely on our tool for their projects. Your insights and proactive reporting are instrumental in shaping an even more robust and reliable Bitloops. 
+
+So, let's team up to squash those bugs and keep enhancing the seamless bridge between design and code!
 
